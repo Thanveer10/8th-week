@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Signup</title>
+  <link rel="stylesheet" href="/css/loginStyle.css">
+  <style>
+    .error {
+      color: red;
+      font-size: 0.875em;
+    }
+  </style>
+</head>
+
+<body>
+  <section class="h-100 gradient-form" style="background-color: #eee;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-xl-6">
+          <div class="card rounded-3 text-black">
+            <div class="row g-0">
+              <div class="col-lg-12">
+                <div class="card-body p-md-4 mx-md-3">
+
+                  <div class="text-center">
+                    <img src="https://png.pngtree.com/png-vector/20191125/ourmid/pngtree-beautiful-admin-roles-line-vector-icon-png-image_2035379.jpg"
+                      style="width: 120px;" alt="logo">
+                    <h4 class="mt-1 mb-4 pb-1">We are The Lotus Team</h4>
+                    <h6 class="mt-1 mb-3 pb-1">User Signup Form</h6>
+                  </div>
+
+                  <!-- Success message -->
+                  <% if (typeof message !== 'undefined') { %>
+                  <p style="color: green;"><%= message %></p>
+                  <% } %>
+
+                  <form id="signupForm" action="/signup" method="post">
+                    <p>Please create a new account</p>
+
+                    <div class="d-flex justify-content-between mb-3">
+                      <div class="form-outline me-2" style="flex: 1;">
+                        <input id="form2Example11" class="form-control" type="text" name="username" required placeholder="UserName" />
+                        <p id="nameError" class="error"></p>
+                      </div>
+                      <div class="form-outline" style="flex: 1;">
+                        <input id="form2Example22" class="form-control" type="email" name="email" required placeholder="Email" />
+                        <p id="emailError" class="error"></p>
+                      </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                      <div class="form-outline me-2" style="flex: 1;">
+                        <input id="mob" class="form-control" type="text" name="mobilenumber" required placeholder="Phone Number" />
+                        <p id="mobError" class="error"></p>
+                      </div>
+                    
+                      <div class="form-outline" style="flex: 1;">
+                        <input id="password" class="form-control" type="password" name="password" required placeholder="Password"  />
+                        <p id="passwordError" class="error"></p>
+                        <input type="checkbox" id="passwordToggle"><label for="">Show password</label>
+                      </div>
+                    </div>
+
+                    <div class="form-outline" style="flex: 1;">
+                        <input id="password" class="form-control" type="password" name="conformpassword" required placeholder="Conform Password"  />
+                        <p id="passwordError" class="error"></p>
+                        <input type="checkbox" id="passwordToggle"><label for="">Show password</label>
+                      </div>
+                    </div>
+
+                    <div class="text-center pt-1 mb-4">
+                      <div class="d-flex justify-content-center">
+                        <button class="btn btn-primary gradient-custom-2 me-2" type="submit" value="Register">Sign Up</button>
+                        <a class="btn btn-primary gradient-custom-2" href="/" role="button">Login page</a>
+                      </div>
+                    </div>
+
+                  </form>
+
+                  <!-- JavaScript Validation -->
+                  <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                      const form = document.getElementById('signupForm');
+                      const passwordField = document.getElementById('password');
+                      const phoneField = document.getElementById('mob');
+                      const passwordError = document.getElementById('passwordError');
+                      const phoneError = document.getElementById('mobError');
+
+                      form.addEventListener('submit', function (event) {
+                        let isValid = true;
+
+                        // Password validation: Minimum 8 characters, at least one number
+                        const password = passwordField.value;
+                        const passwordRegex = /^(?=.*\d)[a-zA-Z\d]{8,}$/;
+                        if (!passwordRegex.test(password)) {
+                          passwordError.textContent = 'Password must be at least 8 characters long and include at least one number.';
+                          isValid = false;
+                        } else {
+                          passwordError.textContent = '';
+                        }
+
+                        // Phone validation: Exactly 10 digits
+                        const phone = phoneField.value;
+                        const phoneRegex = /^\d{10}$/;
+                        if (!phoneRegex.test(phone)) {
+                          phoneError.textContent = 'Phone number must be exactly 10 digits.';
+                          isValid = false;
+                        } else {
+                          phoneError.textContent = '';
+                        }
+
+                        // Confirmation prompt
+                        const confirmed = confirm('Are you sure you want to sign up?');
+                        if (!confirmed) {
+                          event.preventDefault(); // Prevent form submission if user clicks Cancel
+                        }
+
+                        if (!isValid) {
+                          event.preventDefault(); // Prevent form submission if validation fails
+                        }
+                      });
+                    });
+                              //show password
+                           const passwordField = document.getElementById("password")
+                            const passwordToggle = document.getElementById("passwordToggle")
+
+                              passwordToggle.addEventListener("click", () => {
+                                  if(passwordField.type === "password"){
+                                      passwordField.type = "text"
+                                  }else{
+                                      passwordField.type = "password"
+                                  }
+                              })
+                  </script>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+
+</html>
