@@ -4,11 +4,38 @@
     }
 }
 
-@media (max-width: 992px) {
+@media (min-width:116px) and (max-width:1450px) {
+    .user_option{
+        margin-right: 0px;
+        justify-content: end;
+    }
+    .navbar-nav{
+        margin-left: -30px;
+    }
+    .input-group {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        width: 50%;
+      }
+      .dropdown-menu { 
+        min-width: 150px;
+        font-size: 0.9rem;
+      }
+}
+
+
+
+@media (max-width: 1150px) {
     .user_option {
         justify-content: center;
-        margin-left: 0;
+        margin-left: 80px;
         margin-top: 10px;
+
 
     }
 

@@ -1,0 +1,83 @@
+<%- include('../partial/admin/header.ejs') %>
+
+       <!-- Content Start -->
+      
+       <div class="  content">
+        <section>
+          <div style="margin-top: 10px;" >
+          <form class="d-none d-md-flex ms-4">
+            <input class="form-control border-1" type="search" placeholder="Search">
+          </form>
+        </div>
+         <% if(typeof message !== 'undefined' ){ %>
+            <h1><%= message %></h1>
+         <% } %>
+            <!-- Navbar End -->
+        <table class="table">
+          <thead>
+              <tr>      
+                      <th>OrderID</th>
+                      <th>Username</th>
+                      <th>Price</th>
+                      <th>Order Date</th>
+                      <th>Payment Method</th>
+                      <th>Status</th>
+                      <th>Action</th>
+              </tr>
+          </thead>
+          <tbody>
+              <% allOrders.forEach(order=>{ %>
+                <tr>
+                    <td> <%= order._id %></td>
+                    <td> <%= order.orderedUser.Username %></td>
+                    <td><%= order.grandTotal %></td>
+                    <td><%= order.date.toLocaleString('en-US') %></td>
+                    <td><%= order.paymentMethod %></td>
+                    <td>
+                      <select class="form-control order-status" data-order-id="<%= order._id %>"
+                          <%= order.orderStatus==='Delivered'||order.orderStatus === 'Cancelled' ? 'disabled' : '' %>>
+                          <option value="Pending" <%= order.orderStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
+                          <option value="Confirmed" <%= order.orderStatus === 'Confirmed' ? 'selected' : '' %>>Confirmed</option>
+                          <option value="Shipped" <%= order.orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                          <option value="Delivered" <%= order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                          <option value="Cancelled" <%= order.orderStatus === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                          <!-- <option value="Returned" <%= order.orderStatus === 'Returned' ? 'selected' : '' %>>Returned</option>
+                          <option value="Return Request" <%= order.orderStatus === 'Return Request' ? 'selected' : '' %>>Return Requested</option>
+                          <option value="Refunded" <%= order.orderStatus === 'Refunded' ? 'selected' : '' %>>Refunded</option> -->
+                      </select>
+                  </td>
+            
+                    <td>
+                        <a href="/admin/Orderview/<%= order._id %>" class="btn btn-primary"   >VIEW</a>
+                    <!-- </td>
+                    <td> -->
+                        <!-- <a href="/admin/edit/<%= order._id %>"  onclick="return confirm('Are you Sure?')"  class="btn btn-success">EDIT</a> -->
+                    </td>
+            <% }) %>
+            </tr> 
+          </tbody>
+        </table>       
+       </section>
+       </div>
+    
+   </div>
+     <!-- footer -->
+     <footer class=" footer_section">
+        <div class="container">
+          <p>
+            &copy; <span id="displayYear"></span> All Rights Reserved By
+            <a href="#">GIFTOS</a>
+          </p>
+        </div>
+      </footer>
+
+
+      <script src="/js/admin/orders.js"></script>
+      <script src="js/jquery-3.4.1.min.js"></script>
+      <script src="js/bootstrap.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <script src="js/custom.js"></script>
+
+ </body>
+</html>

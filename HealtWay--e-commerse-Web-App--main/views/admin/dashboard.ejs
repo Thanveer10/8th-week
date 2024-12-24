@@ -1,0 +1,111 @@
+
+<%-include("../../views/partials/admin/header")%>
+<link rel="stylesheet" href="/css/adminCss/dashboard.css">
+
+
+
+ <!-- Dashboard Cards -->
+ <div class="row mt-4">
+    <!-- Total Sales Card -->
+    <div class="col-md-4 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="mr-3">
+                        <div class="circle-progress" data-percentage="75">
+                            <span class="circle-progress-value">75%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="card-title">Total Sales</h5>
+                        <h3>₹1,20,000</h3>
+                        <p>Products Sold: 450</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Total Revenue Card -->
+    <div class="col-md-4 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="mr-3">
+                        <div class="circle-progress" data-percentage="60">
+                            <span class="circle-progress-value">60%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="card-title">Total Revenue</h5>
+                        <h3>₹3,50,000</h3>
+                        <p>Growth: 15% <i class="bi bi-graph-up text-success"></i></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- User Count Card -->
+    <div class="col-md-4 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="mr-3">
+                        <div class="circle-progress" data-percentage="90">
+                            <span class="circle-progress-value">90%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="card-title">User Count</h5>
+                        <h3>1,200</h3>
+                        <p>New Users: 150</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Products Table -->
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Product Sales Details</h5>
+        <div>
+            <input type="date" id="startDate" class="form-control d-inline-block" style="width: auto;">
+            <span class="mx-2">to</span>
+            <input type="date" id="endDate" class="form-control d-inline-block" style="width: auto;">
+            <button class="btn btn-primary ml-2" id="filterButton">Filter</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover" id="productTable">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Image</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Price (₹)</th>
+                        <th scope="col">Quantity Sold</th>
+                        <th scope="col">Stock Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic Rows Will Be Injected Here -->
+                </tbody>
+            </table>
+        </div>
+        <!-- Pagination -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center" id="pagination">
+                <!-- Dynamic Pagination Will Be Injected Here -->
+            </ul>
+        </nav>
+        <div class="text-right">
+            <button class="btn btn-success" id="reportButton">Click Here for Details <i
+                    class="bi bi-file-earmark-text-fill"></i></button>
+        </div>
+    </div>
+</div>
+
+
+
+<%-include("../../views/partials/admin/footer")%>
+<script src="/js/adminJs/dashboard.js"></script> 

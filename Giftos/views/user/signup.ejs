@@ -4,9 +4,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
+
+
+
+
   <title>User Signup</title>
-  <link rel="stylesheet" href="/css/loginStyle.css">
+  <link rel="stylesheet" href="/css/signup.css">
   <style>
+     html,body{
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-image: url('images/userlog3.jpg');
+        background-size: cover;
+        background-position: center center;
+        background-attachment: fixed;
+      
+      }
+      .btn{
+        color : white;
+        background-color:rgb(224, 148, 174);
+      }
+      .btn:hover {
+      
+        background-color:white;
+         outline: 2px solid rgb(224, 148, 174); /* Blue outline */
+          border-radius: 5px; /* Optional: Add rounded corners for better visuals */
+      }
+       /* .btn:hover {
+          outline-color: #0056b3; 
+      }  */
+  
+      span{
+        font-family: 'Playfair Display', serif;
+      }
     .error {
       color: red;
       font-size: 0.875em;
@@ -14,126 +47,128 @@
   </style>
 </head>
 
-<body>
-  <section class="h-100 gradient-form" style="background-color: #eee;">
-    <div class="container py-5 h-100">
+<body class="d-flex flex-column min-vh-100">
+  <h1><span>GIFTOS</span> </h1>
+  <section class="h-100 gradient-form" style=" box-shadow: inset; ">
+    <div class="container py-5 h-80">
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-xl-6">
-          <div class="card rounded-3 text-black">
+          <div  class="card rounded-5 text-black"  style="box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25) ">
             <div class="row g-0">
               <div class="col-lg-12">
-                <div class="card-body p-md-4 mx-md-3">
+                <div class="card-body  p-md-4 mx-md-3" >
 
                   <div class="text-center">
                     <img src="https://png.pngtree.com/png-vector/20191125/ourmid/pngtree-beautiful-admin-roles-line-vector-icon-png-image_2035379.jpg"
                       style="width: 120px;" alt="logo">
-                    <h4 class="mt-1 mb-4 pb-1">We are The Lotus Team</h4>
-                    <h6 class="mt-1 mb-3 pb-1">User Signup Form</h6>
+                    <h4 class="mt-1 mb-4 pb-1"></h4>
+                    <h3 class="mt-1 mb-3 pb-1" style="font-family: 'Playfair Display', serif; font-weight: bold;letter-spacing: 1.5px;">Sign Up</h3>
                   </div>
 
                   <!-- Success message -->
-                  <% if (typeof message !== 'undefined') { %>
-                  <p style="color: green;"><%= message %></p>
+                  <% if (typeof message !== 'undefined' || typeof signupErr !== 'undefined') { %>
+                  <p style="color: green; text-align: center;"><%= message %></p>
+                  <p style="color: rgb(151, 39, 5); text-align: center;"><%= signupErr %></p>
+
                   <% } %>
 
                   <form id="signupForm" action="/signup" method="post">
-                    <p>Please create a new account</p>
-
+                    <p>Alredy have an account? <span><a href="/login" style="text-decoration: none; font-family: 'Playfair Display', serif; color: blue;margin-left: 4px;">Sign in</a></span></p>
+                     
                     <div class="d-flex justify-content-between mb-3">
                       <div class="form-outline me-2" style="flex: 1;">
-                        <input id="form2Example11" class="form-control" type="text" name="username" required placeholder="UserName" />
+                        <input id="form2Example11" class="form-control" type="text" name="name" required placeholder="Name" />
                         <p id="nameError" class="error"></p>
                       </div>
                       <div class="form-outline" style="flex: 1;">
-                        <input id="form2Example22" class="form-control" type="email" name="email" required placeholder="Email" />
-                        <p id="emailError" class="error"></p>
+                        <input id="form2Example22" class="form-control" type="text" name="lastname" required placeholder="Last Name" />
+                        <p id="lastnameError" class="error"></p>
                       </div>
                     </div>
 
                     <div class="d-flex justify-content-between mb-3">
                       <div class="form-outline me-2" style="flex: 1;">
-                        <input id="mob" class="form-control" type="text" name="mobilenumber" required placeholder="Phone Number" />
-                        <p id="mobError" class="error"></p>
+                        <input id="email" class="form-control" type="email" name="email" required placeholder="Email" />
+                        <p id="emailError" class="error"></p>
+
                       </div>
                     
                       <div class="form-outline" style="flex: 1;">
-                        <input id="password" class="form-control" type="password" name="password" required placeholder="Password"  />
-                        <p id="passwordError" class="error"></p>
-                        <input type="checkbox" id="passwordToggle"><label for="">Show password</label>
+                        <input id="mob" class="form-control" type="text" name="phonenumber" required placeholder="Phone Number"  />
+                        <p id="mobError" class="error"></p>
                       </div>
                     </div>
 
-                    <div class="form-outline" style="flex: 1;">
-                        <input id="password" class="form-control" type="password" name="conformpassword" required placeholder="Conform Password"  />
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                      <div class="form-outline me-2" style="flex: 1;">
+                        <input id="password" class="form-control" type="password" name="password" required placeholder="Passwrord" />
                         <p id="passwordError" class="error"></p>
-                        <input type="checkbox" id="passwordToggle"><label for="">Show password</label>
+                        <input type="checkbox" class="passwordToggle"><label  style=" font-family: 'Playfair Display', serif; margin-left: 5px;">Show password</label>
+
+                      </div>
+                    
+                      <div class="form-outline" style="flex: 1;">
+                        <input id="confirmpassword" class="form-control" type="password" name="conformpassword" required placeholder="Confirm Password"  />
+                        <p id="confirmpasswordErr" class="error"></p>
+                        <input type="checkbox" class="passwordToggle"> <label  style=" font-family: 'Playfair Display', serif; margin-left: 5px;">  Show password</label>
                       </div>
                     </div>
-
-                    <div class="text-center pt-1 mb-4">
+                   
+                    <div class="text-center pt-1 mb-2 ">
                       <div class="d-flex justify-content-center">
-                        <button class="btn btn-primary gradient-custom-2 me-2" type="submit" value="Register">Sign Up</button>
-                        <a class="btn btn-primary gradient-custom-2" href="/" role="button">Login page</a>
+                        <button style="background-color: rgb(224, 148, 174); color: white;  padding: 7px 35px" class="btn  me-2" type="submit" value="Register"><span>Sign up</span> </button>
                       </div>
                     </div>
 
+                    <h5 class="text-center mt-0"><span>Or</span></h5>
+                    <div class="d-flex justify-content-between" >
+                      <a   href="/auth/google" class="btn  btn-block flex-fill mx-1" >
+                        <i class="bi bi-google"></i> <span>Sign Up with Google</span> 
+                    </a>
+                    <!-- <a href="/auth/otp" class="btn btn-outline-primary btn-block flex-fill mx-1" >
+                      <i></i>  <span>Sign Up with OTP</span> 
+                  </a> -->
+                    </div>
+                  
+                      
                   </form>
+<!-- 
+                  <footer class="bg-dark text-white text-center py-4">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                               
+                                <a href="#" class="text-white mx-2" aria-label="Facebook">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                                <a href="#" class="text-white mx-2" aria-label="Instagram">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                                <a href="#" class="text-white mx-2" aria-label="Snapchat">
+                                    <i class="bi bi-snapchat"></i>
+                                </a>
+                                <a href="#" class="text-white mx-2" aria-label="Pinterest">
+                                    <i class="bi bi-pinterest"></i>
+                                </a>
+                                <a href="#" class="text-white mx-2" aria-label="Twitter">
+                                    <i class="bi bi-twitter"></i>
+                                </a>
+                                <a href="#" class="text-white mx-2" aria-label="LinkedIn">
+                                    <i class="bi bi-linkedin"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <p class="mt-3">
+                            Powered by <a href="#" class="text-white" target="_blank">UserAdminHub</a>
+                        </p>
+                    </div>
+                    
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.css">
+                </footer>
+                 -->
 
-                  <!-- JavaScript Validation -->
-                  <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                      const form = document.getElementById('signupForm');
-                      const passwordField = document.getElementById('password');
-                      const phoneField = document.getElementById('mob');
-                      const passwordError = document.getElementById('passwordError');
-                      const phoneError = document.getElementById('mobError');
-
-                      form.addEventListener('submit', function (event) {
-                        let isValid = true;
-
-                        // Password validation: Minimum 8 characters, at least one number
-                        const password = passwordField.value;
-                        const passwordRegex = /^(?=.*\d)[a-zA-Z\d]{8,}$/;
-                        if (!passwordRegex.test(password)) {
-                          passwordError.textContent = 'Password must be at least 8 characters long and include at least one number.';
-                          isValid = false;
-                        } else {
-                          passwordError.textContent = '';
-                        }
-
-                        // Phone validation: Exactly 10 digits
-                        const phone = phoneField.value;
-                        const phoneRegex = /^\d{10}$/;
-                        if (!phoneRegex.test(phone)) {
-                          phoneError.textContent = 'Phone number must be exactly 10 digits.';
-                          isValid = false;
-                        } else {
-                          phoneError.textContent = '';
-                        }
-
-                        // Confirmation prompt
-                        const confirmed = confirm('Are you sure you want to sign up?');
-                        if (!confirmed) {
-                          event.preventDefault(); // Prevent form submission if user clicks Cancel
-                        }
-
-                        if (!isValid) {
-                          event.preventDefault(); // Prevent form submission if validation fails
-                        }
-                      });
-                    });
-                              //show password
-                           const passwordField = document.getElementById("password")
-                            const passwordToggle = document.getElementById("passwordToggle")
-
-                              passwordToggle.addEventListener("click", () => {
-                                  if(passwordField.type === "password"){
-                                      passwordField.type = "text"
-                                  }else{
-                                      passwordField.type = "password"
-                                  }
-                              })
-                  </script>
+                 
 
                 </div>
               </div>
@@ -143,6 +178,118 @@
       </div>
     </div>
   </section>
-</body>
-
+     <!-- Bootstrap Icons -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.css">
+ </body>
 </html>
+ <!-- JavaScript Validation -->
+ <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('signupForm');
+    const passwordField = document.getElementById('password');
+    const confirmPasswordField = document.getElementById('confirmpassword');
+    const phoneField = document.getElementById('mob');
+    const passwordError = document.getElementById('passwordError');
+    const confirmpasswordError = document.getElementById('confirmpasswordErr');
+    const phoneError = document.getElementById('mobError');
+    
+
+    form.addEventListener('submit', function (event) {
+      let isValid = true;
+
+      // Password validation: Minimum 8 characters, at least one number
+      const password = passwordField.value;
+      const passwordRegex = /^(?=.*\d)[a-zA-Z\d]{8,}$/;
+      if (!passwordRegex.test(password)) {
+        passwordError.textContent = 'Password must be at least 8 characters long and include at least one number.';
+        isValid = false;
+      } else {
+        passwordError.textContent = '';
+      }
+
+
+      // Check match password
+      const confirmPassword = confirmPasswordField.value;
+      if (password!== confirmPassword) {
+        confirmpasswordError.textContent = 'Passwords do not match.';
+        isValid = false;
+      } else {
+        confirmpasswordError.textContent = '';
+      }
+
+
+
+      // Email validation: Must be a valid email address
+      const email = document.getElementById('email').value;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        emailError.textContent = 'Please enter a valid email address.';
+        isValid = false;
+      } else {
+        emailError.textContent = '';
+      }
+
+
+
+      // Name and Last name validation: Must contain only letters
+      const name = document.getElementById('form2Example11').value;
+      const lastname = document.getElementById('form2Example22').value;
+      
+
+
+
+
+      // Phone validation: Exactly 10 digits
+      const phone = phoneField.value;
+      const phoneRegex = /^\d{10}$/;
+      if (!phoneRegex.test(phone)) {
+        phoneError.textContent = 'Phone number must be exactly 10 digits.';
+        isValid = false;
+      } else {
+        phoneError.textContent = '';
+      }
+
+      // Confirmation prompt
+      // const confirmed = confirm('Are you sure you want to sign up?');
+      // if (!confirmed) {
+      //   event.preventDefault(); // Prevent form submission if user clicks Cancel
+      // }
+      
+
+      if (!isValid) {
+        event.preventDefault(); // Prevent form submission if validation fails
+      }
+    });
+  });
+         const passwordField = document.getElementById("password")
+         const passwordConformField=document.getElementById("confirmpassword")
+          const passwordToggle1 = document.getElementsByClassName("passwordToggle")[0]
+          const passwordToggle2 = document.getElementsByClassName("passwordToggle")[1]
+
+
+              passwordToggle1.addEventListener('click',()=>{ 
+                if (passwordField.type === "password" ) {
+                      // Show the password for both fields
+                      passwordField.type = "text";
+                    
+                  } else {
+                      // Hide the password for both fields
+                      passwordField.type = "password";
+                     
+                  }}
+                )
+                 
+                passwordToggle2.addEventListener('click',()=>{
+                  if (passwordConformField.type === "password" ) {
+                   
+                      passwordConformField.type = "text";
+                    
+                  } else {
+                  
+                      passwordConformField.type = "password";
+                     
+                  }
+                })
+   
+   
+</script>

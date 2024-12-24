@@ -34,11 +34,13 @@
     <!-- header section strats -->
     <header class="header_section">
       <nav class="navbar navbar-expand-lg custom_nav-container ">
-        <a class="navbar-brand" href="/">
-          <span>
-            Giftos
-          </span>
-        </a>
+        <p  class="header_giftos" >
+          <a class="navbar-brand" href="/">
+            <span>
+              Giftos
+            </span>
+          </a>
+        </p>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class=""></span>
         </button>
@@ -58,30 +60,61 @@
                 Why Us
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" href="/testimonial">
                 Testimonial
               </a>
-            </li>
+            </li> -->
             <li class="nav-item active">
               <a class="nav-link" href="/contact">Contact Us</a>
             </li>
           </ul>
           <div class="user_option">
-            <a href="">
-              <i class="fa fa-user" aria-hidden="true"></i>
-              <span>
-                Login
-              </span>
-            </a>
-            <a href="">
+            <% if (sessionName) { %>
+              <ul class="navbar-navuser">
+                <li class="navuser-item user-dropdown">
+                  <i class="fa fa-user" id="user-icon"></i>
+                  <ul class="dropdown-menu" id="dropdown-menu">
+                    <li><a href="/user-profile">User Profile</a></li>
+                    <li><a href="/address-book">Address Book</a></li>
+                    <li><a href="/order-details">Order Details</a></li>
+                    <li><a href="/setting">Setting</a></li>
+                    <form id="logout-form" method="post" action="/logout" style="display: inline;">
+                      <button type="submit" class="logout-btn">Logout</button>
+                    </form>
+                  </ul>
+                </li>
+              </ul>
+            <% } else { %>
+               
+              <ul class="navbar-navuser">
+                <li class="navuser-item user-dropdown">
+                  <i class="fa fa-user" id="user-icon"></i>
+                  <!-- <ul class="dropdown-menu" id="dropdown-menu">
+                    <li><a href="/user-profile">User Profile</a></li>
+                    <li><a href="/address-book">Address Book</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                  </ul> -->
+                </li>
+              </ul>
+
+              <a href="/login">
+                <span>
+                  LogIn
+                </span>
+              </a>
+            <% } %>
+            <a href="/adduserCart">
               <i class="fa fa-shopping-bag" aria-hidden="true"></i>
             </a>
-            <form class="form-inline ">
+            <a href="/wishlist">
+              <i class="fa fa-heart" aria-hidden="false"></i>
+            </a>
+            <!-- <form class="form-inline ">
               <button class="btn nav_search-btn" type="submit">
                 <i class="fa fa-search" aria-hidden="true"></i>
               </button>
-            </form>
+            </form> -->
           </div>
         </div>
       </nav>
@@ -151,9 +184,7 @@
         <a href="">
           <i class="fa fa-instagram" aria-hidden="true"></i>
         </a>
-        <a href="">
-          <i class="fa fa-youtube" aria-hidden="true"></i>
-        </a>
+       
       </div>
     </div>
     <div class="info_container ">
@@ -164,7 +195,7 @@
               ABOUT US
             </h6>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet,
+              "We specialize in curating thoughtful gifts for every occasion, whether it's birthdays, anniversaries, or just because.
             </p>
           </div>
           <div class="col-md-6 col-lg-3">
@@ -185,7 +216,16 @@
               NEED HELP
             </h6>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet,
+              Track Order
+            </p>
+            <p></p>
+              Return
+            </p>
+            <p></p>
+            Shipping
+            </p>
+            <p></p>
+              FAQs
             </p>
           </div>
           <div class="col-md-6 col-lg-3">
@@ -195,15 +235,15 @@
             <div class="info_link-box">
               <a href="">
                 <i class="fa fa-map-marker" aria-hidden="true"></i>
-                <span> Gb road 123 london Uk </span>
+                <span> Tirur Road, Malappuam,Kerala </span>
               </a>
               <a href="">
                 <i class="fa fa-phone" aria-hidden="true"></i>
-                <span>+01 12345678901</span>
+                <span>++91 8590847332</span>
               </a>
               <a href="">
                 <i class="fa fa-envelope" aria-hidden="true"></i>
-                <span> demo@gmail.com</span>
+                <span> vvjy@gmail.com</span>
               </a>
             </div>
           </div>
@@ -215,7 +255,7 @@
       <div class="container">
         <p>
           &copy; <span id="displayYear"></span> All Rights Reserved By
-          <a href="https://html.design/">Free Html Templates</a>
+          <a href="#">GIFTOS</a>
         </p>
       </div>
     </footer>
@@ -224,7 +264,13 @@
   </section>
 
   <!-- end info section -->
-
+  <script>
+    document.getElementById('logout-form').addEventListener('submit',(event)=>{
+      if(!confirm('Are you sure, You  really want to  log out? ')){
+        event.preventDefault()
+      }
+    })
+ </script>
 
   <script src="js/jquery-3.4.1.min.js"></script>
   <script src="js/bootstrap.js"></script>

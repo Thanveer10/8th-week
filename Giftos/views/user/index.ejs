@@ -20,11 +20,15 @@
   <!-- slider stylesheet -->
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
 
+  <!-- font awsome  -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
   <!-- bootstrap core css -->
   <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
 
   <!-- Custom styles for this template -->
   <link href="css/style.css" rel="stylesheet" />
+
   <!-- responsive style -->
   <link href="css/responsive.css" rel="stylesheet" />
 </head>
@@ -34,11 +38,13 @@
     <!-- header section strats -->
     <header class="header_section">
       <nav class="navbar navbar-expand-lg custom_nav-container ">
-        <a class="navbar-brand" href="/">
-          <span>
-            Giftos
-          </span>
-        </a>
+        <p  class="header_giftos" >
+          <a class="navbar-brand" href="/">
+            <span>
+              Giftos
+            </span>
+          </a>
+        </p>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class=""></span>
         </button>
@@ -58,31 +64,67 @@
                 Why Us
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" href="/testimonial">
                 Testimonial
               </a>
-            </li>
+            </li> -->
             <li class="nav-item">
               <a class="nav-link" href="/contact">Contact Us</a>
             </li>
           </ul>
           <div class="user_option">
+            <% if (locals.sessionName) { %>
+              
+              <ul class="navbar-navuser">
+              <li class="navuser-item user-dropdown">
+                <!-- <i class="fa fa-user" id="user-icon"></i> -->
+                <span id="user-name"> <%= userdata.Username %> </span>
+                <ul class="dropdown-menu" id="dropdown-menu">
+                  <li><a href="/user-profile">User Profile</a></li>
+                  <li><a href="/user-address">Address Book</a></li>
+                  <li><a href="/viewOrder">Order Details</a></li>
+                  <li><a href="/setting">Setting</a></li>
+                  <!-- <form   style="display: inline;"> -->
+                    <button type="button" onclick=" return logOut()"  class="logout-btn">Logout</button>
+<!-- 
+                  </form> -->
+                </ul>
+              </li>
+              
+            </ul>
+           
+            <% } else { %>
+              
+              <ul class="navbar-navuser">
+                <li class="navuser-item user-dropdown">
+                  <i class="fa fa-user" id="user-icon"></i>
+                  <!-- <ul class="dropdown-menu" id="dropdown-menu">
+                    <li><a href="/user-profile">User Profile</a></li>
+                    <li><a href="/address-book">Address Book</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                  </ul> -->
+                </li>
+              </ul>
 
-            <a href="">
-              <i class="fa fa-user" aria-hidden="true" ></i>
-              <span>
-                Login
-              </span>
-            </a>
-            <a href="">
+              <a href="/login">
+                <span>
+                  Login
+                </span>
+              </a>
+
+            <% } %>
+            <a href="/adduserCart">
               <i class="fa fa-shopping-bag" aria-hidden="true"></i>
             </a>
-            <form class="form-inline ">
+            <a href="/wishlist">
+              <i class="fa fa-heart" aria-hidden="false"></i>
+            </a>
+            <!-- <form class="form-inline ">
               <button class="btn nav_search-btn" type="submit">
                 <i class="fa fa-search" aria-hidden="true"></i>
               </button>
-            </form>
+            </form> -->
           </div>
         </div>
       </nav>
@@ -104,9 +146,8 @@
                         Gift Shop
                       </h1>
                       <p>
-                        Sequi perspiciatis nulla reiciendis, rem, tenetur impedit, eveniet non necessitatibus error distinctio mollitia suscipit. Nostrum fugit doloribus consequatur distinctio esse, possimus maiores aliquid repellat beatae cum, perspiciatis enim, accusantium perferendis.
-                      </p>
-                      <a href="">
+                        "Step into a world of joy and celebration at our Gift Shop, where every item is chosen with care to bring happiness to your special moments. From personalized treasures to timeless keepsakes, we offer a delightful collection to help you express love, gratitude, and thoughtfulness. "                      </p>
+                      <a href="/contact">
                         Contact Us
                       </a>
                     </div>
@@ -198,210 +239,52 @@
           Latest Products
         </h2>
       </div>
+
       <div class="row">
-        <div class="col-sm-6 col-md-4 col-lg-3">
-          <div class="box">
-            <a href="">
-              <div class="img-box">
-                <img src="images/p1.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  Ring
-                </h6>
-                <h6>
-                  Price
+        <% latestProducts.forEach(product=>{ %>
+          <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="box prod-box">
+              <a href="/productdetails/<%= product._id %>">
+                <div class="img-box">
+                  <img src=" /productsimg/<%= product.Productimage[0] %>" alt="Product Image" >
+                </div>
+                <div class="detail-box">
+                  <div style="margin-bottom: 10px;">
+                    <h6>
+                     <%= product.Productname %>
+                    </h6>
+                  </div>
+                  
+                  <div>
+                    <h6>
+                      <% if(product.SalePrice){ %>
+                        <span style="text-decoration: line-through;">
+                          <i class="fa-solid fa-indian-rupee-sign"></i>
+                          <%= product.RegularPrice %>
+                        </span>
+                          <span style="padding-left: 5px;"> <i class="fa-solid fa-indian-rupee-sign"></i> <%= product.SalePrice %></span>
+                      <% }else{ %>
+                        <span>
+                          <i class="fa-solid fa-indian-rupee-sign"></i>
+                          <%= product.RegularPrice %>
+                        </span>
+                     <% } %>
+                    </h6>
+                  </div>
+                </div>
+                <div class="new">
                   <span>
-                    $200
+                    New
                   </span>
-                </h6>
-              </div>
-              <div class="new">
-                <span>
-                  New
-                </span>
-              </div>
-            </a>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-          <div class="box">
-            <a href="">
-              <div class="img-box">
-                <img src="images/p2.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  Watch
-                </h6>
-                <h6>
-                  Price
-                  <span>
-                    $300
-                  </span>
-                </h6>
-              </div>
-              <div class="new">
-                <span>
-                  New
-                </span>
-              </div>
-            </a>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-          <div class="box">
-            <a href="">
-              <div class="img-box">
-                <img src="images/p3.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  Teddy Bear
-                </h6>
-                <h6>
-                  Price
-                  <span>
-                    $110
-                  </span>
-                </h6>
-              </div>
-              <div class="new">
-                <span>
-                  New
-                </span>
-              </div>
-            </a>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-          <div class="box">
-            <a href="">
-              <div class="img-box">
-                <img src="images/p4.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  Flower Bouquet
-                </h6>
-                <h6>
-                  Price
-                  <span>
-                    $45
-                  </span>
-                </h6>
-              </div>
-              <div class="new">
-                <span>
-                  New
-                </span>
-              </div>
-            </a>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-          <div class="box">
-            <a href="">
-              <div class="img-box">
-                <img src="images/p5.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  Teddy Bear
-                </h6>
-                <h6>
-                  Price
-                  <span>
-                    $95
-                  </span>
-                </h6>
-              </div>
-              <div class="new">
-                <span>
-                  New
-                </span>
-              </div>
-            </a>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-          <div class="box">
-            <a href="">
-              <div class="img-box">
-                <img src="images/p6.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  Flower Bouquet
-                </h6>
-                <h6>
-                  Price
-                  <span>
-                    $70
-                  </span>
-                </h6>
-              </div>
-              <div class="new">
-                <span>
-                  New
-                </span>
-              </div>
-            </a>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-          <div class="box">
-            <a href="">
-              <div class="img-box">
-                <img src="images/p7.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  Watch
-                </h6>
-                <h6>
-                  Price
-                  <span>
-                    $400
-                  </span>
-                </h6>
-              </div>
-              <div class="new">
-                <span>
-                  New
-                </span>
-              </div>
-            </a>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4 col-lg-3">
-          <div class="box">
-            <a href="">
-              <div class="img-box">
-                <img src="images/p8.png" alt="">
-              </div>
-              <div class="detail-box">
-                <h6>
-                  Ring
-                </h6>
-                <h6>
-                  Price
-                  <span>
-                    $450
-                  </span>
-                </h6>
-              </div>
-              <div class="new">
-                <span>
-                  New
-                </span>
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
+                </div>
+              </a>
+            </div>
+            </div>
+       <% }) %>
+       </div>
+      <!-- </div> -->
       <div class="btn-box">
-        <a href="">
+        <a href="/product/products">
           View All Products
         </a>
       </div>
@@ -430,13 +313,12 @@
                 </h2>
               </div>
               <p>
-                Qui ex dolore at repellat, quia neque doloribus omnis adipisci, ipsum eos odio fugit ut eveniet blanditiis praesentium totam non nostrum dignissimos nihil eius facere et eaque. Qui, animi obcaecati.
-              </p>
+                "Discover incredible savings on our newest arrivals! Elevate your style and find the perfect gifts with our latest collection, all at unbeatable prices. Shop now to enjoy exclusive deals on fresh, trendy items designed to bring joy and value to every occasion. Don’t miss out—your best finds are waiting for you!"              </p>
               <div class="btn-box">
                 <a href="#" class="btn1">
                   Buy Now
                 </a>
-                <a href="#" class="btn2">
+                <a href="/shop" class="btn2">
                   See More
                 </a>
               </div>
@@ -703,7 +585,7 @@
 
   <!-- gift section -->
 
-  <section class="gift_section layout_padding-bottom">
+  <!-- <section class="gift_section layout_padding-bottom">
     <div class="box ">
       <div class="container-fluid">
         <div class="row">
@@ -738,7 +620,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
 
 
   <!-- end gift section -->
@@ -791,7 +673,7 @@
   <!-- end contact section -->
 
   <!-- client section -->
-  <section class="client_section layout_padding">
+  <!-- <section class="client_section layout_padding">
     <div class="container">
       <div class="heading_container heading_center">
         <h2>
@@ -869,7 +751,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
   <!-- end client section -->
 
   <!-- info section -->
@@ -886,9 +768,7 @@
         <a href="">
           <i class="fa fa-instagram" aria-hidden="true"></i>
         </a>
-        <a href="">
-          <i class="fa fa-youtube" aria-hidden="true"></i>
-        </a>
+       
       </div>
     </div>
     <div class="info_container ">
@@ -899,7 +779,7 @@
               ABOUT US
             </h6>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet,
+              "We specialize in curating thoughtful gifts for every occasion, whether it's birthdays, anniversaries, or just because.
             </p>
           </div>
           <div class="col-md-6 col-lg-3">
@@ -920,7 +800,16 @@
               NEED HELP
             </h6>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet, consectetur adipiscing elit, sed doLorem ipsum dolor sit amet,
+              Track Order
+            </p>
+            <p></p>
+              Return
+            </p>
+            <p></p>
+            Shipping
+            </p>
+            <p></p>
+              FAQs
             </p>
           </div>
           <div class="col-md-6 col-lg-3">
@@ -930,15 +819,15 @@
             <div class="info_link-box">
               <a href="">
                 <i class="fa fa-map-marker" aria-hidden="true"></i>
-                <span> Gb road 123 london Uk </span>
+                <span> Tirur Road, Malappuam,Kerala </span>
               </a>
               <a href="">
                 <i class="fa fa-phone" aria-hidden="true"></i>
-                <span>+01 12345678901</span>
+                <span>++91 8590847332</span>
               </a>
               <a href="">
                 <i class="fa fa-envelope" aria-hidden="true"></i>
-                <span> demo@gmail.com</span>
+                <span> vvjy@gmail.com</span>
               </a>
             </div>
           </div>
@@ -950,7 +839,7 @@
       <div class="container">
         <p>
           &copy; <span id="displayYear"></span> All Rights Reserved By
-          <a href="https://html.design/">Free Html Templates</a>
+          <a href="#">GIFTOS</a>
         </p>
       </div>
     </footer>
@@ -958,15 +847,38 @@
 
   </section>
 
-  <!-- end info section -->
 
+   <script>
+      // document.getElementById('logout-form').addEventListener('submit',(event)=>{
+      //   if(!confirm('Are you sure, You  really want to  log out? ')){
+      //     event.preventDefault()
+      //   }
+      // })
+      function logOut(){
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, log out!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = '/logout';
+          }
+        })
+        return false
+      }
+   </script>
 
   <script src="js/jquery-3.4.1.min.js"></script>
   <script src="js/bootstrap.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
   </script>
   <script src="js/custom.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-</body>
 
+ </body>
 </html>

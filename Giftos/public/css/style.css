@@ -1,13 +1,24 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 @import url("font-awesome.min.css");
+html{
+  scroll-behavior: smooth;
+}
+
 body {
+  box-sizing: border-box;
   font-family: "poppins", sans-serif;
   color: #101010;
   background-color: #ffffff;
+  margin-top: 170px; 
+  padding: 0 45px;
+  width: 100%;
+ 
+
 }
 
+
 .layout_padding {
-  padding-top: 90px;
+  padding-top: 50px;
   padding-bottom: 90px;
 }
 
@@ -21,7 +32,7 @@ body {
 }
 
 .layout_padding2-bottom {
-  padding-bottom: 45px;
+  padding-bottom: 38px;
 }
 
 .layout_padding-top {
@@ -58,21 +69,29 @@ body {
   text-align: center;
 }
 
-/*header section*/
-.hero_area {
-  padding: 0 45px;
-}
+/*header section============================*/
+/* .hero_area {
+   width: 100%;
+
+} */
 
 .hero_area.sub_pages {
   height: auto;
 }
-
+.header_section{
+  position: fixed;
+ 
+  top: 0;
+  width: calc(100% - 90px);
+  /* width: 100%; */
+  z-index: 1000 ;
+}
 #navbarSupportedContent {
   width: 100%;
   background-color: #f9ece6;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
-          justify-content: center;
+          justify-content: space-between;
   padding: 10px 0;
   border-radius: 15px 15px 0 0;
 }
@@ -98,6 +117,100 @@ body {
 
 #navbarSupportedContent .nav-item.active .nav-link {
   background-color: #ffffff;
+}
+.header_giftos{
+  width: 100%;
+  margin-bottom: 0;
+  text-align: center;
+  background-color: #ffffff;
+}
+
+/* navbar usericon========================================= */
+.navbar-navuser {
+  list-style: none;
+  margin: 0px;
+  margin: 25px;
+  display: flex;
+}
+.navuser-item {
+  position: relative;
+  /* margin-left: 20px; */
+}
+#user-name {
+  font-size: medium;
+  color: rgb(8, 1, 1);
+  cursor: pointer;
+  text-transform: uppercase;
+}
+#user-icon{
+  font-size: 22px;
+  color: rgb(8, 1, 1);
+  cursor: pointer;
+ 
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%; /* Position below the icon */
+  right: 0;
+  left: -163px;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  margin: 0;
+  padding: 10px 10px;
+  border-radius: 10px;
+  min-width: 200px;
+  line-height: 3rem;
+}
+/* .dropdown-menu li {
+  padding: 8px 16px;
+} */
+
+.dropdown-menu li a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f0f0f0;
+}
+
+/* logout button =================================*/
+.logout-btn {
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  font-size: inherit;
+  text-decoration: none;
+  margin-left: -5px;
+}
+
+.logout-btn:hover {
+  color: red;
+}
+
+
+/* search bar ===================================*/
+.input-group {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  width: 66%;
+}
+/* search button */
+.search_btn{
+  border: 2px solid rgb(37, 35, 35);
+  border-width: 0.5px;
+  font-size: small;
+  margin-right: 5px;
 }
 
 a,
@@ -220,6 +333,7 @@ a:focus {
       -ms-flex-align: center;
           align-items: center;
   margin-left: 25px;
+  margin-right: 3rem;
 }
 
 .user_option a {
@@ -325,7 +439,7 @@ a:focus {
 }
 
 .shop_section .box {
-  background-color: #eeeeee;
+  background-color: #f5f5f5;
   position: relative;
   padding: 10px;
   margin-top: 25px;
@@ -351,20 +465,31 @@ a:focus {
 
 .shop_section .box .img-box img {
   max-width: 100%;
-  max-height: 145px;
+  max-height: 225px;
 }
 
 .shop_section .box .detail-box {
   display: -webkit-box;
   display: -ms-flexbox;
-  display: flex;
+  display: block;
+  padding-top: 10px;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
-          justify-content: space-between;
+          /* justify-content: space-between; */
 }
 
 .shop_section .box .detail-box h6 span {
   color: #db4f66;
+ 
+}
+  /* From Uiverse.io by gharsh11032000 */ 
+  .detail-box h6 { 
+    display: block !important;
+    margin: 0; /* Adjust margin as needed */
+}
+.detail-box {
+text-align: center; /* Or left/right based on design */
+margin-top: 10px; /* Optional spacing adjustment */
 }
 
 .shop_section .box .new {
@@ -511,6 +636,31 @@ a:focus {
   height: auto;
   fill: #320b57;
 }
+
+/* Product box style */
+.prod-box {
+  position: relative; /* Ensures child elements are positioned relative to this container */
+  overflow: hidden; /* Prevents the image from exceeding the box on zoom */
+
+  border: 1px solid #ddd;
+  border-radius: 8px; /* Optional: Adds rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.prod-box img {
+  /* width: 100%;
+  height: 100%; */
+  object-fit: cover; /* Ensures the image maintains aspect ratio */
+  transition: transform 0.3s ease; /* Smooth zoom effect */
+}
+
+.prod-box:hover {
+  transform: scale(1.04); /* Slight zoom of the entire box */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+
+
 
 .gift_section {
   padding-left: 45px;
@@ -736,20 +886,49 @@ a:focus {
   right: 0;
 }
 
+/* pagnation session */
+.pagination-container {
+  display: flex;           
+  justify-content: center; 
+  align-items: center;     
+  margin: 20px auto;       
+}
+  .pagination-container a {
+  text-align: center;
+  padding: 5px 10px;
+  /* margin: 5px; */
+  text-decoration: none;
+  color: rgb(238, 87, 132);
+  /* background-color:rgb(71, 149, 212); */
+  border-radius: 5px;
+  }
+  .pagination-container .current-page {
+  font-weight: bold;
+  color:white;
+  background-color: rgb(238, 87, 132);
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+  .pagination-container a:hover {
+  background-color: rgb(238, 87, 132);
+  color: white;
+  }
+
 /* info section */
 .info_section {
   position: relative;
   background-color: #2d2d2d;
   color: #ffffff;
-  margin: 0 45px 45px;
+  margin: 63px 1px 25px;
 }
 
 .info_section .social_container {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  margin-top: 25px;
-  margin-bottom: 30px;
+          margin-top: -15px;
+          margin-bottom: 26px;
 }
 
 .info_section .social_container .social_box {
@@ -854,3 +1033,18 @@ a:focus {
 
 /* end footer section*/
 /*# sourceMappingURL=style.css.map */
+
+/* @media (max-width:990px) {
+
+.user_option {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 25px;
+  margin-right: 0rem;
+}
+  
+} */

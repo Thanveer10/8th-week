@@ -1,0 +1,159 @@
+<%- include('../partial/admin/header.ejs') %>
+       <!-- Sidebar End -->
+
+                     
+        <!-- content start -->
+        <div class="content">
+            <section>
+                <div class="col-lg-10">
+                    <div class="card mb-4">
+                        <form action="/admin/coupenadmin" method="post">
+                            <div class="card-body mt-3">
+                                <div>
+                                    <p>COUPEN DETAILS</p>
+                                </div>
+    
+                                <div class="row ">
+                                    <div class="col-md-6 form-group mb-3">
+                                         <label>Coupen Code</label> 
+                                        <input class="form-control" type="text" name="CoupenCode"
+                                            placeholder="Coupen Code" id="coupenCode">
+                                    </div>
+    
+    
+                                    <div class="col-md-6 form-group">
+                                          <label>Discount Value</label>   
+                                        <input class="form-control" type="text" name="DiscountPrice"
+                                            placeholder="Discount value" id="discountPrice">
+                                    </div>
+    
+    
+                                    <div class="col-md-6 form-group  mb-3">
+                                        <label>Create Date</label>
+                                        <input class="form-control" type="date" name="CreateDate"
+                                            placeholder="Create date" id="createDate">
+                                    </div>
+    
+                                    <div class="col-md-6 form-group">
+                                        <label>MIninmum Price</label>
+                                        <input class="form-control" type="text" name="MinimumPrice"
+                                            placeholder="Minimum Price" id="minimumPrice">
+                                       
+                                    </div>
+    
+    
+    
+                                    <div class="col-md-6 form-group  mb-3">
+                                        <label>Expiry Date</label>
+                                             <!-- <p class="text-primary">javadda</p>    -->
+                                        <input class="form-control" type="date" name="ExpireDate"
+                                            placeholder="Expiry date" id="expireDate">
+                                              
+                                    </div>
+    
+    
+    
+                                    <div class="col-md-6 form-group">
+                                        <label>Discount Type</label>
+                                        <input class="form-control" type="text" name="DiscountType"
+                                            placeholder="Discount type" id="discountType">
+                                    </div>
+    
+                                      
+    
+                                    <div class="col-md-6 form-group  mb-3">
+                                        <button type="submit" class="btn btn-primary">Add Coupen</button>
+                                    </div>
+    
+                                </div>
+    
+                            </div>
+                        </form>
+                    </div>
+                    </div>
+    
+                    <div class="col-lg-10">
+    
+                    <!-- Navbar End -->
+                    <table class="table">
+                         <a href="/product/addproduct"><button type="button" class="btn btn-dark">ADD
+                                PRODUCT</button></a>   
+                        <thead>
+                            <tr>
+                                <th>Coupen Code</th>
+                                <th>Discount value</th>
+                                <th>Create date</th>
+                                <th>minimum purchase</th>
+                                <th>Expiry date</th>
+                                <th>Discount type</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                              
+    
+                            </tr>
+                        </thead>
+                       
+                        <tbody>    
+                            
+                              <% allCoupens.forEach(Coupen=>{ %>  
+                                <tr>
+                                    <td><%= Coupen.CoupenCode %></td>
+                                    <td><%= Coupen.DiscountPrice %></td>
+                                    <td><%= Coupen.CreateDate %></td>
+                                    <td><%= Coupen.MinimumPrice %></td>
+                                    <td><%= Coupen.ExpireDate %></td>
+                                    <td><%= Coupen.DiscountType %></td>
+                                    <td><%= Coupen.Status %></td>
+        
+                                    <% if(Coupen.Status){ %>
+                                        <td>
+                                            <a href="/Block1/{{_id}}" class="btn btn-danger">Block</a>
+                                        </td>
+                                    <%  }else{ %> 
+                                        <td>
+                                            <a href="/Unblock1/{{_id}}" class="btn btn-success">Unblock</a>
+                                        </td>
+                                    <%  } %>
+                                    
+                                    <!-- {{/if}}  -->
+                                       <!-- <td>
+        
+        
+                                        <a href="/categoryDelete/{{_id}}" class="btn btn-danger"
+                                            onclick="return confirm('Are you want to delete {{coupenCode}}?')">Enable</a>
+                                    </td>     -->
+        
+                                </tr>  
+                             <% }) %>                
+                           
+                        </tbody>
+                    
+                    </table>
+                    </div>
+    
+               
+            </section>
+        </div>
+        <!-- contend end -->
+
+   </div>
+   <!-- main container end -->
+  
+    <!-- footer start-->
+   <footer class=" footer_section">
+     <div class="container">
+       <p>
+         &copy; <span id="displayYear"></span> All Rights Reserved By
+         <a href="#">GIFTOS</a>
+       </p>
+     </div>
+   </footer>
+   <!-- footer end -->
+   <script src="js/jquery-3.4.1.min.js"></script>
+   <script src="js/bootstrap.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+   </script>
+   <script src="js/custom.js"></script>
+
+ </body>
+</html>

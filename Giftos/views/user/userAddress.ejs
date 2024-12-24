@@ -1,0 +1,260 @@
+<%- include('../partial/user/userProfilePartial.ejs') %>
+<style>
+.col-md-12{
+  margin-bottom: 30px;
+}
+.pagination-container a {
+  text-align: center;
+  padding: 5px 10px;
+  /* margin: 5px; */
+  text-decoration: none;
+  color: rgb(51, 121, 212);
+  /* background-color:rgb(71, 149, 212); */
+  border-radius: 5px;
+  }
+  .pagination-container .current-page {
+  font-weight: bold;
+  color:white;
+  background-color: rgb(51, 121, 212);
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+.pagination-container a:hover {
+  background-color: rgb(51, 121, 212);
+  color: white;
+  }
+</style>
+<div class="col-lg-8 ">
+  <div class="col-md-12 mb-2">
+   <div class="row g-0 ">
+    <% if(userAddress && userAddress.length > 0){ %>
+      <% userAddress.forEach((address,index)=>{ %>
+        <div class="card " style="border-radius: .5rem; margin-top: 0; ">
+       <div class="card-body p-4 ">
+         <h5>Address <%=index +1 %> </h5>
+         <hr class="mt-0 mb-4">
+         <div class="row pt-1">
+           <div class="col-6 mb-3">
+             <h6>Name</h6>
+             <p class="text-muted"><%= address.name %></p>
+           </div>
+           <div class="col-6 mb-3">
+            <h6> House/Apartment Name</h6>
+            <p class="text-muted"><%= address.houseName %></p>
+          </div>
+           <div class="col-6 mb-3">
+             <h6>street</h6>
+             <p class="text-muted"><%= address.street %></p>
+           </div>
+           <div class="col-6 mb-3">
+            <h6>city</h6>
+            <p class="text-muted"><%= address.city %></p>
+          </div>
+         </div>
+         <div class="row pt-1">
+           
+            <div class="col-6 mb-3">
+              <h6>state</h6>
+              <p class="text-muted"><%= address.state  %></p>
+            </div>
+
+            <div class="col-6 mb-3">
+              <h6>Pin Code</h6>
+              <p class="text-muted"><%= address.pincode  %> </p>
+            </div>
+         </div>
+          <h6>Contact</h6>
+          <hr class="mt-0 mb-4">
+          <div class="row pt-1">
+            <div class="col-6 mb-3">
+              <h6>Phone</h6>
+              <p class="text-muted"><%= address.phone %></p>
+            </div>
+            <div class="col-6 mb-3">
+              <h6>Alternate Phone</h6>
+              <p class="text-muted"><%= address.altPhone %></p>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary"><a href="/edit-address?id=<%= address._id %>" style="color: white; text-decoration: none;">Edit Address</a></button>
+          <button type="button" class="btn btn-danger" onclick="confirmDelete( '<%= index %>')" ><a  style="color: white; text-decoration: none;">Delete</a></button>
+       
+     </div>
+    </div>
+        <% if (index < userAddress.length - 1) { %>
+          <hr > 
+        <% } %>
+    <% }) %>
+     <% }else{ %>
+      <p class="text-muted">No address information available.</p>
+     <%  } %>
+  </div>
+  
+</div>
+<!-- pagination -->
+ <div class="pagination-container   text-center">
+  <% if(currentPage>1){ %>  
+  <a  href="?page=<%= currentPage-1 %>">&laquo;Previous</a>
+  <% } %>
+  <% for(let i=1;i<=totalPages;i++){ %>
+    <% if(i==currentPage){ %>
+      <span style="background-color: rgb(51, 121, 212);" class="current-page"><%= i %></span>
+      <% }else{ %>
+      <a href="?page=<%= i %>" ><%= i %></a>
+      <% } %>
+   <% } %>
+   <% if( currentPage < totalPages){ %>
+     <a href="?page=<%= currentPage+1 %>"   >Next &raquo;</a>
+
+   <% } %>
+ 
+ 
+ </div>
+<button type="button" class="btn btn-primary"><a href="/add-address" style="color: white; text-decoration: none; ">Add Address </a></button>
+</div>
+</div>
+</section>
+<!-- contend end sessioon -->
+
+      <!-- info section -->
+
+      <section class="info_section  layout_padding2-top">
+        <div class="social_container">
+        <div class="social_box">
+            <a href="">
+            <i class="fa fa-facebook" aria-hidden="true"></i>
+            </a>
+            <a href="">
+            <i class="fa fa-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="">
+            <i class="fa fa-instagram" aria-hidden="true"></i>
+            </a>
+        
+        </div>
+        </div> 
+        <div class="info_container ">
+        <div class="container">
+            <div class="row">
+            <div class="col-md-6 col-lg-3">
+                <h6>
+                ABOUT US
+                </h6>
+                <p>
+                "We specialize in curating thoughtful gifts for every occasion, whether it's birthdays, anniversaries, or just because.
+                </p>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="info_form ">
+                <h5>
+                    Newsletter
+                </h5>
+                <form action="#">
+                    <input type="email" placeholder="Enter your email">
+                    <button>
+                    Subscribe
+                    </button>
+                </form>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <h6>
+                NEED HELP
+                </h6>
+                <p>
+                Track Order
+                </p>
+                <p></p>
+                Return
+                </p>
+                <p></p>
+                Shipping
+                </p>
+                <p></p>
+                FAQs
+                </p>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <h6>
+                CONTACT US
+                </h6>
+                <div class="info_link-box">
+                <a href="">
+                    <i class="fa fa-map-marker" aria-hidden="true"></i>
+                    <span> Tirur Road, Malappuam,Kerala </span>
+                </a>
+                <a href="">
+                    <i class="fa fa-phone" aria-hidden="true"></i>
+                    <span>++91 8590847332</span>
+                </a>
+                <a href="">
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                    <span> vvjy@gmail.com</span>
+                </a>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div> 
+        
+        <footer class=" footer_section">
+        <div class="container">
+            <p>
+            &copy; <span id="displayYear"></span> All Rights Reserved By
+            <a href="#">GIFTOS</a>
+            </p>
+        </div>
+        </footer>
+        
+
+    </section>  
+   
+
+  <!-- end info section -->
+
+     <script src="/javascripts/userAddress.js"></script>
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+    </script>
+    <script src="/js/custom.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+      // document.getElementById('logout-form').addEventListener('submit',(event)=>{
+      // if(!confirm('Are you sure, You  really want to  log out? ')){
+      //     event.preventDefault()
+      // }
+      // })
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('success') && urlParams.get('success') === 'true') {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'You have successfully created a new address',
+          
+        });
+      }
+
+      function confirmDelete(index) {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = '/delete-address/' + index;
+          }
+        });
+      }
+  </script>
+
+</body>
+
+</html>
+

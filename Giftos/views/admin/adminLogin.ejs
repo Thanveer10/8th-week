@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+
+
+body{
+    height: 92vh;
+    margin: 0;
+    padding: 0;
+    background-image: url('images/admin.img/logbg.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    /* height: 100vh; */
+}
+.card {
+    max-width: 500px; /* Adjust card width */
+    margin: auto; /* Center the card */
+}
+
+.signup-link {
+    color: red; /* Text color */
+    text-decoration: underline; /* Underline the text */
+    font-weight: bold; /* Optional: make text bold */
+    border: none; /* Remove any default border */
+    background: none; /* Remove any background styling */
+    padding: 0; /* Remove padding to make it look like a plain link */
+}
+
+.form-inline {
+    display: flex; /* Use flexbox for horizontal alignment */
+    justify-content: space-between; /* Space fields evenly */
+    gap: 10px; /* Adjust spacing between fields */
+}
+
+.form-outline {
+    flex: 1; /* Allow fields to grow and fill the container */
+}
+
+.form-outline input {
+    margin-bottom: 0; /* Remove default margin at the bottom */
+}
+
+.form-outline label {
+    margin-bottom: 5px; /* Adjust label margin */
+}
+
+.signup-section {
+    margin-top: 0.5rem; /* Decrease space above the signup section */
+}
+
+.text-center.pt-1.mb-3.pb-1 {
+    margin-bottom: 0.5rem; /* Adjust space below the login actions */
+}
+
+
+        
+    </style>
+</head>
+<body>
+
+    
+    <!-- <link rel="stylesheet" href="/CSS/adminStyle.css"> -->
+    
+    <h3 class="text-center pt-4" style="background-color: white;">Admin Login Page</h3>
+    <section  class="h-100 gradient-form" >
+        <div class="container py-2 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-xl-6">
+                    <div class="card rounded-3 text-black">
+                        <div class="row g-0">
+                            <div class="col-lg-12">
+                                <div class="card-body p-md-4 mx-md-3">
+
+                                    <div class="text-center">
+                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReK8qsKldZgbOcDnLI2aKeoNe4vSKRZbusYA&s"
+                                             style="width: 120px;" alt="logo">
+                                        <h4 class="mt-1 mb-4 pb-1">Welcome to UserAdminHub</h4>
+                                        <% if(typeof message !== 'undefined'){ %>
+                                            <p class="text-danger"> <%= message %></p>
+                                        <% } %>
+                                    </div>
+
+                                    <form action="/admin/login" method="post">
+                                        <p></p>
+                                     <div class="col-lg-12">
+                                        <div class="form-inline mb-3">
+                                            <div class="form-outline ">
+                                                <input type="email" id="form2Example11" class="form-control"
+                                                       placeholder="Enter email" name="Email" required/>
+                                                <label class="form-label" for="form2Example11"></label>
+                                            </div>
+                                        </div>
+                                        
+                                            <div class="form-outline  ">
+                                                <input type="password" id="form2Example22" class="form-control"
+                                                       name="Password" placeholder="Enter password" required/>
+                                                <label class="form-label" for="form2Example22"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-center pt-1 mb-3 pb-1">
+                                            <button data-mdb-button-init data-mdb-ripple-init
+                                                    class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
+                                                    type="submit" value="login">Log in
+                                            </button>
+
+                                        </div>
+
+                                        <!-- <div class="signup-section d-flex align-items-center justify-content-center pb-4">
+                                          <p class="mb-0 me-2">Don't have an account?</p>
+                                          <a class="signup-link" href="/admin/adminreg" role="button">SignUp</a>
+                                      </div> -->
+                                      
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -68,12 +68,21 @@
             </li>
           </ul>
           <div class="user_option">
-            <a href="">
-              <i class="fa fa-user" aria-hidden="true"></i>
-              <span>
-                Login
-              </span>
-            </a>
+            <% if (sessionName) { %>
+              <form id="logoutForm" action="/logout" method="POST" style="display: inline;">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; font: inherit;">
+                  <i class="fa fa-user" aria-hidden="true"></i>
+                  <span>LogOut</span>
+                </button>
+              </form>
+            <% } else { %>
+              <a href="/login">
+                <i class="fa fa-user" aria-hidden="true"></i>
+                <span>
+                  LogIn
+                </span>
+              </a>
+            <% } %>
             <a href="">
               <i class="fa fa-shopping-bag" aria-hidden="true"></i>
             </a>
@@ -260,7 +269,13 @@
   </section>
 
   <!-- end info section -->
-
+  <script>
+    document.getElementById('logoutForm').addEventListener('submit',(event)=>{
+      if(!confirm('Are you sure, You  really want to  log out? ')){
+        event.preventDefault()
+      }
+    })
+ </script>
 
   <script src="js/jquery-3.4.1.min.js"></script>
   <script src="js/bootstrap.js"></script>

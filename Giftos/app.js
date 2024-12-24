@@ -1,54 +1,83 @@
+require('dotenv').config()
 const express=require('express')
 const cookieParser=require('cookie-parser')
 const path=require('path')
 const loging=require('morgan')
 const session=require('express-session')
 const nocache=require('nocache')
-
+const mongoose=require('mongoose')
+const passport=require('./config/passport')
 const app=express()
+const PORT = process.env.PORT || 8000;
+const DB_URI=process.env.DB_URI
+const SECKRET_KEY=process.env.SECRET_KEY
+mongoose.connect(DB_URI)
+
+.then(()=>{
+    console.log('connected to database');
+    
+}).catch(err=>{
+    console.error('database connection error:',err)
+    process.exit(1)
+})
+
+
+app.use(session({secret:SECKRET_KEY,resave:false,saveUninitialized:false,cookie:{secure:false,maxAge:60000*60}}))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(nocache())
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+});
 app.use(cookieParser())
 app.use(loging('dev'))
 app.use(express.static(path.join(__dirname,'public')))
 
+
+
+
+app.use(passport.initialize())
+app.use(passport.session())
+
+
 app.set('views',path.join(__dirname,'views'))
 app.set('view engine','ejs')
-app.use(session({secret:'secret-key',resave:false,saveUninitialized:true,cookie:{secure:false,maxAge:60000}}))
 
-const userRoute=require('./routes/usersRout')
-// const adminRoute=require('./routes/adminRout.js')
+
+const userRoute = require('./routes/usersRout')
+const adminRoute = require('./routes/adminRout')
+const productsRoute = require('./routes/productsRoute')
 
 app.use('/',userRoute)
-// app.use('/',adminRoute)
 
-//catch error pass to handler
+app.get('/auth/google',passport.authenticate('google', {scope:['profile', 'email']}))
+app.use('/product',productsRoute)
+app.use('/admin',adminRoute)
 
-app.use((req,res,next)=>{
-    const err=new Error('not found')
-    console.log(err.message)
-    err.status=404
-    next(err)
-})
-
-//hndler
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(err.status || 500);
-
-    // Render the error page
-    res.render('user/error', { error: err });
-});
-
+// Middleware to handle 404 errors (Page Not Found)
 app.use((req, res, next) => {
-    if (res.statusCode === 404) {
-        console.log(`Static file not found: ${req.url}`);
+    if (req.originalUrl.startsWith('/admin')) {
+        res.status(404).render('admin/error', {
+            errorCode: 404,
+            errorMessage: "Admin Page Not Found",
+            errorDescription: "The page you're looking for in the admin panel doesn't exist or might have been moved.",
+            link: req.headers.referer || '/admin', // Go back to the admin page
+        });
+    } else {
+        res.status(404).render('user/error', {
+            errorCode: 404,
+            errorMessage: "Page Not Found",
+            errorDescription: "The page you're looking for doesn't exist or might have been moved.",
+            link: req.headers.referer || '/', // Go back to the homepage
+        });
     }
-    next();
 });
 
 
-app.listen(4000,()=>{
+
+app.listen(PORT,()=>{
     console.log('server started');
 } )  

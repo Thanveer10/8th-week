@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Basic -->
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- Mobile Metas -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <!-- Site Metas -->
+        <meta name="keywords" content="" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
+
+        <title>
+        Giftos
+        </title>
+
+        <!-- slider stylesheet -->
+        <!-- <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" /> -->
+
+        <!-- bootstrap core css -->
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap.css" />
+
+           <!-- font awsome  -->
+        <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> -->
+
+        <!-- Custom styles for this template -->
+        <link href="/css/style.css" rel="stylesheet" />
+
+        <!-- responsive style -->
+        <link href="/css/responsive.css" rel="stylesheet" />
+
+        <!-- product detials css -->
+        <link rel="stylesheet" href="/css/productDetails.css">
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <style>
+        body{
+            padding-top: 170px; /* Adjust the value to match your navbar height */
+            /* background-color: gray; */
+            /* background-image: url('/images/hero-bg.jpg');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            color: white;
+            position: relative;
+            height: 600px; */
+        }
+      </style>
+    </head>
+
+    <body>
+        <div class="hero_area">
+            <!-- header section strats -->
+            <header class="header_section">
+            <nav class="navbar navbar-expand-lg custom_nav-container ">
+                <p  class="header_giftos" >
+                <a class="navbar-brand" href="/">
+                    <span>
+                    Giftos
+                    </span>
+                </a>
+                </p>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class=""></span>
+                </button>
+
+                <div class="collapse navbar-collapse innerpage_navbar" id="navbarSupportedContent">
+                <ul class="navbar-nav  ">
+                    <li class="nav-item ">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item active">
+                    <a class="nav-link" href="/shop">
+                        Shop
+                    </a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="/whyUs">
+                        Why Us
+                    </a>
+                    </li>
+                    <!-- <li class="nav-item">
+                    <a class="nav-link" href="/testimonial">
+                        Testimonial
+                    </a>
+                    </li> -->
+                    <li class="nav-item">
+                    <a class="nav-link" href="/contact">Contact Us</a>
+                    </li>
+                </ul>
+                <div class="user_option">
+                    <% if (sessionName) { %>
+                    <ul class="navbar-navuser">
+                        <li class="navuser-item user-dropdown">
+                        <i class="fa fa-user" id="user-icon"></i>
+                        <ul class="dropdown-menu" id="dropdown-menu">
+                            <li><a href="/user-profile">User Profile</a></li>
+                            <li><a href="/address-book">Address Book</a></li>
+                            <li><a href="/order-details">Order Details</a></li>
+                            <li><a href="/setting">Setting</a></li>
+                            <form id="logout-form" method="post" action="/logout" style="display: inline;">
+                            <button type="submit" class="logout-btn">Logout</button>
+                            </form>
+                        </ul>
+                        </li>
+                    </ul>
+                    <% } else { %>
+                    
+                    <ul class="navbar-navuser">
+                        <li class="navuser-item user-dropdown">
+                        <i class="fa fa-user" id="user-icon"></i>
+                        <!-- <ul class="dropdown-menu" id="dropdown-menu">
+                            <li><a href="/user-profile">User Profile</a></li>
+                            <li><a href="/address-book">Address Book</a></li>
+                            <li><a href="/logout">Logout</a></li>
+                        </ul> -->
+                        </li>
+                    </ul>
+
+                    <a href="/login">
+                        <span>
+                        LogIn
+                        </span>
+                    </a>
+                    <% } %>
+
+                    <a href="/adduserCart">
+                    <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                    </a>
+
+                    <a href="/wishlist">
+                    <i class="fa fa-heart" aria-hidden="false"></i>
+                    </a>
+                </div>
+                </div>
+            </nav>
+            </header>
+            <!-- end header section -->
+
+        </div>
+
+
+
+		 <!-- Checkout Section -->
+         <div class="container mt-5">
+            <h2 class="text-center">Checkout</h2>
+                                <!-- Add/Edit Address Form (Initially Hidden) -->
+            <form id="addAddressForm"  class="d-none" action="/checkout/addAddress" method="POST" novalidate>
+             <div class="card mb-4" id="addAddressCard">
+                <div class="card-header" id="addOredit-Title">Add New Address</div>
+                <div class="card-body">
+                    <div class="form-row">
+    
+                        <div class="form-group col-md-6">
+                            <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" id="name" name="name" class="form-control" placeholder="Enter your full name"  required>
+                                <div class="invalid-feedback">
+                                    Please enter your name.
+                                </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="houseName" class="form-label">House/Apartment Name <span class="text-danger">*</span></label>
+                                <input type="text" id="houseName" name="houseName" class="form-control" placeholder="Enter house or apartment name"  required>
+                                <div class="invalid-feedback">
+                                    Please enter your house or apartment name.
+                                </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="landMark" class="form-label">Street <span class="text-danger">*</span></label>
+                                <input type="text" id="street" name="street" class="form-control" placeholder="Enter Street"  required>
+                                <div class="invalid-feedback">
+                                    Please enter a landmark.
+                                </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="city" class="form-label">City <span class="text-danger">*</span></label>
+                                <input type="text" id="city" name="city" class="form-control" placeholder="Enter city"  required>
+                                <div class="invalid-feedback">
+                                    Please enter your city.
+                                </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="state" class="form-label">State <span class="text-danger">*</span></label>
+                            <select  id="state" name="state" class="form-control" placeholder="Enter state"  required>
+                                <option value="">Choose...</option>
+                                <!-- Add options for states here -->
+                                <option value="Kerala">Kerala</option>
+                                <option value="Tamilnadu">Tamilnadu</option>
+                                <option value="Karanadaka">Karanadaka</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a state.</div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="pincode" class="form-label">Pincode <span class="text-danger">*</span></label>
+                                <input type="number" id="pincode" name="pincode" class="form-control" placeholder="Enter pincode" min="100000" max="999999"  required>
+                                <div class="invalid-feedback">
+                                    Please enter a valid 6-digit pincode.
+                                </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                            <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter phone number" pattern="^\d{10}$"  required>
+                            <div class="invalid-feedback">
+                                Please enter a valid 10-digit phone number.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <!-- <div class="form-group mb-3">
+                            <label for="addressType" class="form-label">Address Type <span class="text-danger">*</span></label>
+                            <select id="addressType" name="addressType" class="form-control" required>
+                                <option value="">Select Type</option>
+                                <option value="Home" >Home</option>
+                                <option value="Work" >Work</option>
+                                <option value="Other" >Other</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select an address type.
+                            </div>
+                        </div> -->
+                        <div class="form-group col-md-6">
+                            <label for="altPhone">Alternate Phone Number</label>
+                                <input type="text" id="altPhone" name="altPhone" class="form-control" pattern="^\d{10}$" >
+                                <small class="form-text text-muted">Optional. Must be a 10-digit number.</small>
+                                <div class="invalid-feedback">
+                                    Please enter a valid 10-digit alternate phone number.
+                                </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="redirectPath" value="/checkout">
+                    <div>
+                    <button type="submit" class="btn btn-success">Save Address</button>
+                    <button type="button" class="btn btn-primary" onclick="CancelAddNewAddress()">Cancel</button>
+                    </div>
+    
+                </div>
+            </div>
+            </form>
+    
+            <form id="checkoutForm"  method="POST" novalidate>             
+                <!-- cartID -->
+                <input type="hidden" id="cartId" value="<%= cartId %>">
+
+                <!-- Address Section -->
+                <div class="card mb-4" >
+                    <div class="card-header" >Shipping Address</div>
+                    <div class="card-body" id="UserSavedAddressCard">
+    
+                            <!-- Display  Message -->
+                        <% if (typeof addressMessage !== 'undefined' && addressMessage) { %>
+                            <div class="alert alert-success alert-dismissible fade show" id="checkout-message" role="alert">
+                                <%= addressMessage %>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        <% } %>
+                            <!-- Dynamic Saved Addresses -->
+                            <div id="savedAddresses">
+                                <h5>Select an Address:</h5>
+                            
+                                <% if (addresses && addresses.length > 0) { %>
+                                    <% addresses.forEach(function(address, index) { %>
+                                        
+                                    <div class="form-check list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <input class="form-check-input" type="radio" name="address" id="savedAddress<%= index %>" value="<%= address._id %>"/>
+    
+            
+    
+                                        <label for="savedAddress<%= index %>">
+                                            <!-- <h5 class="mb-1"><%= address.addressType %> Address</h5>  -->
+                                            <p class="mb-1">
+                                                <strong>Name:</strong> <%= address.name %><br>
+                                                <strong>House/Apartment:</strong> <%= address.houseName %><br>
+                                                <strong>Street:</strong> <%= address.street %><br>
+                                                <strong>City:</strong> <%= address.city %><br>
+                                                <strong>State:</strong> <%= address.state %><br>
+                                                <strong>Pincode:</strong> <%= address.pincode %><br>
+                                                <strong>Phone:</strong> <%= address.phone %><br>
+                                                <% if (address.altPhone) { %>
+                                                    <strong>Alternate Phone:</strong> <%= address.altPhone %><br>
+                                                <% } %>
+                                                <small class="text-muted">
+                                                    Added on: 
+                                                    <% if (address.createdAt) { %>
+                                                        <%= new Date(address.createdAt).toDateString() %>
+                                                    <% } else if (address._id) { %>
+                                                        <%= address._id.getTimestamp().toDateString() %>
+                                                    <% } else { %>
+                                                        N/A
+                                                    <% } %>
+                                                </small>
+                                            </p>
+                                        </label>
+                                   <a  class="btn btn-success mt-3" onclick="editAddress('<%= address._id %>', 
+                                    '<%= address.name %>', 
+                                    '<%= address.houseName %>', 
+                                    '<%= address.street %>', 
+                                    '<%= address.city %>', 
+                                    '<%= address.state %>', 
+                                    '<%= address.pincode %>', 
+                                    '<%= address.phone %>', 
+                                    
+                                    '<%= address.altPhone ? address.altPhone : null %>', 
+                                    )">Edit</a>
+    
+    
+                                    
+                                            
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                                <% } else { %>
+                                    <div class="alert alert-info">No saved addresses found. Please add a new address.</div>
+                                <% } %>
+                                    <!-- Validation error message for address -->
+                                <div class="text-danger" id="addressError"></div>
+                                <!-- Pagination -->
+                             
+                            
+                                <button type="button" class="btn btn-primary mt-3" id="addNewAddressBtn" onclick="addNewAddress()">Add New Address</button>
+                           </div>
+                     </div>
+                </div>
+                
+    
+                <!-- Coupon Section -->
+              
+    
+    
+    
+                <!-- Product Details Section -->
+               
+					             
+                <div class="card mb-4">
+                    <div class="card-header">Order Summary</div>
+                    <div class="card-body">
+                                <!-- Display  Message -->
+                                <% if (typeof cartMessage !== 'undefined' && cartMessage) { %>
+                                    <div class="alert alert-success alert-dismissible fade show" id="checkout-message" role="alert">
+                                        <%= cartMessage %>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                <% } %>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (cart && cart.product && cart.product.length > 0) { %>
+                                    <% cart.product.forEach(item => { %>
+                                        <tr>
+                                            <td><%= item.item.Productname %></td>
+                                            <td>₹<%= item.price %></td>
+                                            <td>       
+                                                
+                                                <input type="number" name="quantity" value="<%= item.quantity %>" id="quantity-<%= item.id %>" min="1" class="form-control quantity" onchange="updateCartQuantity('<%= item.item._id %>', '<%= item.id %>' , '<%= item.quantity %>')" style="width: 100px; height: 30px; font-size: 1em;">
+
+                                                <div class="text-danger" id="quantityError-<%= item.id %>"></div> <!-- Quantity Error --> 
+                                                
+                                            </td>
+                                            <td class="product-total">₹<%= item.totalPrice %></td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="4" class="text-center">Your cart is empty.</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3" class="text-right">Subtotal:</th>
+                                    <th id="subtotal">₹<%= cart && cart.totalCartPrice ? cart.totalCartPrice.toFixed(2) : '0.00' %></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="3" class="text-right">Discount:</th>
+                                    <th id="discount">₹<%= cart && cart.totalDiscount ? cart.totalDiscount.toFixed(2) : '0.00' %></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="3" class="text-right">GST (0%):</th>
+                                    <th id="gst">₹<%= cart && cart.totalCartPrice ? (cart.totalCartPrice * 0).toFixed(2) : '0.00' %></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="3" class="text-right">Total:</th>
+                                    <th id="total">₹<%= cart && cart.finalTotalCartPrice ? (cart.finalTotalCartPrice * 1).toFixed(2) : '0.00' %></th>
+                                </tr>
+    
+                                <!-- New row for final price after coupon -->
+                                <tr id="finalPriceRow" style="display: none;">
+                                    <th colspan="3" class="text-right">Final Price (Coupon Applied):</th>
+                                    <th id="finalPrice">₹0.00</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+    
+                        <!-- Pagination for Cart Items -->
+                    <!-- Cart Pagination -->
+                
+                    </div>
+                </div>      
+             
+    
+    
+                <!-- Payment Section -->
+                <div class="card mb-4">
+                    <div class="card-header">Payment Method</div>
+                    <div class="card-body">
+                        <h5>Select Payment Method:</h5>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="debitCard" value="Online">
+                            <label class="form-check-label" for="debitCard">
+                                Online Payment
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="Cash on Delivery">
+                            <label class="form-check-label" for="cod">
+                                Cash on Delivery
+                            </label>
+                        </div>
+                        <div class="text-danger" id="paymentError"></div> <!-- Payment Method Error -->
+                        <button type="submit" class="btn btn-warning btn-block mt-4" style="background-color: #FFD700;" >Place Order</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+
+
+        <section class="info_section  layout_padding2-top">
+            <div class="social_container">
+            <div class="social_box">
+                <a href="">
+                <i class="fa fa-facebook" aria-hidden="true"></i>
+                </a>
+                <a href="">
+                <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+                <a href="">
+                <i class="fa fa-instagram" aria-hidden="true"></i>
+                </a>
+            
+            </div>
+            </div> 
+            <div class="info_container ">
+            <div class="container">
+                <div class="row">
+                <div class="col-md-6 col-lg-3">
+                    <h6>
+                    ABOUT US
+                    </h6>
+                    <p>
+                    "We specialize in curating thoughtful gifts for every occasion, whether it's birthdays, anniversaries, or just because.
+                    </p>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="info_form ">
+                    <h5>
+                        Newsletter
+                    </h5>
+                    <form action="#">
+                        <input type="email" placeholder="Enter your email">
+                        <button>
+                        Subscribe
+                        </button>
+                    </form>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <h6>
+                    NEED HELP
+                    </h6>
+                    <p>
+                    Track Order
+                    </p>
+                    <p></p>
+                    Return
+                    </p>
+                    <p></p>
+                    Shipping
+                    </p>
+                    <p></p>
+                    FAQs
+                    </p>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <h6>
+                    CONTACT US
+                    </h6>
+                    <div class="info_link-box">
+                    <a href="">
+                        <i class="fa fa-map-marker" aria-hidden="true"></i>
+                        <span> Tirur Road, Malappuam,Kerala </span>
+                    </a>
+                    <a href="">
+                        <i class="fa fa-phone" aria-hidden="true"></i>
+                        <span>++91 8590847332</span>
+                    </a>
+                    <a href="">
+                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                        <span> vvjy@gmail.com</span>
+                    </a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div> 
+            
+            <footer class=" footer_section">
+            <div class="container">
+                <p>
+                &copy; <span id="displayYear"></span> All Rights Reserved By
+                <a href="#">GIFTOS</a>
+                </p>
+            </div>
+            </footer>
+            
+
+        </section> 
+    
+
+      <!-- end info section -->
+      <script>
+        document.getElementById('logout-form').addEventListener('submit',(event)=>{
+        if(!confirm('Are you sure, You  really want to  log out? ')){
+            event.preventDefault()
+        }
+        })
+    </script>
+    <script src="/js/checkOut.js"></script>
+    <script src="/js/addAddressVal.js"></script>
+
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+    </script>
+    <!-- <script src="/js/custom.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+</body>
+
+</html>

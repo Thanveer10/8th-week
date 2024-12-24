@@ -1,0 +1,45 @@
+/* home.css */
+
+
+
+
+/* Product Card Styles */
+.card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.position-absolute {
+    position: absolute;
+}
+
+/* Wishlist Button */
+.btn-light {
+    background-color: transparent;
+    border: none;
+}
+
+.btn-light i {
+    color: #e74c3c;
+}
+
+
+.card-body a.custom-link {
+    color: #000; /* Replace with your desired color */
+    text-decoration: none;
+}
+
+.card-body a.custom-link:hover {
+    color: #000; /* Maintain color on hover */
+}

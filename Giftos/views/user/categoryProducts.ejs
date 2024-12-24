@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
+      <title>
+      Giftos
+      </title>
+
+      <!-- bootstrap core css -->
+      <link rel="stylesheet" type="text/css" href="/css/bootstrap.css" />
+
+         <!-- font awsome  -->
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+      <!-- Custom styles for this template -->
+      <link href="/css/style.css" rel="stylesheet" />
+
+      <!-- responsive style -->
+      <link href="/css/responsive.css" rel="stylesheet" />
+      <!-- <style>
+      
+      
+    
+        /* Dropdown Container */
+        .dropdown1 {
+          position: relative;
+          display: inline-block;
+        }
+    
+        /* Button Styling */
+        .dropdown-btn1 {
+          background-color: #4CAF50;
+          color: white;
+          padding: 14px 20px;
+          font-size: 16px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+    
+        .dropdown-btn1:hover {
+          background-color: #45a049;
+        }
+    
+        /* Dropdown Content */
+        .dropdown-content1 {
+          display: none;
+          position: absolute;
+          background-color: white;
+          min-width: 200px;
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+          border-radius: 5px;
+          z-index: 1;
+        }
+    
+        .dropdown-content1 a {
+          color: #333;
+          text-decoration: none;
+          display: block;
+          padding: 12px 16px;
+          transition: background-color 0.3s ease;
+        }
+    
+        .dropdown-content1 a:hover {
+          background-color: #f1f1f1;
+        }
+    
+        /* Show Dropdown on Hover */
+        .dropdown1:hover .dropdown-content1 {
+          display: block;
+        }
+      </style> -->
+       
+      <style>
+        /* From Uiverse.io by gharsh11032000 */ 
+.menu {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #000000;
+  width: fit-content;
+  display: flex;
+  list-style: none;
+}
+
+.menu a {
+  text-decoration: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.menu .link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 36px;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.menu .link::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0a3cff;
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.menu .link svg {
+  width: 14px;
+  height: 14px;
+  fill: #000000;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.menu .item {
+  position: relative;
+}
+
+.menu .item .submenu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 100%;
+  border-radius: 0 0 16px 16px;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid #cccccc;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-12px);
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 1;
+  pointer-events: none;
+  list-style: none;
+}
+
+.menu .item:hover .submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+  border-top: transparent;
+  border-color: #0a3cff;
+}
+
+.menu .item:hover .link {
+  color: #ffffff;
+  border-radius: 16px 16px 0 0;
+}
+
+.menu .item:hover .link::after {
+  transform: scaleX(1);
+  transform-origin: right;
+}
+
+.menu .item:hover .link svg {
+  fill: #ffffff;
+  transform: rotate(-180deg);
+}
+
+.submenu .submenu-item {
+  width: 100%;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.submenu .submenu-link {
+  display: block;
+  padding: 12px 24px;
+  width: 100%;
+  position: relative;
+  text-align: center;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.submenu .submenu-item:last-child .submenu-link {
+  border-bottom: none;
+}
+
+.submenu .submenu-link::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  width: 100%;
+  height: 100%;
+  background-color: #0a3cff;
+  z-index: -1;
+  transform-origin: left;
+  transition: transform 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.submenu .submenu-link:hover:before {
+  transform: scaleX(1);
+  transform-origin: right;
+}
+
+.submenu .submenu-link:hover {
+  color: #ffffff;
+}
+
+      </style>
+    </head>
+  <body>
+    <div class="hero_area">
+      <!-- header section strats -->
+      <header class="header_section">
+        <nav class="navbar navbar-expand-lg custom_nav-container ">
+          <p  class="header_giftos" >
+            <a class="navbar-brand" href="/">
+              <span>
+                Giftos
+              </span>
+            </a>
+          </p>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class=""></span>
+          </button>
+
+          <div class="collapse navbar-collapse innerpage_navbar" id="navbarSupportedContent">
+            <ul class="navbar-nav  ">
+              <li class="nav-item ">
+                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="/shop">
+                  Shop
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/whyUs">
+                  Why Us
+                </a>
+              </li>
+              <!-- <li class="nav-item">
+                <a class="nav-link" href="/testimonial">
+                  Testimonial
+                </a>
+              </li> -->
+              <li class="nav-item">
+                <a class="nav-link" href="/contact">Contact Us</a>
+              </li>
+            </ul>
+            <div class="user_option">
+              <% if (locals.sessionName) { %>
+                <ul class="navbar-navuser">
+                  <li class="navuser-item user-dropdown">
+                    <!-- <i class="fa fa-user" id="user-icon"></i> -->
+                    <span id="user-name"> <%= userdata.Username %> </span>
+                    <ul class="dropdown-menu" id="dropdown-menu">
+                      <li><a href="/user-profile">User Profile</a></li>
+                      <li><a href="/address-book">Address Book</a></li>
+                      <li><a href="/order-details">Order Details</a></li>
+                      <li><a href="/setting">Setting</a></li>
+                      <!-- <form id="logout-form" method="post" action="/logout" style="display: inline;"> -->
+                        <button type="button" onclick=" return logOut()"  class="logout-btn">Logout</button>
+                      <!-- </form> -->
+                    </ul>
+                  </li>
+                </ul>
+              <% } else { %>
+                
+                <ul class="navbar-navuser">
+                  <li class="navuser-item user-dropdown">
+                    <i class="fa fa-user" id="user-icon"></i>
+                    <!-- <ul class="dropdown-menu" id="dropdown-menu">
+                      <li><a href="/user-profile">User Profile</a></li>
+                      <li><a href="/address-book">Address Book</a></li>
+                      <li><a href="/logout">Logout</a></li>
+                    </ul> -->
+                  </li>
+                </ul>
+
+                <a href="/login">
+                  <span>
+                    LogIn
+                  </span>
+                </a>
+              <% } %>
+              <a href="/adduserCart">
+                <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+              </a>
+              <a href="/wishlist">
+                <i class="fa fa-heart" aria-hidden="false"></i>
+              </a>
+                
+              
+              <form class="form-inline mx-auto" id="shopSearchForm" action="/product/products" method="GET">
+                <input class="form-control mr-sm-2" type="search" name="query" 
+                      
+                       placeholder="Search Products" aria-label="Search">
+                       <button type="submit" class="btn search_btn" data-mdb-ripple-init>search</button>
+               </form>
+              <!-- <form class="form-inline ">
+                <button class="btn nav_search-btn" type="submit">
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+              </form> -->
+
+            </div>
+          </div>
+        </nav>
+      </header>
+      <!-- end header section -->
+    </div>
+
+    <section class="shop_section layout_padding">
+      <div class="container">
+        <div class="heading_container heading_center">
+          <h2>
+         <%= categoryName.Category %>
+          </h2>
+        </div>
+        
+          <div class="menu">
+            <div class="item">
+              <a href="#" class="link">
+                <span> Categories </span>
+                <svg viewBox="0 0 360 360" xml:space="preserve">
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      id="XMLID_225_"
+                      d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"
+                    ></path>
+                  </g>
+                </svg>
+              </a>
+              <div class="submenu">
+                <div class="submenu-item">
+                  <a href="/product/products" class="submenu-link"> All Product </a>
+                </div>
+                <% allcategory.forEach((cat)=>{ %>
+                  <div class="submenu-item">
+                    <a href="/category/<%= cat._id %>" class="submenu-link"> <%= cat.Category %> </a>
+                  </div>
+               <% }) %>
+            </div>
+          </div>
+          </div>
+        <!-- <div class="dropdown1">
+          <button class="dropdown-btn1">Categories</button>
+          <div class="dropdown-content1">
+            <a href="/category/men">Gifts for Men</a>
+            <a href="/category/women">Gifts for Women</a>
+            <a href="/category/toys">Toys</a>
+          </div>
+        </div> -->
+        <div class="row">
+          <% products.forEach(product=>{ %>
+            <div class="col-sm-6 col-md-6 col-lg-4">
+              <div class="box prod-box">
+                <a href="/productdetails/<%= product._id %>">
+                  <div class="img-box">
+                    <img src=" /productsimg/<%= product.Productimage[0] %>" alt="image not found">
+                    <!-- <img src="images/p1.png" alt=""> -->
+                  </div>
+                  <div class="detail-box">
+                    <h6>
+                      <%= product.Productname %>
+                    </h6>
+                    <h6>
+                    
+                      <span>
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        <%= product.RegularPrice %>
+                      </span>
+                    </h6>
+                  </div>
+                  <!-- <div class="new">
+                    <span>
+                      New
+                    </span>
+                  </div> -->
+                </a>
+              </div>
+            </div>
+        <% }) %>
+         
+        </div>
+      </div>
+      </section>
+
+      <section class="info_section  layout_padding2-top">
+        <div class="social_container">
+          <div class="social_box">
+            <a href="">
+              <i class="fa fa-facebook" aria-hidden="true"></i>
+            </a>
+            <a href="">
+              <i class="fa fa-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="">
+              <i class="fa fa-instagram" aria-hidden="true"></i>
+            </a>
+          
+          </div>
+        </div>
+        <div class="info_container ">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-6 col-lg-3">
+                <h6>
+                  ABOUT US
+                </h6>
+                <p>
+                  "We specialize in curating thoughtful gifts for every occasion, whether it's birthdays, anniversaries, or just because.
+                </p>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <div class="info_form ">
+                  <h5>
+                    Newsletter
+                  </h5>
+                  <form action="#">
+                    <input type="email" placeholder="Enter your email">
+                    <button>
+                      Subscribe
+                    </button>
+                  </form>
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <h6>
+                  NEED HELP
+                </h6>
+                <p>
+                  Track Order
+                </p>
+                <p></p>
+                  Return
+                </p>
+                <p></p>
+                Shipping
+                </p>
+                <p></p>
+                  FAQs
+                </p>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <h6>
+                  CONTACT US
+                </h6>
+                <div class="info_link-box">
+                  <a href="">
+                    <i class="fa fa-map-marker" aria-hidden="true"></i>
+                    <span> Tirur Road, Malappuam,Kerala </span>
+                  </a>
+                  <a href="">
+                    <i class="fa fa-phone" aria-hidden="true"></i>
+                    <span>++91 8590847332</span>
+                  </a>
+                  <a href="">
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                    <span> vvjy@gmail.com</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- footer section -->
+        <footer class=" footer_section">
+          <div class="container">
+            <p>
+              &copy; <span id="displayYear"></span> All Rights Reserved By
+              <a href="#">GIFTOS</a>
+            </p>
+          </div>
+        </footer>
+        <!-- footer section -->
+    
+      </section>
+
+      
+        <script src="js/jquery-3.4.1.min.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+        </script>
+        <script src="/js/custom.js"></script>
+      
+  </body>
+</html>
+
+
+<script>
+  // document.getElementById('logout-form').addEventListener('submit',(event)=>{
+  //   if(!confirm('Are you sure, You  really want to  log out? ')){
+  //     event.preventDefault()
+  //   }
+  // })
+
+  function logOut(){
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, log out!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = '/logout';
+    }
+  })
+  return false
+}
+</script>

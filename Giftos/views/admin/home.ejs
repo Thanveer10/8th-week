@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UserAdminHub Admin Page</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body, h1, h2, h3, h4, h5, h6 {
+            font-family: "Lato", sans-serif;
+            color: black; /* Text color for the whole page */
+            background-color: white; /* Background color for the whole page */
+        }
+        .w3-bar, h1, button {
+            font-family: "Montserrat", sans-serif;
+        }
+        .w3-bar {
+            background-color: white; /* Navbar background color */
+        }
+        .w3-bar .w3-button {
+            color: black; /* Navbar text color */
+        }
+        .w3-bar .w3-button:hover {
+            background-color: #f1f1f1; /* Light grey background on hover */
+        }
+        .w3-bar-item {
+            border-bottom: 1px solid #ddd; /* Divider line for items */
+        }
+        .w3-header {
+            background-color: white; /* Header background color */
+            color: black; /* Header text color */
+        }
+        .w3-footer {
+            background-color: white; /* Footer background color */
+            color: black; /* Footer text color */
+        }
+        .w3-button {
+            background-color: black; /* Button background color */
+            color: white; /* Button text color */
+        }
+        .w3-button:hover {
+            background-color: #333; /* Darker background color on hover */
+        }
+        .logout-button {
+            background-color: black; /* Logout button background color */
+            color: white; /* Logout button text color */
+        }
+        .logout-button:hover {
+            background-color: grey; /* Grey background color on hover */
+        }
+        .fa {
+            color: black; /* Social media icon color */
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="w3-top mt-5">
+    <div class="w3-bar w3-card w3-left-align w3-large">
+        <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-red" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+        <a href="/admin/logout" class="btn btn-danger" role="button" onclick="return confirmLogout()">Logout</a>
+    </div>
+
+   
+<header class="w3-container w3-center" style="padding:128px 16px; background-color: white; color: black;">
+    <h1 class="w3-margin w3-jumbo">Welcome to UserAdminHub Admin Page</h1>
+    <h6>Welcome</h6>
+    <p class="w3-xlarge">UserAdminHub</p>
+    <form action="/admin/dashboard" method="get">
+        <button class="w3-button w3-padding-large w3-large w3-margin-top">Dashboard</button>
+    </form>
+</header>
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-64 w3-center w3-opacity" style="background-color: white; color: black;">  
+    <div class="w3-xlarge w3-padding-32">
+        <i class="fa fa-facebook-official w3-hover-opacity"></i>
+        <i class="fa fa-instagram w3-hover-opacity"></i>
+        <i class="fa fa-snapchat w3-hover-opacity"></i>
+        <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+        <i class="fa fa-twitter w3-hover-opacity"></i>
+        <i class="fa fa-linkedin w3-hover-opacity"></i>
+    </div>
+    <p>Powered by <a href="" target="_blank">UserAdminHub</a></p>
+</footer>
+
+<script>
+// Function to confirm logout
+function confirmLogout() {
+    return confirm("Are you sure you want to log out?");
+}
+</script>
+
+</body>
+</html>

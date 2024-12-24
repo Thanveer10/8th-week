@@ -1,0 +1,181 @@
+ <%- include('../partial/admin/header.ejs') %>
+                        
+            <!-- content start -->
+        <div class="content">
+            <!-- Sale & Revenue Start -->
+          <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fa fa-chart-line fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">Total Revenue</p>
+                            <div class="d-flex flex-wrap justify-content-start align-items-center">
+                                <h5 class="mb-0 font-weight-bold">totalrevenue</h5>
+                                <p class="mb-0 ml-3 text-success font-weight-bold">+8.97%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">Total Sales</p>
+                            <div class="d-flex flex-wrap justify-content-start align-items-center">
+                                <h5 class="mb-0 font-weight-bold">ordercout</h5>
+                                <p class="mb-0 ml-3 text-success font-weight-bold">+2.45%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fa fa-chart-area fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">Members</p>
+                            <div class="d-flex flex-wrap justify-content-start align-items-center">
+                                <h5 class="mb-0 font-weight-bold">usercount</h5>
+                                <p class="mb-0 ml-3 text-success font-weight-bold"> +6.45%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">Blocked Members</p>
+                              <div class="d-flex flex-wrap justify-content-start align-items-center">
+                                <h5 class="mb-0 font-weight-bold">blockeduser</h5>
+                                <p class="mb-0 ml-3 text-danger font-weight-bold">Ban Users</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+            <!-- Sale & Revenue End -->
+
+          <!-- dashboard end -->
+          <div class="dashboard">
+            <!-- Latest Orders Section -->
+            <div class="card orders">
+              <h2>Latest Orders</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Order id</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <% latesOrders.forEach((order)=>{ %>
+                  <tr>
+                    <td> <%= order._id %></td>
+                    <td><%= order.date.toLocaleString() %></td>
+                    <td><span ><%= order.orderStatus %></span></td>
+                    <td><a href="#">View</a></td>
+                  </tr>
+               <% }) %>
+               
+                
+                  <!-- <tr>
+                    <td>OD124</td>
+                    <td>18/4/2024</td>
+                    <td><span class="status delivered">Delivered</span></td>
+                    <td><a href="#">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>OD125</td>
+                    <td>18/4/2024</td>
+                    <td><span class="status pending">Pending</span></td>
+                    <td><a href="#">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>OD126</td>
+                    <td>18/4/2024</td>
+                    <td><span class="status shipped">Shipped</span></td>
+                    <td><a href="#">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>OD127</td>
+                    <td>18/4/2024</td>
+                    <td><span class="status processing">Processing</span></td>
+                    <td><a href="#">View</a></td>
+                  </tr> -->
+                </tbody>
+
+              </table>
+              <button>View All Orders</button>
+            </div>
+        
+            <!-- Recent Members Section -->
+            <div class="card members">
+              <h2>Recent Members</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% latestMembers.forEach(member=>{ %>
+                  <tr>
+                    <td><a href="#"><%= member.Username %></a></td>
+                    <td><%=  member.Email %></td>
+                  </tr>
+                  <% }) %>
+                  <!-- <tr>
+                    <td><a href="#">John</a></td>
+                    <td>john@gmali.com</td>
+                  </tr>
+                  <tr>
+                    <td><a href="#">John</a></td>
+                    <td>john@gmali.com</td>
+                  </tr>
+                  <tr>
+                    <td><a href="#">John</a></td>
+                    <td>john@gmali.com</td>
+                  </tr>
+                  <tr>
+                    <td><a href="#">John</a></td>
+                    <td>john@gmali.com</td>
+                  </tr> -->
+                </tbody>
+              </table>
+              <button>View All Members</button>
+            </div>
+            <!-- recenent memner end -->
+          </div>
+          <!-- dashboard end -->
+        </div>
+             <!-- contend end -->
+      </div>
+      <!-- main container end -->
+     
+       <!-- footer -->
+      <footer class=" footer_section">
+        <div class="container">
+          <p>
+            &copy; <span id="displayYear"></span> All Rights Reserved By
+            <a href="#">GIFTOS</a>
+          </p>
+        </div>
+      </footer>
+     <!-- </div>     -->
+      <script src="js/jquery-3.4.1.min.js"></script>
+      <script src="js/bootstrap.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+      </script>
+      <script src="js/custom.js"></script>
+
+    </body>
+  </html>
