@@ -142,8 +142,13 @@
           alert(response.message);
         }
       },
-      error: function () {
-        alert("An error occurred while sending OTP.");
+      error: function (err) {
+        if (err.responseJSON && err.responseJSON.message) {
+         alert(err.responseJSON.message);
+         console.log(err.responseJSON.message);    
+       }else{
+         alert("An error occurred while sending OTPk.");
+       }
       },
     });
   });

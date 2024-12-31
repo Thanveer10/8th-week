@@ -160,27 +160,38 @@
                 <% orders.forEach(order => { %>
 
             <!-- Order 1 -->
-            <div class="card order-card mb-4">
+            <div class="card order-card mb-4" style=" box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.3);">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
                         </div>
                         <div class="col-md-6">
                             <h4 class="text-center">Products Deatils</h4>
-                            <% order.products.forEach(product => { %>
-                                <h6 class="fw-bold"><%= product.name %></h6> <!-- Fix to correctly access productName -->
+                            <% order.products.forEach((product ,index)=> { %>
+                                <h6 class="fw-bold"> <span><%= index+1 %> - </span><%= product.name %></h6> <!-- Fix to correctly access productName -->
                                 <p style="padding: 0;">Quantity: <strong><%= product.quantity %></strong></p>
                                 <h6> Price: <%= product.price %></h6> 
                           <% }) %>
                           <h4 class="text-center">Order Details</h4>
                             <p>Order Reference ID: <strong><%= order._id %></strong></p>
                             <p>Order Date: <strong><%= new Date(order.date).toLocaleDateString() %></strong></p> <!-- Display Date -->
-                            <p>Payment Status: <span class="badge badge-success"><%= order.paymentStatus %></span></p>
+                            <p>Payment Method: <strong><%= order.paymentDetails.paymentMethod %></strong></p> <!-- Display Payment Method -->
+                           <% if(order.paymentDetails.status=='Pending'){ %>
+                                <p>Payment Status: <span class="badge badge-warning"><%= order.paymentDetails.status %></span></p>
+                           <% }else if(order.paymentDetails.status=='Failed'){ %>
+                                <p>Payment Status: <span class="badge badge-danger"><%= order.paymentDetails.status %></span></p>
+                           <% }else{ %>
+                                <p>Payment Status: <span class="badge badge-success"><%= order.paymentDetails.status %></span></p>
+                            <% } %>
+
+
                             <% if(order.orderStatus=='Cancelled'){ %>
                                 <p>Order Status: <span class="badge badge-danger"><%= order.orderStatus %></span></p>
-                          <% }else{ %>
-                                 <p>Order Status: <span class="badge badge-primary"><%= order.orderStatus %></span></p>
-                           <% } %>
+                            <% }else if(order.orderStatus=='Delivered'){ %>
+                                 <p>Order Status: <span class="badge badge-success"><%= order.orderStatus %></span></p>
+                            <% } else{ %>
+                            <p>Order Status: <span class="badge badge-pill badge-info"><%= order.orderStatus %></span></p>
+                            <% } %>
 
                             <p>Total Price: <strong>₹<%= order.grandTotal %></strong></p>
                             <% if (order.couponCode) { %>

@@ -1,6 +1,6 @@
 <%- include('../partial/user/userProfilePartial.ejs') %>
     
-    <div class="card mb-4">
+    <div class="card mb-4 mt-3">
         <form  id="addressForm" action="/add-address" method="post" name="submission" >
         <div class="card-body mt-3">
             <div >
@@ -13,7 +13,7 @@
                 <input id="name"  class="form-control" type="text" name="name" placeholder=" Name">
             </div>
 
-            <div class="col-md-6 form-group mb-3"></div>
+            <div class="col-md-6 form-group mb-3">
                 <label>HouseName/Apartment Name</label>                
                 <input id="houseName"  class="form-control" type="text" name="houseName" placeholder=" House/Apartment Name">
             </div>
@@ -61,7 +61,7 @@
             <div class="col-md-6 form-group  mb-3">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
-        </div>
+         </div>
         </form>
     </div> 
 

@@ -77,7 +77,8 @@ body{background-color: #fdf7f7}
     position: relative;
     width: 100%; /* Ensure the image container takes full width */
     overflow: hidden; /* Hide the part of the image that overflows */
-    height: auto;
+    height: 400px;
+    object-fit: contain;
   }
 
   /* Zoomed image styling */

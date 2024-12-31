@@ -82,8 +82,12 @@ user_route.get('/orderconfirm/:cartId',userAuth,user_ctrl.orderConfirmed);
 user_route.get('/viewOrder',userAuth,user_ctrl.LoadOrderPage);
 user_route.post('/cancelOrder/:orderId',userAuth,user_ctrl.cancelOrder)
 
+// online Payment
+user_route.get('/payment/success',userAuth,user_ctrl.onlinePayment)
+user_route.post("/online-payment-failed/restore-cart-items/:cartId",userAuth,user_ctrl.restoreProductQuantities);
 
 
+user_route.get('/wallet',userAuth,user_ctrl.walletget)
 
 user_route.get('/wishlist',userAuth,user_ctrl.wishListget)
 user_route.get('/wishlist/:id',userAuth,user_ctrl.wishListPost)

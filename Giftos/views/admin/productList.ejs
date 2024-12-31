@@ -63,6 +63,23 @@
     color: white;
     }
 
+    body {
+    /* margin: 0;
+    padding: 0; */
+    min-height: 85vh; 
+    /* margin-top: 170px; */
+    position: relative;
+    width: 100%;
+   
+}
+    .footer_section {
+     
+      position: absolute;
+      bottom: 0;
+      width: 97%;
+      overflow-x: hidden;
+    }
+
    </style>
  </head>
  
@@ -158,14 +175,13 @@
      </header>
    </div>
      <!-- end header section -->
-   <div class="container-xxl position-relative bg-white d-flex p-0">
+   <div class="container-xxl position-relative bg-white d-flex p-0 " style="height: 80vh;" >
         <!-- Sidebar Start -->
-   
-      <div class="sidebar pe-4 pb-3  bg-light">
+      <div class="sidebar pe-3 pb-0  bg-light">
             <nav class="navbar  navbar-light">
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative  d-flex align-items-center">
-                        <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                        <img class="rounded-circle" src="images/admin.img/user.jpg" alt="" style="width: 40px; height: 40px;">
                         <div
                             class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
                         </div>
@@ -195,7 +211,7 @@
       </div>
     
        <!-- Content Start -->
-       <div class="content">
+       <div class="content ">
         <section>
             <table class="table ">
               <a href="/product/addProduct"><button type="button" class="btn btn-dark" >ADD PRODUCT</button></a>
@@ -228,7 +244,7 @@
                             </td>
                             <td><%= product.Productname %></td>
                             <td><%= product.RegularPrice %></td>
-                            <td><%= product.SalePrice || product.RegularPrice  %></td>
+                            <td><%= product.SalePrice  %></td>
                             <td><%= product.Category ? product.Category.Category : 'Unknown' %></td>
                             <td><%= product.Stock %></td>
                             <td >
@@ -273,14 +289,11 @@
           <% } %>
         </div>
     </div>
-
-   
-
    </div>
      <!-- footer -->
-     <footer class=" footer_section">
-        <div class="container">
-          <p>
+     <footer class=" footer_section ">
+        <div class="container ">
+          <p >
             &copy; <span id="displayYear"></span> All Rights Reserved By
             <a href="#">GIFTOS</a>
           </p>

@@ -12,6 +12,8 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
   <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
 
   <title>
     Giftos
@@ -164,18 +166,28 @@
               <a href="/productdetails/<%= wish.item %>">
                 <div class="img-box">
                   <!-- <img src="images/p1.png" alt=""> -->
-                    <img src="productsimg/<%= wish.Product.Productimage %>" alt="<%= wish.Product.Productname %>">
+                    <img src="productsimg/<%= wish.Product.Productimage[0] %>" alt="<%= wish.Product.Productname %>">
   
                 </div>
                 <div class="detail-box">
                   <h6>
                     <%= wish.Product.Productname %>
                   </h6>
-                  <h6>
-                    price
-                    <span>
-                      $<%= wish.Product.Price %>
-                    </span>
+                  <h6>               
+                    <% if( wish.Product.Stock >= 1){ %>
+                      <% if(wish.Product.SalePrice && wish.Product.SalePrice > 1){ %>
+                         <span style="text-decoration: line-through;">
+                           <i class="fa-solid fa-indian-rupee-sign"></i>
+                           <%= wish.Product.RegularPrice %>
+                         </span>
+                           <span style="padding-left: 5px;"> <i class="fa-solid fa-indian-rupee-sign"></i> <%= wish.Product.SalePrice %></span>
+                       <% }else{ %>
+                         <span>
+                           <i class="fa-solid fa-indian-rupee-sign"></i>
+                           <%= wish.Product.RegularPrice %>
+                         </span>
+                       <% } %>
+                      <% } %>
                   </h6>
                 </div>
                 <div class="new" onclick="return confirm('are you really want to remove?')">

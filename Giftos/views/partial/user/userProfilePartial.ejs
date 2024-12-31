@@ -37,6 +37,19 @@
                  /* background-color: gray; */
             }
         </style>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const links = document.querySelectorAll('.list-group-item');
+                links.forEach(link => {
+                if (link.getAttribute('href') === window.location.pathname) {
+                link.classList.add('active');
+                } else {
+                link.classList.remove('active');
+             }
+  });
+});
+
+        </script>
            
     </head>
 
@@ -134,8 +147,8 @@
        <!-- end hero area -->
 
        <!-- contend start session-->
-       <section style="background-color: #eee;">
-        <div class="container py-5">
+       <section >
+        <div class="container-fluid py-5">
           <!-- <div class="row">
             <div class="col">
               <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
@@ -153,13 +166,14 @@
             </div>
           </div> -->
       
-          <div class="row">
-            <div class="col-lg-4">
+          <div class="row " >
+            <div class="col-lg-3 position-fixed"style="width:20%;">
                 <div class="list-group" id="list-tab" role="tablist">
-                    <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="/user-profile" role="tab" aria-controls="home">User Profile</a>
-                    <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="/user-address" role="tab" aria-controls="profile">Adress Book</a>
-                    <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="/viewOrder" role="tab" aria-controls="messages">Orders</a>
-                    <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Settings</a>
-                  </div>
+                    <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="/user-profile" role="tab" aria-controls="home"><img alt="Profile" src="https://cdn.igp.com/raw/upload/assets/svg-icons/profile-person-circle-fill.svg">User Profile</a>
+                    <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="/user-address" role="tab" aria-controls="profile"><img alt="ABook" src="https://cdn.igp.com/raw/upload/assets/svg-icons/drpdwn-addressbook.svg">Adress Book</a>
+                    <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="/viewOrder" role="tab" aria-controls="messages"><img alt="History" src="https://cdn.igp.com/raw/upload/assets/svg-icons/drpdwn-order-history.svg">Orders</a>
+                    <a class="list-group-item list-group-item-action" id="list-orders-list" data-toggle="list" href="/wallet" role="tab" aria-controls="wallet"><img alt="Wallet" src="https://cdn.igp.com/raw/upload/assets/svg-icons/drpdwn-wallet.svg">My Wallet</a>
+                    <!-- <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Settings</a> -->
+                </div>
             </div>
             

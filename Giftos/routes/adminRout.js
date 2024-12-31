@@ -35,9 +35,14 @@ admin_router.get('/deleteOne/:id',adminAuth,admin_ctrl.deleteOne)
 admin_router.get('/orderlist',adminAuth,admin_ctrl.orderListget)
 admin_router.post('/orders/update-status/:orderId',adminAuth,admin_ctrl.updateOrderStatus);
 
-// ORDER SESSIONS
+// COUPEN SESSION
 admin_router.get('/coupenadmin',adminAuth,admin_ctrl.coupenListget)
 admin_router.post('/coupenadmin',adminAuth,admin_ctrl.coupenListpost)
+admin_router.get('/coupenEdit/:id',adminAuth,admin_ctrl.coupenEditget)
+admin_router.post('/updateCoupen',adminAuth,admin_ctrl.updateCoupen)
+admin_router.get('/coupenDelete/:id',adminAuth,admin_ctrl.coupenDelete)
+
+// ORDER SESSIONS
 admin_router.get('/Orderview/:id',adminAuth,admin_ctrl.ordeviewget)
 
 

@@ -1,8 +1,8 @@
 const User= require('../model/userModel')
 
 const userAuth = async (req, res, next) => {
+    const link = req.headers.referer || req.originalUrl;
     try {
-        const link = req.headers.referer || req.originalUrl;
 
         if (req.session.user_id) {
             const user = await User.findById(req.session.user_id);
@@ -35,20 +35,21 @@ const userAuth = async (req, res, next) => {
         } else {
             console.log("Session not found");
             req.session.userReturnTo = req.originalUrl;
-    
             if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+                console.log("AJAX request detected");
                 return res.status(401).json({
                     success: false,
                     message: "Session expired. Please log in.",
                     redirectUrl: "/login"
                 });
             } else {
+                console.log("Normal request detected");
                 return res.render("user/error", {
                     res, 
                     errorCode: 401, 
                     errorMessage: "Unauthorized", 
                     errorDescription: "Session expired. Please login again.", 
-                    link:"/login"
+                    link:"/"
                  }
                 );
             }

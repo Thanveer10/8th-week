@@ -32,14 +32,24 @@
                         <p>Orderd Username: <strong><%= order.orderedUser.Username %></strong></p>
 
                         <p>Order Date: <strong><%= new Date(order.date).toLocaleDateString() %></strong></p> <!-- Display Date -->
-                        <p>Payment Method: <span class="badge badge-success"><%= order.paymentMethod %></span></p>
-                        <p>Payment Status: <span class="badge badge-success"><%= order.paymentStatus %></span></p>
+                        <p>Payment Method: <strong><%= order.paymentDetails.paymentMethod %></strong></span></p>
+
+                        <% if(order.paymentDetails.status=='Pending'){ %>
+                            <p>Payment Status: <span class="badge badge-pill badge-warning"><%= order.paymentDetails.status %></span></p>
+                        <% }else if(order.paymentDetails.status=='Failed'){ %>
+                            <p>Payment Status: <span class="badge badge-pill badge-danger"><%= order.paymentDetails.status %></span></p>
+                        <% }else{ %>
+                            <p>Payment Status: <span class="badge badge-pill badge-success"><%= order.paymentDetails.status %></span></p>
+                        <% } %>
 
                         <% if(order.orderStatus=='Cancelled'){ %>
-                            <p>Order Status: <span class="badge badge-danger"><%= order.orderStatus %></span></p>
-                        <% }else{ %>
-                                <p>Order Status: <span class="badge badge-primary"><%= order.orderStatus %></span></p>
+                            <p>Order Status: <span class="badge badge-pill badge-danger"><%= order.orderStatus %></span></p>
+                        <% }else if(order.orderStatus=='Delivered'){ %>
+                             <p>Order Status: <span class="badge badge-pill badge-success"><%= order.orderStatus %></span></p>
+                        <% } else{ %>
+                             <p>Order Status: <span class="badge badge-pill badge-info"><%= order.orderStatus %></span></p>
                         <% } %>
+
 
                         <p>Total Price: <strong>₹<%= order.grandTotal %></strong></p>
                         <% if (order.couponCode) { %>

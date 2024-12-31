@@ -1,159 +1,238 @@
 <%- include('../partial/admin/header.ejs') %>
-       <!-- Sidebar End -->
+    <!-- Sidebar End -->
 
-                     
-        <!-- content start -->
-        <div class="content">
-            <section>
-                <div class="col-lg-10">
-                    <div class="card mb-4">
-                        <form action="/admin/coupenadmin" method="post">
-                            <div class="card-body mt-3">
-                                <div>
-                                    <p>COUPEN DETAILS</p>
+
+    <!-- content start -->
+   
+    <div class="content pl-5 ">
+        <section>
+            <div class="col-lg-10">
+                <div class="card mb-4">
+                    <form action="/admin/coupenadmin" method="post">
+                        <div class="card-body mt-3">
+                            <!-- Check for success message -->
+                            <% if (success) { %>
+                                <div class="alert alert-success" role="alert">
+                                <%= success %>
                                 </div>
-    
-                                <div class="row ">
-                                    <div class="col-md-6 form-group mb-3">
-                                         <label>Coupen Code</label> 
-                                        <input class="form-control" type="text" name="CoupenCode"
-                                            placeholder="Coupen Code" id="coupenCode">
-                                    </div>
-    
-    
-                                    <div class="col-md-6 form-group">
-                                          <label>Discount Value</label>   
-                                        <input class="form-control" type="text" name="DiscountPrice"
-                                            placeholder="Discount value" id="discountPrice">
-                                    </div>
-    
-    
-                                    <div class="col-md-6 form-group  mb-3">
-                                        <label>Create Date</label>
-                                        <input class="form-control" type="date" name="CreateDate"
-                                            placeholder="Create date" id="createDate">
-                                    </div>
-    
-                                    <div class="col-md-6 form-group">
-                                        <label>MIninmum Price</label>
-                                        <input class="form-control" type="text" name="MinimumPrice"
-                                            placeholder="Minimum Price" id="minimumPrice">
-                                       
-                                    </div>
-    
-    
-    
-                                    <div class="col-md-6 form-group  mb-3">
-                                        <label>Expiry Date</label>
-                                             <!-- <p class="text-primary">javadda</p>    -->
-                                        <input class="form-control" type="date" name="ExpireDate"
-                                            placeholder="Expiry date" id="expireDate">
-                                              
-                                    </div>
-    
-    
-    
-                                    <div class="col-md-6 form-group">
-                                        <label>Discount Type</label>
-                                        <input class="form-control" type="text" name="DiscountType"
-                                            placeholder="Discount type" id="discountType">
-                                    </div>
-    
-                                      
-    
-                                    <div class="col-md-6 form-group  mb-3">
-                                        <button type="submit" class="btn btn-primary">Add Coupen</button>
-                                    </div>
-    
-                                </div>
-    
-                            </div>
-                        </form>
-                    </div>
-                    </div>
-    
-                    <div class="col-lg-10">
-    
-                    <!-- Navbar End -->
-                    <table class="table">
-                         <a href="/product/addproduct"><button type="button" class="btn btn-dark">ADD
-                                PRODUCT</button></a>   
-                        <thead>
-                            <tr>
-                                <th>Coupen Code</th>
-                                <th>Discount value</th>
-                                <th>Create date</th>
-                                <th>minimum purchase</th>
-                                <th>Expiry date</th>
-                                <th>Discount type</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                              
-    
-                            </tr>
-                        </thead>
-                       
-                        <tbody>    
+                            <% } %>
                             
-                              <% allCoupens.forEach(Coupen=>{ %>  
-                                <tr>
-                                    <td><%= Coupen.CoupenCode %></td>
-                                    <td><%= Coupen.DiscountPrice %></td>
-                                    <td><%= Coupen.CreateDate %></td>
-                                    <td><%= Coupen.MinimumPrice %></td>
-                                    <td><%= Coupen.ExpireDate %></td>
-                                    <td><%= Coupen.DiscountType %></td>
-                                    <td><%= Coupen.Status %></td>
-        
-                                    <% if(Coupen.Status){ %>
-                                        <td>
-                                            <a href="/Block1/{{_id}}" class="btn btn-danger">Block</a>
-                                        </td>
-                                    <%  }else{ %> 
-                                        <td>
-                                            <a href="/Unblock1/{{_id}}" class="btn btn-success">Unblock</a>
-                                        </td>
-                                    <%  } %>
-                                    
-                                    <!-- {{/if}}  -->
-                                       <!-- <td>
-        
-        
-                                        <a href="/categoryDelete/{{_id}}" class="btn btn-danger"
-                                            onclick="return confirm('Are you want to delete {{coupenCode}}?')">Enable</a>
-                                    </td>     -->
-        
-                                </tr>  
-                             <% }) %>                
-                           
-                        </tbody>
-                    
-                    </table>
-                    </div>
-    
-               
-            </section>
-        </div>
-        <!-- contend end -->
+                            <!-- Check for error message -->
+                            <% if (error) { %>
+                                <div class="alert alert-danger" role="alert">
+                                <%= error %>
+                                </div>
+                            <% } %>
+                            <div>
+                                <p>COUPEN DETAILS</p>
+                            </div>
 
-   </div>
-   <!-- main container end -->
-  
+                            <body onload="setDefaultStartDate()">
+
+                            </body>
+                            <div class="row ">
+                                <div class="col-md-6 form-group mb-3">
+                                    <label>Coupen Code</label>
+                                    <input class="form-control" type="text" name="CoupenCode" placeholder="Coupen Code"
+                                        id="coupenCode">
+                                </div>
+
+
+                                <div class="col-md-6 form-group">
+                                    <label>Discount Value</label>
+                                    <input class="form-control" type="text" name="DiscountPrice"
+                                        placeholder="Discount value" id="discountPrice">
+                                </div>
+
+
+                                <div class="col-md-6 form-group  mb-3">
+                                    <label>Create Date</label>
+                                    <input class="form-control" type="date" name="CreateDate" placeholder="Create date"
+                                        id="createDate">
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    <label>MIninmum Price</label>
+                                    <input class="form-control" type="text" name="MinimumPrice"
+                                        placeholder="Minimum Price" id="minimumPrice">
+
+                                </div>
+
+
+
+                                <div class="col-md-6 form-group  mb-3">
+                                    <label>Expiry Date</label>
+                                    <!-- <p class="text-primary">javadda</p>    -->
+                                    <input class="form-control" type="date" name="ExpireDate" placeholder="Expiry date"
+                                        id="expireDate">
+
+                                </div>
+
+
+
+                                <div class="col-md-6 form-group">
+                                    <label>Discount Type</label>
+                                    <input class="form-control" type="text" name="DiscountType"
+                                        placeholder="Discount type" id="discountType">
+                                </div>
+
+
+
+                                <div class="col-md-6 form-group  mb-3">
+                                    <button type="submit" class="btn btn-primary">Add Coupen</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-10">
+
+                <!-- Navbar End -->
+                <table class="table">
+                    <a href="/product/addproduct"><button type="button" class="btn btn-dark">ADD
+                            PRODUCT</button></a>
+                    <thead>
+                        <tr>
+                            <th>Coupen Code</th>
+                            <th>Discount value</th>
+                            <th>Create date</th>
+                            <th>minimum purchase</th>
+                            <th>Expiry date</th>
+                            <th>Discount type</th>
+                            <th>Status</th>
+                            <th>Action</th>
+
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <% allCoupens.forEach(Coupen=>{ %>
+                            <tr>
+                                <td>
+                                    <%= Coupen.CoupenCode %>
+                                </td>
+                                <td>
+                                    <%= Coupen.DiscountPrice %>
+                                </td>
+                                <td>
+                                    <%= Coupen.CreateDate %>
+                                </td>
+                                <td>
+                                    <%= Coupen.MinimumPrice %>
+                                </td>
+                                <td>
+                                    <%= Coupen.ExpireDate %>
+                                </td>
+                                <td>
+                                    <%= Coupen.DiscountType %>
+                                </td>
+                                <td>
+                                    <%= Coupen.Status %>
+                                </td>
+                                <td>
+                                    <a href="/admin/coupenEdit/<%=Coupen._id  %>" class="btn btn-primary">Edit</a>
+
+                                    <a href="#" onclick="confirmDelete('<%=Coupen._id  %>')"  class="btn btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                            <% }) %>
+
+                    </tbody>
+
+                </table>
+            </div>
+
+
+        </section>
+    </div>
+   
+    <!-- contend end -->
+
+    </div>
+    <!-- main container end -->
+
     <!-- footer start-->
-   <footer class=" footer_section">
-     <div class="container">
-       <p>
-         &copy; <span id="displayYear"></span> All Rights Reserved By
-         <a href="#">GIFTOS</a>
-       </p>
-     </div>
-   </footer>
-   <!-- footer end -->
-   <script src="js/jquery-3.4.1.min.js"></script>
-   <script src="js/bootstrap.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
-   </script>
-   <script src="js/custom.js"></script>
+    <footer class=" footer_section ">
+        <div class="container ">
+            <p >
+                &copy; <span id="displayYear"></span> All Rights Reserved By
+                <a href="#">GIFTOS</a>
+            </p>
+        </div>
+    </footer>
+    <!-- footer end -->
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"> </script>
+    <script src="js/custom.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
- </body>
-</html>
+
+    <script>
+
+            setTimeout(() => {
+            const alert = document.querySelector('.alert');
+            if (alert) {
+                alert.remove();
+            }
+            }, 3000); 
+
+        function setDefaultStartDate() {
+            const today = new Date();
+            const year = today.getFullYear()
+            let month = (today.getMonth() + 1).toString().padStart(2, "0")
+            let day = today.getDate().toString().padStart(2, "0")
+            document.getElementById('createDate').value = `${year}-${month}-${day}`
+        }
+
+        function confirmDelete(coupenId){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result)=>{
+                if(result.isConfirmed){
+                    deleteCoupen(coupenId)
+                    
+                }
+            })
+        }
+        function deleteCoupen(coupenId){
+           $.ajax({
+            url:`/admin/coupenDelete/${coupenId}`,
+            method:'GET',
+            success:function(data){
+             Swal.fire({
+                icon:'success',
+                title:'Deleted successfully',
+                text:'The coupen has been deleted successfully',
+                confirmButtonText:'Ok',
+             }).then(()=>{
+                window.location.reload();
+             })
+            },
+            error:function(){
+                Swal.fire({
+                icon:'error',
+                title:'Error',
+                text:'Failed to delete the coupen, please try again',
+                confirmButtonText:'Ok',
+             })
+            }
+           })
+        }
+    </script>
+
+    </body>
+
+    </html>

@@ -4188,7 +4188,7 @@ input[type="button"].btn-block {
   display: flex;
   -ms-flex-direction: column;
   flex-direction: column;
-  margin-left: 3rem;
+  /* margin-left: 3rem; */
   margin-bottom: 0;
   list-style: none;
 }

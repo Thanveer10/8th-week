@@ -1,6 +1,6 @@
 <%- include('../partial/user/userProfilePartial.ejs') %>
     
-    <div class="card mb-4">
+    <div class="card mb-4 mt-3">
         <form  id="addressForm" action="/edit-address?id=<%= address._id%>" method="post" name="submission" >
         <div class="card-body mt-3">
             <div >
@@ -8,34 +8,32 @@
             </div>
 
             <div class="row ">
-            <div class="col-md-6 form-group mb-3">
+            <div class="col-lg-6 form-group mb-3">
                 <label>Name:</label>                
                 <input value="<%= address.name %>" id="name"  class="form-control" type="text" name="name" placeholder=" Name">
             </div>
 
-            <div class="col-md-6 form-group mb-3"></div>
+            <div class="col-lg-6 form-group mb-3">
             <label>HouseName/Apartment Name: </label>                
             <input  value="<%= address.houseName %>" id="houseName"  class="form-control" type="text" name="houseName" placeholder=" House/Apartment Name">
            </div>
+
             
             <div class="col-md-6 form-group">
                 <label>Street:</label> 
                 <input  value="<%= address.street %>"  id="street" class="form-control" type="text" name="street" placeholder="Street">
             </div>
 
-
             <div class="col-md-6 form-group  mb-3">
                 <label>City:</label>   
                 <input  value="<%= address.city %>" id="city" class="form-control" type="text" name="city" placeholder="City">
-                </div>
+            </div>
 
             <div class="col-md-6 form-group">
                 <label>State:</label>   
                 <input  value="<%= address.state %>" id="state" class="form-control" type="text" name="state" placeholder="State">
             </div>
             
-            
-
             <div class="col-md-6 form-group  mb-3">
                 <label>Pincode:</label>   
                 <input  value="<%= address.pincode %>" id="pincode" class="form-control" type="text" name="pincode" placeholder="Pincode">
@@ -62,6 +60,7 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </div>
+        
         </form>
     </div> 
 

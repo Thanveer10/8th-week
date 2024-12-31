@@ -91,7 +91,7 @@
 .sidebar {
     position: fixed;
     top: 180px;
-    left: 0;
+    /* left: 0; */
     /* bottom: 0; */
     width: 290px;
     height: 100vh;
@@ -104,7 +104,7 @@
 
 .content {
     width:70% ;
-    margin-left: 290px;
+    margin-left: 310px;
     min-height: 100 vh !important;
     background: #FFFFFF;
     transition: 0.5s;

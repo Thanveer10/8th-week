@@ -6,6 +6,7 @@ const categoryColl=require("../model/categoryModel")
 const User=require('../model/userModel')
 const sharp= require('sharp')
 const path= require('path')
+const { link } = require('fs')
 
 
 const viewAllProducts=async function(req,res){
@@ -231,7 +232,7 @@ const addProductpost=async function(req,res){
    
   }catch(error){
    console.log("error in addProducts "+error.message)
-  res.render('user/error',{error})
+  res.render('user/error',{res,errorCode:500,errorMessage:error.message,errorDescription:'error in addProducts'+ error.message,link:'/admin/'})
   }
 }
 

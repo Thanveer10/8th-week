@@ -1,0 +1,143 @@
+<%- include('../partial/admin/header.ejs') %>
+
+    <div class="content pl-5 ">
+        <section>
+            <div class="col-lg-10">
+                <div class="card mb-4">
+                    <form  id="coupen-form">
+                        <div class="card-body mt-3">
+                            <div>
+                                <p>COUPEN DETAILS</p>
+                            </div>
+
+                            <!-- <body onload="setDefaultStartDate()">
+
+                            </body> -->
+                            <div class="row ">
+                                <input type="hidden" id="coupe-id" value="<%= Coupen._id %>">
+
+                                <div class="col-md-6 form-group mb-3">
+                                    <label>Coupen Code</label>
+                                    <input class="form-control" type="text" name="CoupenCode" placeholder="Coupen Code"
+                                        value="<%= Coupen.CoupenCode %>" id="coupenCode">
+                                </div>
+
+
+                                <div class="col-md-6 form-group">
+                                    <label>Discount Value</label>
+                                    <input class="form-control" type="text" name="DiscountPrice"
+                                        placeholder="Discount value" value="<%= Coupen.DiscountPrice %>" id="discountPrice">
+                                </div>
+
+
+                                <div class="col-md-6 form-group  mb-3">
+                                    <label>Create Date</label>
+                                    <input class="form-control" type="date" name="CreateDate" placeholder="Create date"
+                                        value="<%= Coupen.CreateDate %>" id="createDate"  required>
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    <label>MIninmum Price</label>
+                                    <input class="form-control" type="text" name="MinimumPrice"
+                                        placeholder="Minimum Price" value="<%= Coupen.MinimumPrice %>" id="minimumPrice">
+
+                                </div>
+
+
+
+                                <div class="col-md-6 form-group  mb-3">
+                                    <label>Expiry Date</label>
+                                    <!-- <p class="text-primary">javadda</p>    -->
+                                    <input class="form-control" type="date" name="ExpireDate" placeholder="Expiry date"
+                                       id="expireDate" required>
+
+                                </div>
+
+
+
+                                <div class="col-md-6 form-group">
+                                    <label>Discount Type</label>
+                                    <input class="form-control" type="text" name="DiscountType"
+                                        placeholder="Discount type" value="<%= Coupen.DiscountType %>" id="discountType">
+                                </div>
+
+
+
+                                <div class="col-md-6 form-group  mb-3">
+                                    <button type="submit" class="btn btn-primary">Update Coupen</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </section>
+    </div>
+    </div>
+    <!-- main container end -->
+
+    <!-- footer start--> 
+    <footer class=" footer_section pt-3">
+        <div class="container">
+            <p>
+                &copy; <span id="displayYear"></span> All Rights Reserved By
+                <a href="#">GIFTOS</a>
+            </p>
+        </div>
+    </footer>
+    <!-- footer end -->
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/custom.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+        document.getElementById('coupen-form').addEventListener('submit', function (){
+            event.preventDefault();
+            updateCoupen(); 
+        })
+      function updateCoupen(){
+        $.ajax({
+           url:'/admin/updateCoupen',
+           method:'post' ,
+           data:{
+            coupenId: document.getElementById('coupe-id').value,
+            coupenCode: document.getElementById('coupenCode').value,
+            discountPrice: document.getElementById('discountPrice').value,
+            createDate: document.getElementById('createDate').value,
+            minimumPrice: document.getElementById('minimumPrice').value,
+            expireDate: document.getElementById('expireDate').value,
+            discountType: document.getElementById('discountType').value
+           },
+           success:function(response){
+            Swal.fire({
+                icon:'success',
+                title: 'Success',
+                text: 'Coupen update seccessfully',
+                confirmButtonText: 'OK'
+            }).then(()=>{
+                window.location.href = '/admin/coupenadmin'
+            })
+           },
+           error: function(whr, status,error){
+            Swal.fire({
+                icon:'error',
+                title: 'Error',
+                text: 'Failed to update coupen',
+                confirmButtonText: 'OK'
+            })
+            console.log('error in update coupen ' + error.message)
+           }
+        })
+      }
+    </script>
+
+    </body>
+
+    </html>

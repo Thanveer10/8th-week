@@ -1,115 +1,118 @@
 <%- include('../partial/user/userProfilePartial.ejs') %>
-<style>
-.col-md-12{
-  margin-bottom: 30px;
-}
-.pagination-container a {
-  text-align: center;
-  padding: 5px 10px;
-  /* margin: 5px; */
-  text-decoration: none;
-  color: rgb(51, 121, 212);
-  /* background-color:rgb(71, 149, 212); */
-  border-radius: 5px;
+  <style>
+  .col-md-12{
+    margin-bottom: 30px;
   }
-  .pagination-container .current-page {
-  font-weight: bold;
-  color:white;
-  background-color: rgb(51, 121, 212);
-  padding: 5px 10px;
-  border-radius: 5px;
-}
-.pagination-container a:hover {
-  background-color: rgb(51, 121, 212);
-  color: white;
+  .pagination-container a {
+    text-align: center;
+    padding: 5px 10px;
+    /* margin: 5px; */
+    text-decoration: none;
+    color: rgb(51, 121, 212);
+    /* background-color:rgb(71, 149, 212); */
+    border-radius: 5px;
+    }
+    .pagination-container .current-page {
+    font-weight: bold;
+    color:white;
+    background-color: rgb(51, 121, 212);
+    padding: 5px 10px;
+    border-radius: 5px;
   }
-</style>
-<div class="col-lg-8 ">
-  <div class="col-md-12 mb-2">
-   <div class="row g-0 ">
-    <% if(userAddress && userAddress.length > 0){ %>
-      <% userAddress.forEach((address,index)=>{ %>
-        <div class="card " style="border-radius: .5rem; margin-top: 0; ">
-       <div class="card-body p-4 ">
-         <h5>Address <%=index +1 %> </h5>
-         <hr class="mt-0 mb-4">
-         <div class="row pt-1">
-           <div class="col-6 mb-3">
-             <h6>Name</h6>
-             <p class="text-muted"><%= address.name %></p>
-           </div>
-           <div class="col-6 mb-3">
-            <h6> House/Apartment Name</h6>
-            <p class="text-muted"><%= address.houseName %></p>
-          </div>
-           <div class="col-6 mb-3">
-             <h6>street</h6>
-             <p class="text-muted"><%= address.street %></p>
-           </div>
-           <div class="col-6 mb-3">
-            <h6>city</h6>
-            <p class="text-muted"><%= address.city %></p>
-          </div>
-         </div>
-         <div class="row pt-1">
-           
-            <div class="col-6 mb-3">
-              <h6>state</h6>
-              <p class="text-muted"><%= address.state  %></p>
-            </div>
-
-            <div class="col-6 mb-3">
-              <h6>Pin Code</h6>
-              <p class="text-muted"><%= address.pincode  %> </p>
-            </div>
-         </div>
-          <h6>Contact</h6>
+  .pagination-container a:hover {
+    background-color: rgb(51, 121, 212);
+    color: white;
+    }
+  </style>
+  <!-- <div class="container mt-5"> -->
+  <div class="col-lg-9 offset-lg-3">
+    <div class="col-md-12 mb-2">
+    <div class="row g-0 ">
+      <% if(userAddress && userAddress.length > 0){ %>
+        <% userAddress.forEach((address,index)=>{ %>
+          <div class="card " style="border-radius: .5rem; margin-top: 0; box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3); ">
+        <div class="card-body p-4 ">
+          <h5>Address <%=index +1 %> </h5>
           <hr class="mt-0 mb-4">
           <div class="row pt-1">
             <div class="col-6 mb-3">
-              <h6>Phone</h6>
-              <p class="text-muted"><%= address.phone %></p>
+              <h6>Name</h6>
+              <p class="text-muted"><%= address.name %></p>
             </div>
             <div class="col-6 mb-3">
-              <h6>Alternate Phone</h6>
-              <p class="text-muted"><%= address.altPhone %></p>
+              <h6> House/Apartment Name</h6>
+              <p class="text-muted"><%= address.houseName %></p>
+            </div>
+            <div class="col-6 mb-3">
+              <h6>street</h6>
+              <p class="text-muted"><%= address.street %></p>
+            </div>
+            <div class="col-6 mb-3">
+              <h6>city</h6>
+              <p class="text-muted"><%= address.city %></p>
             </div>
           </div>
-          <button type="button" class="btn btn-primary"><a href="/edit-address?id=<%= address._id %>" style="color: white; text-decoration: none;">Edit Address</a></button>
-          <button type="button" class="btn btn-danger" onclick="confirmDelete( '<%= index %>')" ><a  style="color: white; text-decoration: none;">Delete</a></button>
-       
-     </div>
-    </div>
-        <% if (index < userAddress.length - 1) { %>
-          <hr > 
-        <% } %>
-    <% }) %>
-     <% }else{ %>
-      <p class="text-muted">No address information available.</p>
-     <%  } %>
-  </div>
-  
-</div>
-<!-- pagination -->
- <div class="pagination-container   text-center">
-  <% if(currentPage>1){ %>  
-  <a  href="?page=<%= currentPage-1 %>">&laquo;Previous</a>
-  <% } %>
-  <% for(let i=1;i<=totalPages;i++){ %>
-    <% if(i==currentPage){ %>
-      <span style="background-color: rgb(51, 121, 212);" class="current-page"><%= i %></span>
-      <% }else{ %>
-      <a href="?page=<%= i %>" ><%= i %></a>
-      <% } %>
-   <% } %>
-   <% if( currentPage < totalPages){ %>
-     <a href="?page=<%= currentPage+1 %>"   >Next &raquo;</a>
+          <div class="row pt-1">
+            
+              <div class="col-6 mb-3">
+                <h6>state</h6>
+                <p class="text-muted"><%= address.state  %></p>
+              </div>
 
-   <% } %>
- 
- 
- </div>
-<button type="button" class="btn btn-primary"><a href="/add-address" style="color: white; text-decoration: none; ">Add Address </a></button>
+              <div class="col-6 mb-3">
+                <h6>Pin Code</h6>
+                <p class="text-muted"><%= address.pincode  %> </p>
+              </div>
+          </div>
+            <h6>Contact</h6>
+            <hr class="mt-0 mb-4">
+            <div class="row pt-1">
+              <div class="col-6 mb-3">
+                <h6>Phone</h6>
+                <p class="text-muted"><%= address.phone %></p>
+              </div>
+              <div class="col-6 mb-3">
+                <h6>Alternate Phone</h6>
+                <p class="text-muted"><%= address.altPhone %></p>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary"><a href="/edit-address?id=<%= address._id %>" style="color: white; text-decoration: none;">Edit Address</a></button>
+            <button type="button" class="btn btn-danger" onclick="confirmDelete( '<%= index %>')" ><a  style="color: white; text-decoration: none;">Delete</a></button>
+        
+      </div>
+      </div>
+          <% if (index < userAddress.length - 1) { %>
+            <hr > 
+          <% } %>
+      <% }) %>
+      <% }else{ %>
+        <p class="text-muted">No address information available.</p>
+      <%  } %>
+    </div>
+    
+  </div>
+  <!-- pagination -->
+  <div class="pagination-container   text-center">
+    <% if(currentPage>1){ %>  
+    <a  href="?page=<%= currentPage-1 %>">&laquo;Previous</a>
+    <% } %>
+    <% for(let i=1;i<=totalPages;i++){ %>
+      <% if(i==currentPage){ %>
+        <span style="background-color: rgb(51, 121, 212);" class="current-page"><%= i %></span>
+        <% }else{ %>
+        <a href="?page=<%= i %>" ><%= i %></a>
+        <% } %>
+    <% } %>
+    <% if( currentPage < totalPages){ %>
+      <a href="?page=<%= currentPage+1 %>"   >Next &raquo;</a>
+
+    <% } %>
+  
+  
+  </div>
+  <button type="button" class="btn btn-primary"><a href="/add-address" style="color: white; text-decoration: none; ">Add Address </a></button>
+  </div>
+<!-- </div> -->
 </div>
 </div>
 </section>

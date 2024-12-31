@@ -37,7 +37,7 @@ const userSchema=mongoose.Schema({
         reqire:true,
         default:true
     },
-    UsedCoupen:{
+    UsedCoupons:{
         type:Array,
     },
     CreatedAt:{

@@ -36,6 +36,20 @@
     .product-price{
       font-family: 'Roboto', sans-serif;
     }
+    .image-div{
+    max-height: 400px; 
+    overflow: hidden; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .product-image {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain; 
+  }
+
    </style>
 </head>
 
@@ -139,8 +153,8 @@
                     <div class="row d-flex align-items-stretch">
                       <div class="col-md-6" >
                         <div class="images p-2 h-100 " >
-                          <div class="text-center product-image">
-                            <img id="main-image" src="/productsimg/<%= product.Productimage[0]%>"  class="img-fluid  zoom-img" />
+                          <div class="text-center product-image image-div">
+                            <img id="main-image" src="/productsimg/<%= product.Productimage[0]%>"  class="img-fluid  zoom-img product-image" />
                           </div>
                           <div class="thumbnail text-center">
                                     <% product.Productimage.forEach((prod) =>{ %>
