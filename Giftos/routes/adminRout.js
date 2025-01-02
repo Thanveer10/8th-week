@@ -5,6 +5,8 @@ const admin_router=express.Router()
 const admin_ctrl=require('../controller/adminctrl')
 const category_ctrl=require('../controller/category-ctrl')
 const adminAuth=require('../middleware/adminAuth')
+const multer = require('multer');
+const upload = multer();
 
 admin_router.use(express.json())
 admin_router.use(express.urlencoded({extended:true}))
@@ -44,6 +46,17 @@ admin_router.get('/coupenDelete/:id',adminAuth,admin_ctrl.coupenDelete)
 
 // ORDER SESSIONS
 admin_router.get('/Orderview/:id',adminAuth,admin_ctrl.ordeviewget)
+
+//OFFER SESSIONS
+admin_router.get('/offers',adminAuth,admin_ctrl.offerListget)
+admin_router.post('/addOffer', upload.none(),adminAuth,admin_ctrl.addOffer)
+admin_router.get('/edit-offer/:id',adminAuth,admin_ctrl.offerEditget)
+admin_router.post('/updateOffer', upload.none(),adminAuth,admin_ctrl.updateOffer)
+admin_router.get("/activate-offer/:id",adminAuth,admin_ctrl.activateOffer)
+admin_router.get("/deactivate-offer/:id",adminAuth,admin_ctrl.deactivateOffer)
+admin_router.post('/delete-offer/:offerId',adminAuth,admin_ctrl.deleteOffer)
+
+
 
 
 //sales repot

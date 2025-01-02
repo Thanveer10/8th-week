@@ -97,7 +97,7 @@ body {
 }
 
 #navbarSupportedContent.innerpage_navbar {
-  background-color: #f9ece6;
+  background-color: #ffffff;
   border-radius:  15px 15px 0 0;
   -webkit-box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.25);
           box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.25);
@@ -744,6 +744,7 @@ margin-top: 10px; /* Optional spacing adjustment */
 
 .contact_section {
   position: relative;
+  margin-bottom: 5rem;
 }
 
 .contact_section .container-bg {
@@ -918,9 +919,10 @@ margin-top: 10px; /* Optional spacing adjustment */
 /* info section */
 .info_section {
   position: relative;
+  bottom: 0;
   background-color: #2d2d2d;
   color: #ffffff;
-  margin: 63px 1px 25px;
+  margin: 0px 1px 25px;
 }
 
 .info_section .social_container {

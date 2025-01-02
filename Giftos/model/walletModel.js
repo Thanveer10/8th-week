@@ -25,7 +25,7 @@ const transactionSchema=new mongoose.Schema({
 const walletSchema= new mongoose.Schema({
     userId:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:'User',
+        ref:'userDB1',
         required:true
     },
     balance: {

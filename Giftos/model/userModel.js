@@ -40,6 +40,29 @@ const userSchema=mongoose.Schema({
     UsedCoupons:{
         type:Array,
     },
+    ReferralCode: { // Each user has a referral code
+        type: String,
+        unique: true
+    },
+    Referrer: { // Track who referred the new user
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "userDB1",
+        default: null
+    },
+    RedeemedOffers: [{  // Track which referral offers the user has redeemed
+        offerId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Offer"
+        },
+        redeemedOn: {
+            type: Date,
+            default: Date.now
+        }
+    }],
+    ReferralRewards: { // Track the total rewards earned by referring others
+        type: Number,
+        default: 0
+    },
     CreatedAt:{
         type:Date,
         default: Date.now()

@@ -1,0 +1,97 @@
+<%- include('../partial/admin/header.ejs') %>
+
+<div class="content">
+    <h2 id="offerPageTittle" class="mb-5 mt-2">Edit Offer</h2>
+    
+    <form id="addOfferForm" class="needs-validation " novalidate enctype="multipart/form-data" >
+        <input type="hidden" id="offerId" value="<%= offer._id %>">
+        <div class="form-row">
+            <div class="col-md-6 mb-3">
+                <label for="offerType">Offer Type</label>
+                <select class="custom-select" id="offerType" name="type" required onchange="toggleOfferFields()">
+                    <option selected disabled value="">Choose...</option>
+                    <option value="Product">Product</option>
+                    <option value="Category">Category</option>
+                    <option value="Referral">Referral</option>
+                </select>
+                <div class="invalid-feedback">
+                    Please select a valid offer type.
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="offerTitle">Offer Title</label>
+                <input type="text" value="<%= offer.title %>" class="form-control" id="offerTitle" name="title" placeholder="Enter offer title" required>
+                <div class="invalid-feedback">
+                    Please provide a valid offer title.
+                </div>
+            </div>
+        </div>
+    
+        <!-- Offer-Specific Fields -->
+        <div id="productOfferFields" class="offer-specific-fields" style="display: none;">
+            <label for="productSelect">Select Product</label>
+            <select class="custom-select" id="productSelect" name="product" required>
+                <option selected disabled value="">Select...</option>
+                <% products.forEach(product => { %>
+                    <option value="<%= product._id %>"><%= product.Productname %></option>
+                <% }); %>
+            </select>
+            <div class="invalid-feedback">
+                Please provide a valid offer title.
+            </div>
+        </div>
+    
+        <div id="categoryOfferFields" class="offer-specific-fields" style="display: none;">
+            <label for="categorySelect">Select Category</label>
+            <select class="custom-select" id="categorySelect" name="category" required>
+                <option selected disabled value="">Select...</option>
+                <% categories.forEach(category => { %>
+                    <option value="<%= category._id %>"><%= category.Category %></option>
+                <% }); %>
+            </select>
+            <div class="invalid-feedback">
+                Please provide a valid offer title.
+            </div>
+        </div>
+    
+        <!-- Discount and Other Common Fields -->
+        <div class="form-row">
+            <div class="col-md-6 mb-3" id="discountTypeDiv">
+                <label for="discountType">Discount Type</label>
+                <select id="discountType" class="form-control" name="discountType" required>
+                    <!-- <option selected disabled value="">Choose...</option> -->
+                    <option value="percentage" <%= offer.discountType === 'percentage'?'selected': '' %>>Percentage</option>
+                    <option value="amount" <%= offer.discountType === 'amount'?'selected': '' %>>Fixed Amount</option>
+                </select>
+                <div class="invalid-feedback">Please select a discount type.</div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="discountValue">Discount Value</label>
+                <input type="number" value="<%= offer.discountValue %>" class="form-control" id="discountValue" name="discountValue" placeholder="Enter discount value" required>
+                <div class="invalid-feedback">Please enter a valid discount value.</div>
+            </div>
+        </div>
+    
+        <!-- Offer Details -->
+        <div class="form-row">
+            <div class="col-md-12 mb-3">
+                <label for="offerDetails">Details</label>
+                <textarea class="form-control" id="offerDetails" name="details" rows="3" > <%= offer.details %></textarea>
+            </div>
+        </div>
+<!--         
+        <div class="form-row">
+            <label for="offerImage">Offer Image</label>
+            <input type="file" class="form-control-file" id="offerImage" name="image" accept="image/*" required>
+            <div class="invalid-feedback">Please upload a valid image.</div>
+        </div> -->
+    
+        <button id="submitOfferBtn" class="btn btn-primary" type="submit">Add Offer</button>
+        <button class="btn btn-secondary" type="button" onclick="window.location.href='/admin/dashboard';">Cancel</button>
+    </form>
+</div>
+</div>
+
+
+<script src="/js/admin/addOffer.js"></script>
+<%- include('../partial/admin/footer.ejs') %>

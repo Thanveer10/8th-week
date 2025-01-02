@@ -8,6 +8,7 @@ const CategoryColl = require("../model/categoryModel");
 const AddressColl = require("../model/addressModel");
 const OrderColl = require("../model/orderModel");
 const WalletColl = require("../model/walletModel");
+const OfferColl = require("../model/offerModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
@@ -667,6 +668,7 @@ const usersignupval = async function (req, res, next) {
     Confirmpassword: req.body.conformpassword,
     Mobilenumber: req.body.phonenumber,
     Email: req.body.email,
+    ReferralCode:req.body.referralCode,
     Status: true,
   };
 
@@ -733,24 +735,81 @@ const verifySignupOTP = async function (req, res) {
       const user = req.session.userData;
       const passwordHash = await bcrypt.hash(user.Password, 10);
       console.log("password has been hashed " + passwordHash);
-      const saveUser = new User({
+         let referralUser=null;
+       if(user.ReferralCode && user.ReferralCode.trim() !== ""){
+          referralUser = await User.findOne({ ReferralCode: user.ReferralCode });
+          console.log('referralUser', referralUser);
+         if(!referralUser){     
+            return res.status(500).json({
+              success: false,
+              message: "Wallet Operation Failed",
+              description: "An error occurred while processing wallet transactions."
+            });
+         }
+       }
+
+       const saveUser = new User({
         Username: user.Username,
         Password: passwordHash,
         Mobilenumber: user.Mobilenumber,
         Email: user.Email,
+        ReferralCode: generateReferralCode(),
         Status: true,
       });
-      await saveUser.save();
+      await saveUser.save();   
+
+
+        if(referralUser){
+       const referalOffer= await OfferColl.findOne({type:'Referral',isActive:true});
+       console.log('refferalOffer',referalOffer)
+       if(referalOffer){
+        const hasRedeemed= referralUser.RedeemedOffers.some(offer =>offer.offerId.equals(referalOffer._id))
+        if(!hasRedeemed){
+          const wallet= await WalletColl.findOne({userId: referralUser._id})|| new WalletColl({ userId: referralUser._id, balance: 0, transactions: [] });
+          console.log('wallet',wallet)
+            const rewardOffer=referalOffer.discountValue;
+             wallet.balance+=rewardOffer;
+             wallet.transactions.push({
+              type: "credit",
+              amount: rewardOffer,
+              description: `Refferal bonus for new signin up ${saveUser._id}` ,
+              transactionDate: new Date(),
+             })
+          await wallet.save();
+        
+
+            const saveUserWallet= await WalletColl.findOne({userId:saveUser._id}) || new WalletColl({ userId: saveUser._id, balance: 0, transactions: [] });
+            const saveUserrewardOffer=50;
+            saveUserWallet.balance+=saveUserrewardOffer;
+            saveUserWallet.transactions.push({
+              type: "credit",
+              amount: saveUserrewardOffer,
+              description: `Refferal bonus for new signin up ${saveUser._id}` ,
+              transactionDate: new Date(),
+            })
+            await saveUserWallet.save();
+            console.log("refferal bonus added to wallet");
+            referralUser.RedeemedOffers.push({ offerId: referalOffer._id });
+            await referralUser.save();
+        }else{
+          console.log("user already redeemed refferal offer");
+        }
+       }
+      }
+       
       res.json({ success: true, redirectUrl: "/login" });
     } else {
-      res
+     return res
         .status(400)
         .json({ success: false, message: "Invalid OTP, try again" });
     }
   } catch (error) {
     console.log("erron in veryfiying otp " + error.message);
-    res.status(500).json({ message: "an error occurred" });
+   return res.status(500).json({ message: "an error occurred" });
   }
+};
+const generateReferralCode = () => {
+  return Math.random().toString(36).substr(2, 8).toUpperCase();
 };
 
 //resnd signup otp

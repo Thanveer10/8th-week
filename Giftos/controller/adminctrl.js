@@ -4,15 +4,30 @@ const bcrypt = require("bcrypt");
 const { Admin } = require("../model/adminModel");
 const Users = require("../model/userModel");
 const Products = require("../model/productModel");
-const Categorycoll = require("../model/categoryModel");
-const Ordercoll = require("../model/orderModel");
+const CategoryColl = require("../model/categoryModel");
+const OrderColl = require("../model/orderModel");
 const CoupenColl = require("../model/coupenModel");
+const OfferColl = require("../model/offerModel");
 const { render } = require("ejs");
 const mongoose = require("mongoose");
 
 
 let coupenAdded;
 let coupenAddedError;
+// calculating the offer price 
+function salePrice(product){
+  const reqularPrice= product.RegularPrice;
+  let offeredPrice;
+  for (offer of product.AppliedOffers){
+    if(offer.discountType === 'amount'){
+      offeredPrice = reqularPrice - offer.discountValue;
+    }
+    else if(offer.discountType === 'percentage'){
+      offeredPrice = reqularPrice - (reqularPrice * offer.discountValue / 100);
+    }
+  }
+return offeredPrice;
+}
 
 //Admin data
 const createAdmin = async () => {
@@ -112,7 +127,7 @@ const dashBoard = async function (req, res) {
     let sessionName = req.session.admin_id;
     if (sessionName) {
       // const users=await Users.find({})
-      let latesOrders = await Ordercoll.find({}).sort({ date: -1 }).limit(5);
+      let latesOrders = await OrderColl.find({}).sort({ date: -1 }).limit(5);
       let latestMembers = await Users.find({}).sort({ CreatedAt: -1 }).limit(5);
       console.log(latesOrders);
       console.log("latest mambers ========= " + latestMembers);
@@ -231,7 +246,7 @@ const orderListget = async function (req, res) {
       return res.redirect("/admin/");
     }
     let message;
-    let allOrders = await Ordercoll.find({}).populate("orderedUser").sort({date:-1});
+    let allOrders = await OrderColl.find({}).populate("orderedUser").sort({date:-1});
     if (allOrders && allOrders.length < 1) {
       message = "NO orders";
     }
@@ -263,7 +278,7 @@ const updateOrderStatus = async function (req, res) {
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: "Invalid status value" });
     }
-    let currentOrderStatus = await Ordercoll.findById(order_id);
+    let currentOrderStatus = await OrderColl.findById(order_id);
     console.log(currentOrderStatus.Status);
     if (currentOrderStatus.orderStatus == "Delivered") {
       return res
@@ -271,7 +286,7 @@ const updateOrderStatus = async function (req, res) {
         .json({ error: "Cannot update delivered order status" });
     }
 
-    let order = await Ordercoll.findByIdAndUpdate(
+    let order = await OrderColl.findByIdAndUpdate(
       order_id,
       { $set: { orderStatus: status } },
       { new: true }
@@ -387,7 +402,7 @@ const ordeviewget = async function (req, res) {
     const admin = req.session.admin_id;
     const sessionName = admin;
     if (admin) {
-      let order = await Ordercoll.findById(orderId).populate("orderedUser");
+      let order = await OrderColl.findById(orderId).populate("orderedUser");
       if (order) {
         res.render("admin/orderView", { order, sessionName });
       } else {
@@ -401,6 +416,327 @@ const ordeviewget = async function (req, res) {
     res.render("user/error", { error });
   }
 };
+
+// OFFER SESSIONS
+const offerListget= async function (req, res) {
+  try {
+    const sessionName = req.session.admin_id;
+  const offers = await OfferColl.find({}) .populate({ path: 'product', select: 'Productname ' }).populate({ path: 'category', select: 'Category' });;
+  const categories = await CategoryColl.find({Status:'Listed'})
+  const products= await Products.find({Status:'Available'})
+  if (sessionName) {
+    res.render("admin/offerList", { sessionName, offers,categories,products});
+  } else {
+    return res.redirect("/admin/");
+  }
+  } catch (error) {
+    console.log('error in offerlistget ' + error.message)
+    res.render("admin/error", {
+      res,
+      errorCode: 500,
+      errorMessage: "Server Error",
+      errorDescription: "An unexpected error occurred while loading dashboard",
+      link: req.headers.referer || "/admin",
+    });
+  }
+  
+}
+
+const addOffer= async function (req, res) {
+ try {
+  const { type, title, discountType, discountValue, details, category, product } = req.body;
+  console.log('req.body====' + type, title, discountType, discountValue, details, category, product )
+  // const image = req.file ? req.file.filename : null;
+
+  if (!type || !title || !discountType || !discountValue || isNaN(discountValue) || discountValue <= 0) {
+      return res.status(400).json({ success: false, message: 'Invalid input. Please check all required fields.' });
+  }
+
+   if (type === 'Referral') {
+      const existingReferralOffer = await OfferColl.findOne({ type: 'Referral' , isActive :true });
+
+      if (existingReferralOffer) {
+          return res.status(400).json({ success: false, message: 'Referral offer already exists.' });
+      }
+  }
+  const newOffer = new OfferColl({
+      type,
+      title,
+      discountType,
+      discountValue,
+      details,
+      category: type === 'Category' ? category : undefined,
+      product: type === 'Product' ? product : undefined,
+  });
+
+  await newOffer.save();
+
+  if(newOffer.type === 'Category') {
+     const products= await Products.find({Category: newOffer.category})
+     for(const product of products) {
+      product.AppliedOffers.push({
+        offerId: newOffer._id,
+        discountValue: newOffer.discountValue,
+        discountType: newOffer.discountType
+    });
+
+      product.SalePrice= salePrice(product)
+      await product.save()
+     }
+  }else if(newOffer.type === 'Product'){
+    const product= await Products.findById(newOffer.product)
+    if(product){
+      product.AppliedOffers.push({
+        offerId: newOffer._id,
+        discountValue: newOffer.discountValue,
+        discountType: newOffer.discountType
+    });
+
+      product.SalePrice= salePrice(product)
+      await product.save()
+    }
+  }
+  res.status(200).json({ success: true, message: 'Offer added successfully' });
+ } catch (error) {
+  console.log('error in addoffer admin' + error.message)
+  res.status(500).json({ success: false, message: 'Server error: ' + error.message });
+}
+}
+
+const offerEditget= async function (req, res) {
+  try {
+    const sessionName = req.session.admin_id;
+    const offerId = req.params.id;
+    const offer = await OfferColl.findById(offerId)
+    const products= await Products.find({Status:'Available'})
+    const categories =  await CategoryColl.find({Status:'Listed'})
+    if (!offer) {
+      return res.status(404).json({ success: false, message: 'Offer not found' });
+    }
+    res.render('admin/offerEdit', { offer ,sessionName,products,categories});
+  } catch (error) {
+    console.log('error in offereditget' + error.message)
+    res.render("admin/error", {
+      res,
+      errorCode: 500,
+      errorMessage: "Server Error",
+      errorDescription: "An unexpected error occurred while loading edit page",
+      link: req.headers.referer || "/admin/offers",
+    });
+  }
+}
+const updateOffer = async function (req, res) {
+  try {
+    const { type, discountValue, discountType, category, product: productId } = req.body;
+    console.log('req.body', { type, discountValue, discountType, category, productId });
+    const offerId = req.query.offerId;
+    console.log('offerId', offerId);
+
+    // Find the existing offer
+    const existingOffer = await OfferColl.findById(offerId);
+    if (!existingOffer) {
+      return res.status(404).json({ message: 'Offer not found' });
+    }
+
+    // Step 1: Remove the effects of the old offer
+    console.log('Removing the effects of the old offer');
+    if (existingOffer.type === 'Category') {
+      const products = await Products.find({ Category: existingOffer.category });
+      for (const prod of products) {
+        // Remove the offer from AppliedOffers
+        prod.AppliedOffers = prod.AppliedOffers.filter(offer => offer.offerId.toString() !== offerId);
+
+        // Recalculate SalePrice
+        prod.SalePrice = salePrice(prod);
+        await prod.save();
+      }
+      console.log('Removed category offer');
+    } else if (existingOffer.type === 'Product') {
+      let product = await Products.findById(existingOffer.product);
+      if (product) {
+        // Remove the offer from AppliedOffers
+        product.AppliedOffers = product.AppliedOffers.filter(offer => offer.offerId.toString() !== offerId);
+
+        // Recalculate SalePrice
+        product.SalePrice = salePrice(product);
+        await product.save();
+        console.log('Removed product offer');
+      } else {
+        console.log('Product not found');
+      }
+    }
+
+    // Step 2: Update the offer with new details
+    existingOffer.type = type;
+    existingOffer.discountValue = discountValue;
+    existingOffer.discountType = discountType;
+    existingOffer.category = category || null;
+    existingOffer.product = productId || null;
+    await existingOffer.save();
+
+    // Step 3: Apply the updated offer
+    console.log('Applying updated offer');
+    if (type === 'Category') {
+      const products = await Products.find({ Category: category });
+      for (const prod of products) {
+        prod.AppliedOffers.push({
+          offerId: existingOffer._id,
+          discountValue: discountValue,
+          discountType: discountType,
+        });
+
+        prod.SalePrice = salePrice(prod);
+        await prod.save();
+      }
+    } else if (type === 'Product') {
+      console.log('Product details', productId);
+      let product = await Products.findById(productId);
+      if (product) {
+        console.log('Product', product);
+        product.AppliedOffers.push({
+          offerId: existingOffer._id,
+          discountValue: discountValue,
+          discountType: discountType,
+        });
+
+        product.SalePrice = salePrice(product);
+        await product.save();
+      } else {
+        console.log('Product not found');
+      }
+    }
+
+    res.status(200).json({ success: true, message: 'Offer Updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error: ' + error.message });
+  }
+};
+
+
+
+const activateOffer= async function (req,res){
+  try {
+    const offerId = req.params.id
+    const offer = await OfferColl.findByIdAndUpdate(offerId, { isActive: true }, { new: true });
+    if (!offer) {
+      return res.status(404).json({ success: false, message: 'Offer not found' });
+    }
+    if(offer.type === 'Category') {
+      const products= await Products.find({Category: offer.category})
+      for(const product of products) {
+       product.AppliedOffers.push({
+         offerId: offer._id,
+         discountValue: offer.discountValue,
+         discountType: offer.discountType
+     });
+  
+       product.SalePrice= salePrice(product)
+       await product.save()
+      }
+   }else if(offer.type === 'Product'){
+     const product= await Products.findById(offer.product)
+     if(product){
+       product.AppliedOffers.push({
+         offerId: offer._id,
+         discountValue: offer.discountValue,
+         discountType: offer.discountType
+     });
+  
+       product.SalePrice= salePrice(product)
+       await product.save()
+     }else{
+      console.log("Product not found")
+      res.redirect('/admin/offers')
+     }
+   }
+    res.redirect('/admin/offers')
+  } catch (error) {
+    console.log('error in activate offer', error.message)
+    res.redirect('/admin/offers');
+  }
+}
+
+const deactivateOffer= async function (req, res) {
+  try {
+    const offerId = req.params.id;
+    const offer = await OfferColl.findByIdAndUpdate(offerId, { isActive: false }, { new: true });
+    if (!offer) {
+      return res.status(404).json({ success: false, message: 'Offer not found' });
+    }
+    const products= await Products.find({"AppliedOffers.offerId":offerId})
+    for(const product of products) {
+      product.AppliedOffers = product.AppliedOffers.filter((o) => o.offerId.toString()!== offerId);
+      product.SalePrice= salePrice(product)
+      await product.save()
+    }
+    res.redirect('/admin/offers');
+  } catch (error) {
+    console.log('error in deactivateOffer admin' + error.message)
+    res.redirect('/admin/offers');
+    // res.status(500).json({ success: false, message: 'Server error: ' + error.message });
+  }
+}
+
+
+const deleteOffer = async (req, res) => {
+  try {
+    console.log('reached deleteOffer')
+      const offerId = req.params.offerId;
+
+      const offer = await OfferColl.findById(offerId);
+      if (!offer) {
+          return res.status(404).json({ success: false, message: 'Offer not found' });
+      }
+
+      await OfferColl.findByIdAndDelete(offerId);
+
+      if (!offer.isActive) {
+        res.redirect('/admin/offers?status=success');
+          // return res.status(200).json({ success: true, message: 'Inactive offer deleted without affecting products.' });
+      }
+
+      if (offer.type === 'Category') {
+          const offerProducts = await Products.find({ Category: offer.category });
+
+          for (let product of offerProducts) {
+              product.AppliedOffers = product.AppliedOffers.filter(
+                  appliedOffer => appliedOffer.offerId.toString() !== offerId
+              );
+
+              product.SalePrice = salePrice(product);
+              await product.save();
+          }
+
+      } else if (offer.type === 'Product') {
+          const offerProduct = await Products.findById(offer.product);
+          if (!offerProduct) {
+            res.redirect('/admin/offers?status=failed');
+              // return res.status(404).json({ success: false, message: 'Product not found' });
+          }
+
+          offerProduct.AppliedOffers = offerProduct.AppliedOffers.filter(
+              appliedOffer => appliedOffer.offerId.toString() !== offerId
+          );
+
+          offerProduct.SalePrice = salePrice(offerProduct);
+          await offerProduct.save();
+      }
+      console.log('delete product successfully')
+      res.redirect('/admin/offers?status=success');
+      // res.status(200).json({ success: true, message: 'Offer deleted successfully' });
+
+  } catch (error) {
+    console.log('error in offerlistget ' + error.message)
+    res.render("admin/error", {
+      res,
+      errorCode: 500,
+      errorMessage: "Server Error",
+      errorDescription: "An unexpected error occurred while loading dashboard",
+      link: req.headers.referer || "/admin",
+    });  }
+};
+
 
 //sales report
 const salesReportget = function (req, res) {};
@@ -432,5 +768,12 @@ module.exports = {
   coupenListpost,
   coupenEditget,
   updateCoupen,
-  coupenDelete
+  coupenDelete,
+  offerListget,
+  addOffer,
+  activateOffer,
+  deactivateOffer,
+  offerEditget,
+  updateOffer,
+  deleteOffer
 };

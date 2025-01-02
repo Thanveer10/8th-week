@@ -21,10 +21,16 @@ const productSchema=new Schema({
         type: Number,
         // required: true
     },
-    // Price:{
-    //     type:Number,
-    //     required:true
-    // },
+    AppliedOffers: [
+        {
+            offerId: {
+                type: Schema.Types.ObjectId,
+                ref: "Offer"
+            },
+            discountValue: Number,   
+            discountType: String     
+        }
+    ],
     Category:{
         type:Schema.Types.ObjectId,
         ref:"category",

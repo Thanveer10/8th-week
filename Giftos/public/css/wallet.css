@@ -2,7 +2,7 @@
 .container {
     max-width: 1200px; /* Set a max width for larger screens */
     margin: 0 auto; /* Center the container */
-    padding: 20px; /* Add padding for breathing space */
+    /* padding: 20px;  */
 }
 
 /* Wallet overview styles */
