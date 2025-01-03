@@ -16,6 +16,7 @@ const cartSchema =new mongoose.Schema({
         price: { type: Number }, // Stores the effective price
         totalPrice: { type: Number }, // Total price for the quantity
         finalTotalPrice: { type: Number },
+        discountValue: { type: Number}
     }
     ], 
  totalCartPrice: {

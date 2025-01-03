@@ -46,9 +46,15 @@
     <style>
       body {
         padding-top: 170px;
+        height: 100vh;
+        
         /* Adjust the value to match your navbar height */
       }
-
+/* .cart-area{
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(209, 202, 202);
+} */
       .cart-item {
         border: 1px solid #f1f1f1;
         border-radius: 8px;
@@ -57,7 +63,12 @@
       }
 
       .cart-total {
-        border: 1px solid #007bff;
+        /* border: 1px solid #007bff; */
+        background-color: #fefeff;
+        border: 3px solid #f1f1f1;
+        border-radius: 8px;
+        padding: 20px 15px;
+        margin-top: 30px;
         border-radius: 8px;
         padding: 20px;
       }
@@ -75,7 +86,15 @@
       .btn-delete:hover {
         color: #a71d2a;
       }
-
+     span.order-summery{
+       font-size: 20px;
+       /* font-weight: bold; */
+       margin-bottom: 16px;
+       margin-left: 15px !important;
+     }
+     span.text-success{
+      font-weight: bolder !important;;
+     }
       .checkout-btn {
         background-color: #f8d7da;
         color: #dc3545;
@@ -277,12 +296,12 @@
     <!-- end hero area -->
       
     <!-- contend start session-->
-    <div class="container mt-5">
+    <div class="container mt-5 cart-area">
       <%if(productCart.length > 0){ %>
       <div class="row border-top-0">
         <!-- Cart Items Section -->
         <div class="col-lg-8">
-          <h5 class="mb-3">Shopping cart</h5>
+          <h4 class="mb-3">Shopping cart</h4>
           <p class="text-muted">
             You have <strong> <%= productCart.length %> </strong> type of
             product in your cart
@@ -301,8 +320,22 @@
                 width="70"
               />
               <div>
-                <h6 class="mb-1"><%= cartProduct.Product.Productname %></h6>
-                <p class="text-muted mb-0">Grey Color</p>
+                <h4 style="font-weight:bold" class="mb-1 "><%= cartProduct.Product.Productname %></h4>
+                 <p style="display: inline;" class="text-muted mb-0" id="regularPrice-<%= cartProduct.item %>">  <strong>Total Price :</strong> <i
+                  class="fa-solid fa-indian-rupee-sign"
+                  style="font-size: small; padding-left: 5px; color: #858b85"
+                ></i>  <%= cartProduct.subTotal.toFixed(2) %></p>
+                 <p  class="text-muted mb-0" id="discountValue-<%= cartProduct.item %>"> <strong>Discount :</strong> <i
+                  class="fa-solid fa-indian-rupee-sign"
+                  style="font-size: small; padding-left: 5px; color: #858b85"
+                ></i>  <%= cartProduct.totaDiscValue.toFixed(2) %></p>
+                 <strong>Final Price :</strong> <p style="display: inline;" class="text-muted mb-0" id="totalPrice-<%= cartProduct.item %>">
+                  <i
+                  class="fa-solid fa-indian-rupee-sign"
+                  style="font-size: small; padding-left: 5px; color: #282928"
+                ></i> 
+                  <%= cartProduct.totalPrice.toFixed(2) %>
+                </p>
               </div>
             </div>
             <div class="d-flex align-items-center">
@@ -321,6 +354,7 @@
               >
                 <i class="fas fa-plus"></i>
               </button>
+
               <p class="ms-4 mb-0" id="totalPrice-<%= cartProduct.item %>">
                 <%= cartProduct.totalPrice.toFixed(2) %>
               </p>
@@ -340,39 +374,53 @@
         <!-- </div> -->
 
         <div class="col-lg-4">
-          <div class="cart-total">
-            <h5>CART TOTAL</h5>
-            <h6>
-              Toatal Products:
+          <div class="cart-total pl-4 pr-4 card shadow-sm">
+            <h4 style="font-weight: bold; margin-bottom: 16px;;">ORDER SUMMARY</h4>
+            <h6 class="d-flex justify-content-between align-items-center">
+              <span class="order-summery">Toatal Products:</span>
               <span class="text-success" id="totalquant">
                 <%= totalQuantity %>
               </span>
             </h6>
-            <h6>
-              DiscountPrice:
-              <span class="text-success" id="discountprice">
-                <%= discPrice %>
-              </span>
-            </h6>
-            <h6>
-              Total Amount:<i
+            <h6 class="d-flex justify-content-between align-items-center">
+              <span class="order-summery ">Sub Total:</span>
+              <span class="text-success " id="subtotal"><i
                 class="fa-solid fa-indian-rupee-sign"
                 style="font-size: medium; padding-left: 5px; color: #28a745"
-              ></i
-              ><span style="font-size: medium" class="text-success grandTotal">
+              ></i>
+               <%= sub_total.toFixed(2) %> </span>
+            </h6>
+            <h6 class="d-flex justify-content-between align-items-center">
+              <span class="order-summery">DiscountPrice:</span>
+              <span class="text-success" id="totalDiscountValue">
+                <i
+                class="fa-solid fa-indian-rupee-sign"
+                style="font-size: medium; padding-left: 5px; color: #28a745"
+              ></i>
+                <%= discountValue.toFixed(2) %>
+              </span>
+            </h6 >
+            <h6 class="d-flex justify-content-between align-items-center">
+              <span class="order-summery">Final Amount:</span>
+              <span style="font-size: medium" class="text-success grandTotal ">
+                <i
+                class="fa-solid fa-indian-rupee-sign"
+                style="font-size: medium; padding-left: 5px; color: #28a745"
+              ></i>
                 <%= grand_total.toFixed(2) %>
               </span>
             </h6>
             <button
-              class="btn checkout-btn w-100 mt-4"
+              class="btn checkout-btn w-100 mt-4 "
               onclick="location.href='/checkout'"
             >
-              <span class="grandTotal"> <%= grand_total.toFixed(2) %> </span>
-              Checkout <i class="fas fa-arrow-right"></i>
+              <!-- <span class="grandTotal"> <%= grand_total.toFixed(2) %> </span> -->
+              Proceed To Checkout <i class="fas fa-arrow-right"></i>
             </button>
           </div>
+          
 
-          <div class="flex-w">
+          <!-- <div class="flex-w">
             <div>
               <form id="coupon" action="/coupenapply" method="post" role="form">
                 <input
@@ -386,9 +434,9 @@
                 <div>Apply coupon</div>
               </form>
 
-              <!-- copen err and seces -->
+              
             </div>
-          </div>
+          </div> -->
         </div>
 
         <!-- Cart Summary Section -->
@@ -608,24 +656,64 @@
                   const quantityElement = document.querySelector(
                     `#quantity-${productId}`
                   );
+                  const regularPriceElement= document.querySelector(
+                    `#regularPrice-${productId}`
+                  );
+                  const discountValueElement= document.querySelector(
+                    `#discountValue-${productId}`
+                  )
                   const totalPriceElement = document.querySelector(
                     `#totalPrice-${productId}`
                   );
+                   const sub_totalPriceElement = document.querySelector(
+                    '#subtotal'
+                   )
+                   const totalDiscountValueElement = document.querySelector(
+                    '#totalDiscountValue'
+                   )
                   const grandTotalElements =
                     document.getElementsByClassName("grandTotal");
+
                   const totalQuantity = document.getElementById("totalquant");
 
                   console.log(totalPriceElement + "  " + grandTotalElements);
-                  if (quantityElement && totalPriceElement) {
+                  if (quantityElement && totalPriceElement && regularPriceElement && discountValueElement) {
                     const newQuantity =
                       parseInt(quantityElement.innerText) + change;
                     quantityElement.innerHTML = newQuantity;
 
                     console.log(data);
+                     if(data.regularPrice){
+                      regularPriceElement.innerHTML = `   
+                          <strong>Total Price :</strong> <i
+                            class="fa-solid fa-indian-rupee-sign"
+                            style="font-size: small; padding-left: 5px; color: #858b85"
+                          ></i> ${(newQuantity * data.regularPrice).toFixed(2)}
+  `;
+                     }else{
+                      console.error(
+                        "Regular price is missing in the response."
+                      );
+                     }
+
+                     if(data.discountValue){
+                      discountValueElement.innerHTML = `<strong>Discount :</strong> <i
+                            class="fa-solid fa-indian-rupee-sign"
+                            style="font-size: small; padding-left: 5px; color: #858b85"
+                          ></i> ${(newQuantity * data.discountValue).toFixed(2)}`;
+                     }else{
+                      console.error(
+                        "Discount value is missing in the response."
+                      );
+                     }
+
                     if (data.productPrice) {
-                      totalPriceElement.innerText = (
+                      totalPriceElement.innerHTML = `<i
+                            class="fa-solid fa-indian-rupee-sign"
+                            style="font-size: small; padding-left: 5px; color: #282928"
+                          ></i> ${(
                         newQuantity * data.productPrice
-                      ).toFixed(2);
+                      ).toFixed(2)}`
                     } else {
                       console.error(
                         "Product price is missing in the response."
@@ -633,9 +721,28 @@
                     }
                   }
 
-                  // if (grandTotalElement  && data.grandTotal !== undefined) {
-                  // grandTotalElement.innerHTML = data.grandTotal.toFixed(2);
-                  // }
+                  if (
+                    sub_totalPriceElement &&
+                    data.sub_total 
+                  ) {                  
+                      sub_totalPriceElement.innerHTML = `<i
+                        class="fa-solid fa-indian-rupee-sign"
+                        style="font-size: medium; padding-left: 5px; color: #28a745"
+                      ></i>
+                        ${data.sub_total.toFixed(2)}`;
+                      console.log("how many times");                  
+                  }
+
+                  if(totalDiscountValueElement && data.totalDiscountValue){
+                    totalDiscountValueElement.innerHTML =
+                     ` <i
+                        class="fa-solid fa-indian-rupee-sign"
+                        style="font-size: medium; padding-left: 5px; color: #28a745"
+                      ></i>
+                        ${data.totalDiscountValue.toFixed(2)}`;
+                      console.log("how many times");
+                  }
+
                   console.log(grandTotalElements.length);
 
                   if (
@@ -644,7 +751,11 @@
                   ) {
                     for (let i = 0; i < grandTotalElements.length; i++) {
                       grandTotalElements[i].innerHTML =
-                        data.grandTotal.toFixed(2);
+                      `<i
+                        class="fa-solid fa-indian-rupee-sign"
+                        style="font-size: medium; padding-left: 5px; color: #28a745"
+                      ></i>
+                        ${data.grandTotal.toFixed(2)}`;
                       console.log("how many times");
                     }
                   }
