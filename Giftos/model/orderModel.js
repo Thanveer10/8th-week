@@ -91,9 +91,12 @@ const orderSchema = new mongoose.Schema({
       name: { type: String, required: true }, // Product name for snapshotting
       price: { type: Number, required: true }, // Price at the time of order
       quantity: { type: Number, required: true },
+      dicountAmount:{type: Number, required: true},
       total: { type: Number, required: true }, // Total for this item (price * quantity)
+      // discountPrice:{type: Number, required: true}
     },
   ],
+  coupenDiscount:{type:Number},
   grandTotal: {
     type: Number,
     required: true,

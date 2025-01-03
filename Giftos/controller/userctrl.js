@@ -1485,7 +1485,7 @@ const checkoutget = async function (req, res, next) {
     if (!user) {
       throw new Error("User not found");
     }
-    // let pos = req?.query?.q ;
+    
     let { cartMessage, addressMessage } = req.query;
 
     if (userId) {
@@ -1497,6 +1497,8 @@ const checkoutget = async function (req, res, next) {
       let cart;
 
       let totalCartPrice = 0;
+      let totalDiscountAmount = 0;
+      let subTotal=0
       // let totalCartPages = 1;
       // let currentCartPage = cartPage;
       try {
@@ -1505,6 +1507,7 @@ const checkoutget = async function (req, res, next) {
           .populate("Product.item");
 
         if (cart && cart.Product.length > 0) {
+          console.log('product available in cart')
           for (let i = 0; i < cart.Product.length; i++) {
             const item = cart.Product[i];
             console.log(
@@ -1528,9 +1531,14 @@ const checkoutget = async function (req, res, next) {
               if (product.Stock < item.quantity) {
                 item.quantity = product.Stock;
               }
-              item.price = product.SalePrice || product.RegularPrice; // Use SalePrice if available, else RegularPrice
-              item.totalPrice = item.price * item.quantity; // Total price based on effective price
-              item.finalTotalPrice = item.totalPrice; // Adjust if you add discounts later
+              
+              // item.price = product.SalePrice || product.RegularPrice;
+               // Use SalePrice if available, else RegularPrice
+              item.totalPrice = product.RegularPrice * item.quantity; // Total price based on effective price
+              totalDiscountAmount += (item.quantity * item.discountValue);// Discount amount
+               subTotal+=item.totalPrice 
+              item.discountAmount = (item.quantity * item.discountValue)
+              item.finalTotalPrice = item.totalPrice-item.discountAmount ||item.totalPrice; // Adjust if you add discounts later
 
               // item.finalTotalPrice = (product.SalePrice || product.RegularPrice) * item.quantity;
 
@@ -1547,7 +1555,7 @@ const checkoutget = async function (req, res, next) {
           }
 
           cart.totalCartPrice = cart.Product.reduce(
-            (sum, item) => sum + item.totalPrice,
+            (sum, item) => sum + item.finalTotalPrice,
             0
           );
           if (cart.discountPrice && cart.discountPrice < totalCartPrice) {
@@ -1567,15 +1575,14 @@ const checkoutget = async function (req, res, next) {
           // paginatedCartItems = cart.items.slice((currentCartPage - 1) * cartLimit, currentCartPage * cartLimit);
         } else {
           cartMessage = "Your cart is empty.";
-          cart = { items: [], totalCartPrice: 0 }; // Default cart if no items
+          cart = { Product: [], totalCartPrice: 0 }; // Default cart if no items
         }
       } catch (cartError) {
-        console.error("Error fetching cart:", cartError);
+        console.error("Error fetching cart:", cartError.message);
         cartMessage = "Error loading cart.";
         cart = { items: [], totalCartPrice: 0 }; // Default empty cart on error
       }
       console.log("rendering checkout");
-      console.log(cartMessage);
       return res.render("user/checkOut", {
         addresses,
         sessionName,
@@ -1584,10 +1591,11 @@ const checkoutget = async function (req, res, next) {
         cartId: cart._id || null,
         // addresses: paginatedAddresses,
         cart: {
+          subTotal,
           product: cart.Product, // Ensure it's referred as 'product'
           totalCartPrice: totalCartPrice,
           finalTotalCartPrice: cart.finalTotalCartPrice,
-          totalDiscount: cart.discountPrice || 0,
+          totalDiscount: totalDiscountAmount || 0,
         },
         cartMessage,
         // currentAddressPage,
@@ -1785,14 +1793,16 @@ const editPasswordPost = async function (req, res, next) {
 
     const userId = req.session.user_id;
     const { CurrentPassword, NewPassword, ConfirmPassword } = req.body;
+    console.log('current password '+ CurrentPassword + ' new passowrd '+ NewPassword + ' confirmpassword '+ ConfirmPassword)
     if (NewPassword !== ConfirmPassword) {
       passerrmsg = "Passwords do not match";
       res.redirect("/editpassword");
       return;
     }
     let user = await User.findOne({ _id: userId });
-    const currenthashedPassword = await bcrypt.hash(CurrentPassword, 10);
-    const isMatch = await bcrypt.compare(currenthashedPassword, user.Password);
+    // const currenthashedPassword = await bcrypt.hash(CurrentPassword, 10);
+    console.log( 'existing passowrd',user.Password);
+    const isMatch = await bcrypt.compare(CurrentPassword, user.Password);
     if (isMatch) {
       console.log(
         `user password in update password ${user.Password} and ${CurrentPassword}`
@@ -2262,14 +2272,15 @@ const confirmOrder = async (req, res) => {
     }
     console.log("payment method===" + paymentMethod);
 
-    let totalCartPrice = 0;
-    for (let item of cart.Product) {
-      const product = await ProductColl.findById(item.item._id);
-      if (!product || product.Stock < item.quantity) continue;
+    let totalCartPrice = cart.finalTotalCartPrice;
+    // for (let item of cart.Product) {
+    //   const product = await ProductColl.findById(item.item);
+    //   console.log('produuct id==',item.item)
+    //   if (!product || product.Stock < item.quantity) continue;
 
-      totalCartPrice +=
-        (product.SalePrice || product.RegularPrice) * item.quantity;
-    }
+    //   totalCartPrice +=
+    //     (product.SalePrice || product.RegularPrice) * item.quantity;
+    // }
     console.log("totalCartPrice=" + totalCartPrice);
     // if (cart.finalTotalCartPrice !== totalCartPrice) {
     //   cart.totalCartPrice = cart.Product.reduce((sum, item) => sum + item.totalPrice, 0);
@@ -2339,7 +2350,9 @@ const confirmOrder = async (req, res) => {
       productsArray.push({
         productId: product._id,
         name: product.Productname, // Assuming `Name` is the field for product name
-        price: product.SalePrice || product.RegularPrice, // Use SalePrice if available, otherwise RegularPrice
+        price:product.RegularPrice,
+        dicountAmount:item.discountValue*item.quantity,
+        discountPrice:product.SalePrice?product.RegularPrice-product.SalePrice : product.RegularPrice, // Use SalePrice if available, otherwise RegularPrice
         quantity: item.quantity,
         total: (product.SalePrice || product.RegularPrice) * item.quantity, // Calculate total for this item
       });
@@ -2350,8 +2363,8 @@ const confirmOrder = async (req, res) => {
         orderStatus: "Pending", // Set default order status
         products: productsArray, // Attach the built products array
         date: new Date(),
-        discount: discountAmount, // Total discount applied
-        grandTotal: totalCartPrice - discountAmount, // Calculate grand total
+        coupenDiscount: discountAmount, 
+        grandTotal: totalCartPrice-discountAmount , // Calculate grand total
         shippingAddress: userAddress[0], // Shipping address
         paymentDetails: {
           paymentMethod: paymentMethod,
@@ -2375,7 +2388,9 @@ const confirmOrder = async (req, res) => {
       // return res.status(200).json({ success: true, TotalPrice: totalCartPrice - cart.discountPrice });
     } else if (paymentMethod === "Online") {
       const razorpayOrder = await razorpayInstance.orders.create({
+        // amount: totalCartPrice  * 100,
         amount: (totalCartPrice - cart.discountPrice) * 100,
+
         currency: "INR",
       });
       console.log("raozorpay order" + razorpayOrder);
@@ -2394,6 +2409,7 @@ const confirmOrder = async (req, res) => {
         OnlinePayment: true,
         razorpayOrderId: razorpayOrder.id,
         amount: totalCartPrice - cart.discountPrice,
+        // amount: totalCartPrice ,
         razor_key_id: process.env.RAZORPAY_KEY_ID,
         addressId,
         cartId,
@@ -2719,7 +2735,9 @@ const onlinePayment = async function (req, res) {
       productsArray.push({
         productId: product._id,
         name: product.Productname, // Assuming `Name` is the field for product name
-        price: product.SalePrice || product.RegularPrice, // Use SalePrice if available, otherwise RegularPrice
+        price:product.RegularPrice,
+        dicountAmount:item.discountValue*item.quantity || 0,
+        // discountPrice:product.SalePrice?product.RegularPrice-item.discountValue: product.RegularPrice,
         quantity: item.quantity,
         total: (product.SalePrice || product.RegularPrice) * item.quantity, // Calculate total for this item
       });
@@ -2730,7 +2748,7 @@ const onlinePayment = async function (req, res) {
       orderStatus: "Confirmed", // Set default order status
       products: productsArray, // Attach the built products array
       date: new Date(),
-      discount: discountAmount, // Total discount applied
+      coupenDiscount: discountAmount?discountAmount : 0, // Total discount applied
       grandTotal: cart.totalCartPrice - discountAmount, // Calculate grand total
       shippingAddress: userAddress[0], // Shipping address
       paymentDetails: {
