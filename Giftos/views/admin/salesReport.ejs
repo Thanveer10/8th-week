@@ -55,9 +55,9 @@
                     <td><%= product.name %></td>
                     <td><%= product.price %></td>
                     <td><%= product.quantity %></td>
-                    <td><%= product.discountAmount %></td>
+                    <td><%= product.discountAmount * product.quantity %></td>
                     <td><%= order.coupenDiscount %></td>
-                    <td>₹<%= order.grandTotal %></td>
+                    <td>₹<%= product.total %></td>
                 </tr>
                 <% }) %>  
            <% }) %>
@@ -101,7 +101,9 @@
       </tr>
     </tbody>
   </table>
+  
 </div>
+
 </div>
 
 <%- include('../partial/admin/footer.ejs') %>

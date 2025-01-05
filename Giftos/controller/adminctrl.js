@@ -11,6 +11,8 @@ const OfferColl = require("../model/offerModel");
 const moment = require('moment');
 const { render } = require("ejs");
 const mongoose = require("mongoose");
+const PDFDocument = require('pdfkit')
+const ExcelJS= require('exceljs');
 
 
 let coupenAdded;
@@ -828,6 +830,84 @@ const salesReportget = async function (req, res) {
 };
 
 
+const downloadSaleReport = async (req, res) => {
+  try {
+    const { startDate, endDate, reportType = 'custom', format } = req.query;
+
+    let start = null, end = null;
+
+    switch (reportType) {
+      case 'daily':
+        start = moment().startOf('day').toDate();
+        end = moment().endOf('day').toDate();
+        break;
+      case 'weekly':
+        start = moment().startOf('isoWeek').toDate();
+        end = moment().endOf('isoWeek').toDate();
+        break;
+      case 'yearly':
+        start = moment().startOf('year').toDate();
+        end = moment().endOf('year').toDate();
+        break;
+      case 'custom':
+        if (startDate && endDate) {
+          start = new Date(startDate);
+          end = new Date(endDate);
+          if (startDate === endDate || startDate && endDate) end.setHours(23, 59, 59, 999);
+        }
+        break;
+      default:
+        throw new Error('Invalid report type provided.');
+    }
+
+    const query = start && end ? { date: { $gte: start, $lte: end } } : {};
+
+    const orders = await OrderColl.find(query).sort({date :-1});
+    if (!orders) {
+      throw new Error('Failed to retrieve orders.');
+    }
+
+    const totalOrdersCount = await OrderColl.countDocuments(query);
+
+
+    const salesData= await OrderColl.aggregate([
+      {$match:query},
+      {$unwind: "$products" },
+      {$group:{
+        _id: null,
+        totalSales: {$sum:"$grandTotal"},
+        totalDiscount: {$sum:"$products.discountAmount"},
+        // totalOrders: {$sum:1},
+        totalCouponDeduction: {$sum:"$coupenDiscount"}
+      }}
+    ])
+
+
+    const reportData = salesData.length > 0 ? salesData[0] : {
+      totalSales: 0,
+      totalOrders: 0,
+      totalDiscount: 0,
+      totalCouponDeduction: 0,
+    };
+    reportData.totalOrders = totalOrdersCount;
+
+    if (format === 'pdf') {
+      return generatePDFReport(orders, reportData, res);
+    } else if (format === 'excel') {
+      return generateExcelReport(orders, reportData, res);
+    } else {
+      throw new Error('Invalid format specified. Supported formats are pdf and excel.');
+    }
+
+  } catch (error) {
+    console.error('Error generating sales report:', error);
+
+    return res.status(500).json({
+      error: error.message || 'An unexpected error occurred while generating the sales report.'
+    });
+  }
+};
+
 
 const adminLogout = async function (req, res) {
   console.log("reached admin logout");
@@ -837,6 +917,78 @@ const adminLogout = async function (req, res) {
   }, 1000);
 };
 
+
+
+const generatePDFReport = (orders, reportData, res) => {
+  const doc = new PDFDocument();
+  const fileName = `sales_report_${moment().format('YYYYMMDDHHmmss')}.pdf`;
+  
+  res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+  res.setHeader('Content-Type', 'application/pdf');
+
+  doc.pipe(res);
+
+  doc.fontSize(20).text('Sales Report', { align: 'center' });
+  doc.moveDown();
+  
+  // Report Summary
+  doc.fontSize(12).text(`Total Sales: ₹${reportData.totalSales}`);
+  doc.text(`Total Orders: ${reportData.totalOrders}`);
+  doc.text(`Total Discount: ₹${reportData.totalDiscount}`);
+  doc.text(`Total Coupon Deduction: ₹${reportData.totalCouponDeduction}`);
+  doc.moveDown();
+
+  // Orders Table
+  doc.fontSize(15).text('Order Details', { underline: true });
+  orders.forEach(order => {
+    order.products.forEach(product => {
+    doc.moveDown();
+    doc.fontSize(10).text(`Order ID: ${order._id}`);
+    doc.text(`Product Name: ${product.name}`);
+    doc.text(`Quantity: ${product.quantity}`);
+    doc.text(`Total Price: ₹${product.total}`);
+    })
+  });
+
+  doc.end();
+}
+
+// Function to generate Excel report
+const generateExcelReport = async (orders, reportData, res) => {
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet('Sales Report');
+
+  // Report Summary
+  sheet.addRow(['Total Sales', reportData.totalSales]);
+  sheet.addRow(['Total Orders', reportData.totalOrders]);
+  sheet.addRow(['Total Discount', reportData.totalDiscount]);
+  sheet.addRow(['Total Coupon Deduction', reportData.totalCouponDeduction]);
+  sheet.addRow([]);
+
+  // Table Header
+  sheet.addRow(['Order ID', 'Product Name', 'Quantity', 'Total Price']);
+  
+  // Populate the order rows
+  orders.forEach(order => {
+    order.products.forEach(product => {
+    //   sheet.addRow([order._id.toString(), product.name, product.quantity, product.total]);
+    // });
+    sheet.addRow([
+      order._id.toString(),
+      product.name,
+      product.quantity,
+      product.total,
+    ]);
+   })
+  });
+
+  const fileName = `sales_report_${moment().format('YYYYMMDDHHmmss')}.xlsx`;
+  res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+  await workbook.xlsx.write(res);
+  res.end();
+};
 module.exports = {
   adminLogin,
   adminLoginValidation,
@@ -863,5 +1015,6 @@ module.exports = {
   deactivateOffer,
   offerEditget,
   updateOffer,
-  deleteOffer
+  deleteOffer,
+  downloadSaleReport
 };

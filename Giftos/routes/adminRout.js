@@ -62,6 +62,7 @@ admin_router.post('/delete-offer/:offerId',adminAuth,admin_ctrl.deleteOffer)
 //sales repot
 admin_router.get('/salesreport',adminAuth,admin_ctrl.salesReportget)
 admin_router.get('/sales-report-filter',adminAuth,admin_ctrl.salesReportget)
+admin_router.get('/sales-report-download',adminAuth,admin_ctrl.downloadSaleReport)
 
 
 
