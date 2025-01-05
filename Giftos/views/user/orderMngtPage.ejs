@@ -32,7 +32,7 @@
                                 <h6> Price: <%= product.price %></h6> 
                           <% }) %>
                           <h4 class="text-center">Order Details</h4>
-                            <p>Order Reference ID: <strong><%= order._id %></strong></p>
+                            <p>Order Reference ID: <strong><%= order.orderId %></strong></p>
                             <p>Order Date: <strong><%= new Date(order.date).toLocaleDateString() %></strong></p> <!-- Display Date -->
                             <p>Payment Method: <strong><%= order.paymentDetails.paymentMethod %></strong></p> <!-- Display Payment Method -->
                            <% if(order.paymentDetails.status=='Pending'){ %>

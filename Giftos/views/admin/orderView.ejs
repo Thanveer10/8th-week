@@ -1,7 +1,7 @@
 <%- include('../partial/admin/header.ejs') %>
 
 <!-- Content Start -->
-      <div class="container mt-5">
+      <div class="content p-5 ">
     
           <% if (order) { %>
           <h2 class="text-center mb-4"> Order Detials</h2>
@@ -28,7 +28,7 @@
                             <h6> Price: <%= product.price %></h6> 
                         <% }) %>
                         <h4 class="text-center">Order Details</h4>
-                        <p>Order Reference ID: <strong><%= order._id %></strong></p>
+                        <p>Order Reference ID: <strong><%= order.orderId %></strong></p>
                         <p>Orderd Username: <strong><%= order.orderedUser.Username %></strong></p>
 
                         <p>Order Date: <strong><%= new Date(order.date).toLocaleDateString() %></strong></p> <!-- Display Date -->

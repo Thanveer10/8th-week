@@ -1,7 +1,13 @@
 const mongoose = require("mongoose");
+const { v4: uuidv4 } = require('uuid');
 mongoose.connect("mongodb://localhost:27017/userDB");
 
 const orderSchema = new mongoose.Schema({
+  orderId: {
+    type: String,
+    unique: true,
+    default: uuidv4
+},
   orderedUser: {
     type: mongoose.Schema.Types.ObjectId, // Reference the user by ID
     ref: "userDB1",
@@ -91,7 +97,7 @@ const orderSchema = new mongoose.Schema({
       name: { type: String, required: true }, // Product name for snapshotting
       price: { type: Number, required: true }, // Price at the time of order
       quantity: { type: Number, required: true },
-      dicountAmount:{type: Number, required: true},
+      discountAmount:{type: Number, required: true},
       total: { type: Number, required: true }, // Total for this item (price * quantity)
       // discountPrice:{type: Number, required: true}
     },

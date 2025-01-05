@@ -2351,7 +2351,7 @@ const confirmOrder = async (req, res) => {
         productId: product._id,
         name: product.Productname, // Assuming `Name` is the field for product name
         price:product.RegularPrice,
-        dicountAmount:item.discountValue*item.quantity,
+        discountAmount:item.discountValue*item.quantity,
         discountPrice:product.SalePrice?product.RegularPrice-product.SalePrice : product.RegularPrice, // Use SalePrice if available, otherwise RegularPrice
         quantity: item.quantity,
         total: (product.SalePrice || product.RegularPrice) * item.quantity, // Calculate total for this item
@@ -2736,7 +2736,7 @@ const onlinePayment = async function (req, res) {
         productId: product._id,
         name: product.Productname, // Assuming `Name` is the field for product name
         price:product.RegularPrice,
-        dicountAmount:item.discountValue*item.quantity || 0,
+        discountAmount:item.discountValue*item.quantity || 0,
         // discountPrice:product.SalePrice?product.RegularPrice-item.discountValue: product.RegularPrice,
         quantity: item.quantity,
         total: (product.SalePrice || product.RegularPrice) * item.quantity, // Calculate total for this item

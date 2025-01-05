@@ -8,6 +8,7 @@ const CategoryColl = require("../model/categoryModel");
 const OrderColl = require("../model/orderModel");
 const CoupenColl = require("../model/coupenModel");
 const OfferColl = require("../model/offerModel");
+const moment = require('moment');
 const { render } = require("ejs");
 const mongoose = require("mongoose");
 
@@ -24,6 +25,7 @@ function salePrice(product){
     }
     else if(offer.discountType === 'percentage'){
       offeredPrice = reqularPrice - (reqularPrice * offer.discountValue / 100);
+      offeredPrice=Math.floor(offeredPrice)
     }
   }
 return offeredPrice;
@@ -739,7 +741,93 @@ const deleteOffer = async (req, res) => {
 
 
 //sales report
-const salesReportget = function (req, res) {};
+const salesReportget = async function (req, res) {
+  try{
+    const sessionName= req.session.admin_id
+    const { startDate, endDate, reportType = 'custom', page = 1 ,format} = req.query;
+    const currentPage = parseInt(req.query.page) || 1;
+    const pageSize = 5;
+
+    let start = null, end = null;
+    switch (reportType) {
+      case 'daily':
+        start = moment().startOf('day').toDate();
+        end = moment().endOf('day').toDate();
+        break;
+      case 'weekly':
+        start = moment().startOf('isoWeek').toDate();
+        end = moment().endOf('isoWeek').toDate();
+        break;
+      case 'yearly':
+        start = moment().startOf('year').toDate();
+        end = moment().endOf('year').toDate();
+        break;
+      case 'custom':
+        if (startDate && endDate) {
+          start = new Date(startDate);
+          end = new Date(endDate);
+          if (startDate === endDate || startDate && endDate) end.setHours(23, 59, 59, 999);
+        }
+        break;
+    }
+    console.log(start,'  ====', end);
+    const query = start && end ? { date: { $gte: start, $lte: end } } : {};
+    const orders= await OrderColl.find(query)
+      .skip((currentPage - 1) * pageSize)
+      .limit(pageSize)
+      .populate('products.productId')
+      .sort({date:-1});
+
+      const totalOrdersCount = await OrderColl.countDocuments(query);
+      console.log(totalOrdersCount)
+      const totalPages = Math.ceil(totalOrdersCount / pageSize);
+   
+    const saleData= await OrderColl.aggregate([
+      {$match:query},
+      {$unwind: "$products" },
+      {$group:{
+        _id: null,
+        totalSales: {$sum:"$grandTotal"},
+        totalDiscount: {$sum:"$products.discountAmount"},
+        // totalOrders: {$sum:1},
+        totalCouponDeduction: {$sum:"$coupenDiscount"}
+      }}
+    ])
+
+    const reportData =saleData.length > 0 ? saleData[0] : {
+      totalSales: 0,
+      totalDicount: 0,
+      totalOrders: 0,
+      totalCouponDeduction: 0
+    }
+    reportData.totalOrders = totalOrdersCount;
+
+    if (req.xhr) {
+      return res.json({ orders, totalPages, currentPage: page });
+    }
+    res.render('admin/salesReport', {
+      sessionName,
+      orders,
+      reportData,
+      totalPages,
+      currentPage: parseInt(currentPage),
+      startDate: start ? moment(start).format('YYYY-MM-DD') : '',
+      endDate: end ? moment(end).format('YYYY-MM-DD') : '',
+      reportType
+    })
+  }catch(err) {
+    console.log('error in salesReportget'+ err.message)
+    res.render("admin/error", {
+      res,
+      errorCode: 500,
+      errorMessage: "Server Error",
+      errorDescription: "An unexpected error occurred while loading sales report",
+      link: req.headers.referer || "/admin",
+    });  
+  }
+};
+
+
 
 const adminLogout = async function (req, res) {
   console.log("reached admin logout");

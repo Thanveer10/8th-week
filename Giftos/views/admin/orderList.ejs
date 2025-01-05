@@ -14,7 +14,7 @@
             <h1><%= message %></h1>
          <% } %>
             <!-- Navbar End -->
-        <table class="table">
+        <table class="table table-striped">
           <thead>
               <tr>      
                       <th>OrderID</th>
@@ -29,7 +29,7 @@
           <tbody>
               <% allOrders.forEach(order=>{ %>
                 <tr>
-                    <td> <%= order._id %></td>
+                    <td> <%= order.orderId %></td>
                     <td> <%= order.orderedUser.Username %></td>
                     <td><%= order.grandTotal %></td>
                     <td><%= order.date.toLocaleString('en-US') %></td>

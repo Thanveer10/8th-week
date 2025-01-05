@@ -354,15 +354,15 @@
     }
     .pagination-container .current-page {
     font-weight: bold;
-    color:white;
-    background-color: #007bff;
+    color:#564d4d;
+    background-color: #e0c9c9;
     padding: 5px 10px;
     border-radius: 5px;
   }
 
     .pagination-container a:hover {
-    background-color: rgb(9, 146, 209);
-    color: white;
+    background-color: #e0c9c9;
+    color: #564d4d;
     }
 
 /*** Date Picker ***/
