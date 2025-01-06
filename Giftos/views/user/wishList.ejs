@@ -153,6 +153,9 @@
           Oops!
           <h6>Your Wish List Is Empty.</h6>
         </h2>
+        <div class="mt-5">
+          <button class=" btn btn-danger " onclick="goaback()">go back</button>
+        </div>
         <% } else { %>
         <h2>
           Your Wish List
@@ -190,8 +193,8 @@
                       <% } %>
                   </h6>
                 </div>
-                <div class="new" onclick="return confirm('are you really want to remove?')">
-                  <a href="/wishdelete/<%= wish.item %>">
+                <div class="new" onclick=" confirmDelete('<%= wish.item %>')">
+                  <a href="#">
                     <i class="fa fa-heart text-muted" ></i>
                   </a>
                 </div>
@@ -299,19 +302,42 @@
   </section>
 
   <!-- end info section -->
+ 
+
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/bootstrap.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="js/custom.js"></script>
   <script>
     document.getElementById('logout-form').addEventListener('submit',(event)=>{
       if(!confirm('Are you sure, You  really want to  log out? ')){
         event.preventDefault()
       }
     })
- </script>
 
-  <script src="js/jquery-3.4.1.min.js"></script>
-  <script src="js/bootstrap.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
-  </script>
-  <script src="js/custom.js"></script>
+    function confirmDelete(id){
+      Swal.fire({
+        title:'Are you sure',
+        text:" you really want to remove this item ",
+        icon:'warning',
+        showCancelButton:true,
+        confirmButtonColor:'#3085d6',
+        cancelButtonColor:'#d33',
+        confirmButtonText:'Yes, delete it!'
+      }).then((result)=>{
+        if(result.isConfirmed){
+         window.location.href= `/wishdelete/${id}`
+        }
+      })
+      return false
+    }
+
+    function goaback(){
+          window.history.back();
+         }
+ </script>
 
 </body>
 

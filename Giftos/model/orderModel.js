@@ -119,7 +119,7 @@ const orderSchema = new mongoose.Schema({
       required: true,
     },
     gateway: { type: String, required: false },
-    status: { type: String, enum: ["Pending", "Paid"], default: "Pending" },
+    status: { type: String, enum: ["Pending", "Paid","Cancelled"], default: "Pending" },
     date: { type: Date, default: Date.now },
     beforePymentRefId: {
       type: String,

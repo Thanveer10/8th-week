@@ -15,9 +15,11 @@ const viewAllProducts=async function(req,res){
       const limit= 12
       const skip=(currentPage-1)*limit
 
-      const { sort } = req.query;
+      const { sort,sortCategory,categoryId } = req.query;
+   
       let sortCriteria = {};
       let newArrivals;
+      console.log('sortCategory===',sortCategory)
 
       switch (sort) {
          case 'popularity':
@@ -48,6 +50,9 @@ const viewAllProducts=async function(req,res){
             sortCriteria = {};
             break;
       }
+      req.session.sort=sort
+      req.session.sortCriteria=sortCriteria;
+
       // Searching setup
       const searchTerm = req.query.query || '';
       console.log('searchTerm is : ', searchTerm)
@@ -98,7 +103,7 @@ const viewAllProducts=async function(req,res){
 
           products = [...startsWithProducts, ...containsProducts];
           products = products.filter(product => product.Category && product.Category.Status === 'Listed');
-console.log('serched prodducts',products)
+          console.log('serched prodducts',products)
          //  products = products.slice(skip,(skip + productLimit));
          
      }else{
@@ -145,12 +150,24 @@ console.log('serched prodducts',products)
       let totalPages=Math.ceil(totalProducts/limit)
       console.log('totoal pages ==',totalPages)
       let allcategory=await categoryColl.find({})
-      console.log('this is all catogery'+ allcategory);
+      // console.log('this is all catogery'+ allcategory);
       console.log('checking searchterm at end',searchTerm)
       if(user){
       let userdata= await User.findOne({_id:user})
+     
       res.render('user/allProducts',{sessionName,products,userdata,allcategory,sort:sort,searchTerm,totalPages,currentPage})
       }else{
+         // if(sortCategory !== undefined){
+         //    console.log('categoryName',categoryId)
+         //    products= await ProductColl.find({Category:categoryId})
+         //    console.log('reached sortCategory')
+         //  return  res.render("user/categoryProducts", {
+         //       newArrivals,
+         //       products,
+         //       categoryName:1,
+         //       allcategory,
+         //     });
+         // }
          res.render('user/allProducts',{products,allcategory,sort:sort,searchTerm,newArrivals,totalPages,currentPage})
       }
    }catch(err){

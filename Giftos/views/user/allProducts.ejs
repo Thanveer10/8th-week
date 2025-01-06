@@ -307,9 +307,9 @@
                 <button type="button" class="btn search_btn" data-mdb-ripple-init>search</button>
               </div> -->
               <form class="form-inline mx-auto" id="shopSearchForm" action="/product/products" method="GET">
-                <input class="form-control mr-sm-2" type="search" name="query" 
+                <input class="form-control mr-sm-2"  type="search" name="query" 
                 value="<%= typeof searchTerm !== 'undefined' ? searchTerm : '' %>" 
-                       placeholder="Search Products" aria-label="Search">
+                       placeholder="Search Products" aria-label="Search" id="searchInput">
                        <button type="submit" class="btn search_btn" data-mdb-ripple-init>search</button>
                </form>
               <!-- <form class="form-inline ">
@@ -616,6 +616,17 @@
   //     event.preventDefault()
   //   }
   // })
+  const searchInput = document.getElementById('searchInput');
+  const searchForm = document.getElementById('shopSearchForm');
+
+  // Add an event listener for the 'input' event
+  searchInput.addEventListener('input', function () {
+    // Check if the search input is cleared
+    if (this.value.trim() === '') {
+      // Automatically submit the form to show all products
+      searchForm.submit();
+    }
+  });
 
   function logOut(){
   Swal.fire({

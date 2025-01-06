@@ -68,15 +68,17 @@ const homepage = async function (req, res) {
 const shop = async function (req, res) {
   try {
     const currentPage = parseInt(req.query.page) || 1;
-    const limit = 10;
+    const limit = 9;
     const skip = (currentPage - 1) * limit;
     const user = req.session.user_id;
     let latestProducts = await ProductColl.find({
       CreatedAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
-    })
+    }).populate('Category')
       .sort({ CreatedAt: -1 })
       .skip(skip)
       .limit(limit);
+
+    latestProducts = latestProducts.filter((product) =>product.Category && product.Category.Status==='Listed')
     let totalProducts = await ProductColl.countDocuments({
       CreatedAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
     });
@@ -161,15 +163,153 @@ const whyus = async function (req, res) {
 
 //get catogery items
 const categoryget = async function (req, res) {
+  let newArrivals;
   try {
     const catId = req.params.id;
-    const products = await ProductColl.find({ Category: catId });
-    const categoryName = await CategoryColl.findById(catId).select("Category");
+    const searchTerm = req.query.query || '';
+    console.log('searchTerm is : ', searchTerm)
+    const currentPage=parseInt(req.query.page)  || 1
+    const limit= 9
+    const skip=(currentPage-1)*limit
+
+
+    let sort;
+        if(req.query.sort){
+          sort = req.query.sort
+
+        }else if(req.session.sort){
+          sort=req.session.sort
+        }
+      
+        console.log('sort',sort)
+
+        switch (sort) {
+          case 'popularity':
+            sortCriteria = { popularity: -1 };
+            break;
+          case 'priceLowToHigh':
+            sortCriteria = { RegularPrice: 1 };
+            break;
+          case 'priceHighToLow':
+            sortCriteria = { RegularPrice: -1 };
+            break;
+          case 'ratings':
+            sortCriteria = { averageRating: -1 };
+            break;
+          case 'newArrivals':
+            sortCriteria = { CreatedAt: -1 };
+            break;
+          case 'aToZ':
+            sortCriteria = { Productname: 1 };
+            break;
+          case 'zToA':
+            sortCriteria = { Productname: -1 };
+            break;
+          case 'inventory':
+            sortCriteria = { Stock: -1 };
+            break;
+          default:
+            sortCriteria = {};
+            break;
+      }
+      req.session.sort=sort;
+      let products=[]
+      if (searchTerm) {
+           console.log('come to search term : ', searchTerm)
+           const startsWithRegex = new RegExp(`^${searchTerm}`, 'i');
+           const startsWithProducts = await ProductColl.find({
+              //  isDeleted: false,
+               Productname: { $regex: startsWithRegex },Category:catId 
+           })
+           .populate({
+              path: 'Category', // Assuming 'category' is a reference field in the Product model
+              match: { Status: 'Listed' } // Fetch products with 'Listed' categories only
+           })
+           .sort(sortCriteria)
+           .collation({ locale: 'en', strength: 2 })
+           .skip(skip)
+           .limit(limit);
+  
+  
+           const containsRegex = new RegExp(searchTerm, 'i');
+           const containsProducts = await ProductColl.find({
+              //  isDeleted: false,
+               Productname: { $regex: containsRegex },Category:catId,
+               _id: { $nin: startsWithProducts.map(p => p._id) } 
+           })
+            .populate({
+              path: 'Category', // Assuming 'category' is a reference field in the Product model
+              match: { Status: 'Listed' } // Fetch products with 'Listed' categories only
+            })
+           .sort(sortCriteria)
+           .collation({ locale: 'en', strength: 2 })
+           .skip(skip)
+           .limit(limit);
+  
+            products = [...startsWithProducts, ...containsProducts];
+            products = products.filter(product => product.Category && product.Category.Status === 'Listed');
+            // console.log('serched prodducts',products)
+            // products = products.slice(skip,(skip + limit));
+           
+       }else{
+         products = await ProductColl.find({ Category: catId }).populate('Category').sort(sortCriteria).skip(skip).limit(limit);
+         console.log('sort method ===', req?.session?.sort)
+         if(req.session.sort === 'newArrivals'|| sort === 'newArrivals'){
+          let sortCriteria = { CreatedAt: -1 }
+           newArrivals='New Arrivals'
+              products=await ProductColl.find({ Category: catId}).sort(sortCriteria).populate({
+                path: 'Category', // Assuming 'category' is a reference field in the Product model
+                match: { Status: 'Listed' } // Fetch products with 'Listed' categories only
+              }).skip(skip).limit(limit);
+         }
+           products= products.filter((product) => product.Category && product.Category.Status ==='Listed')
+       }
+
+         let totalProducts;
+         if (searchTerm) {
+          console.log('search term totalproducts===', searchTerm)
+            const searchRegex = new RegExp(searchTerm, 'i');
+            const startsWithProducts = await ProductColl.find({
+                  // isDeleted: false,
+                  Productname: { $regex: searchRegex },Category:catId
+            });
+
+            const containsRegex = new RegExp(searchTerm, 'i');
+            const containsProducts = await ProductColl.find({
+               //  isDeleted: false,
+                Productname: { $regex: containsRegex },Category:catId,
+                _id: { $nin: startsWithProducts.map(p => p._id) } 
+            })
+            totalProducts=containsProducts.length + startsWithProducts.length
+         } else {
+            totalProducts = await ProductColl.countDocuments({ Category: catId});
+         }
+         console.log('totalproducts',totalProducts)
+         let totalPages=Math.ceil(totalProducts/limit)
+         console.log('totoal pages ==',totalPages)
+    // let products = await ProductColl.find({ Category: catId }).populate('Category').sort(sortCriteria);
+    // console.log('sort method ===', req?.session?.sort)
+    // if(req.session.sort === 'newArrivals'|| sort === 'newArrivals'){
+    //   let sortCriteria = { CreatedAt: -1 }
+    //   newArrivals='New Arrivals'
+    //          products=await ProductColl.find({ Category: catId}).sort(sortCriteria).populate({
+    //             path: 'Category', // Assuming 'category' is a reference field in the Product model
+    //             match: { Status: 'Listed' } // Fetch products with 'Listed' categories only
+    //         });
+    //  }
+    // products= products.filter((product) => product.Category && product.Category.Status ==='Listed')
+    const categoryName = await CategoryColl.findById(catId).select("Categoryname");
     const allcategory = await CategoryColl.find({});
+    // console.log('new products===', products)
     res.render("user/categoryProducts", {
+      newArrivals,
       products,
       categoryName,
       allcategory,
+      searchTerm,
+      totalPages,
+      currentPage,
+      sort
     });
   } catch (error) {
     console.log("erron in categoryget" + error.message);
@@ -875,6 +1015,7 @@ const resentSignupOtp = async function (req, res) {
 const productDetailsget = async function (req, res) {
   let cartProductIds;
   let isCartItem;
+  let iswishItem
   try {
     const user_id = req.session.user_id;
     const sessionName = user_id;
@@ -893,6 +1034,20 @@ const productDetailsget = async function (req, res) {
         } else {
           console.log("product is not in the cart");
         }
+        
+        const userWishlist = await wishListColl.findOne({ UserId: user_id });
+        if (userWishlist && userWishlist.Product) {
+          wishProductIds = userWishlist.Product.map((product) =>
+            product.item.toString()
+          );
+          iswishItem = wishProductIds.includes(product_id);
+          if (iswishItem) {
+            console.log("product is allredy in the wishlist");
+          } else {
+            console.log("product is not in the wishlist");
+          }
+        }
+
       } else {
         console.log("user cart not found");
       }
@@ -916,6 +1071,7 @@ const productDetailsget = async function (req, res) {
       related_products,
       stockerr,
       isCartItem,
+      iswishItem
     });
     req.session.prodid = null;
     stockerr = undefined;
@@ -1395,7 +1551,8 @@ const coupenApply = async function (req, res) {
 
     let checkcoupen = await CoupenColl.findOne({ CoupenCode: coupenCode });
     console.log(checkcoupen);
-    if (checkcoupen) {
+
+    if (checkcoupen && checkcoupen.Status) {
       let usedcoupen = await User.findOne({
         _id: userId,
         UsedCoupons: { $in: [coupenCode] },
@@ -1403,8 +1560,11 @@ const coupenApply = async function (req, res) {
       console.log("useduserfind " + usedcoupen);
 
       if (usedcoupen == null || usedcoupen == undefined) {
-        let date = new Date().toLocaleDateString();
-        if (date < checkcoupen.ExpireDate) {
+        let date = new Date();
+
+        let expireDate = new Date(checkcoupen.ExpireDate); 
+        console.log(date ,'====', expireDate)
+        if (date < expireDate) {
           if (checkcoupen.MinimumPrice <= totalPriceFloat) {
             req.session.coupen = coupenCode;
             // sucess = "coupen applied successfully";
@@ -1459,7 +1619,7 @@ const coupenApply = async function (req, res) {
         .status(400)
         .json({
           isValid: false,
-          message: "Invalid or expired coupon or Not allowed for your order.",
+          message: "Invalid or Not Active.",
         });
     }
 
@@ -2242,7 +2402,7 @@ const editAddresspost = async function (req, res) {
   }
 };
 
-// ORDER
+// ORDER SESSION
 const confirmOrder = async (req, res) => {
   try {
     console.log("reached confirm order");
@@ -2468,7 +2628,10 @@ const orderConfirmed = async (req, res) => {
 // LOAD ORDER PAGE
 const LoadOrderPage = async (req, res) => {
   try {
-    const { page = 1, limit = 3 } = req.query;
+    // const { page = 1, limit = 3 } = req.query;
+    const currentPage=parseInt(req.query.page)  || 1
+    const limit= 2
+    const skip=(currentPage-1)*limit
     const user = await User.findById(req.session.user_id);
     const sessionName = user;
     if (!user) {
@@ -2492,7 +2655,12 @@ const LoadOrderPage = async (req, res) => {
 
     const userOrders = await OrderColl.find({ orderedUser: user }).sort({
       date: -1,
-    });
+    }).skip(skip).limit(limit);
+
+    const totalOrder = await OrderColl.countDocuments({ orderedUser: user });
+    console.log('total order',totalOrder)
+    const totalPages = Math.ceil(totalOrder / limit);
+
 
     if (!userOrders.length) {
       //return renderErrorPage(res, 404, 'No Orders Found', 'This user has no orders to display.', '/back-to-home');
@@ -2501,8 +2669,8 @@ const LoadOrderPage = async (req, res) => {
         user,
         orders: [],
         sessionName,
-        // currentPage : page,
-        // totalPages : page
+        currentPage : currentPage,
+        totalPages : totalPages
       });
     }
 
@@ -2521,8 +2689,8 @@ const LoadOrderPage = async (req, res) => {
       user,
       orders: userOrders,
       sessionName,
-      // currentPage,
-      // totalPages,
+      currentPage,
+      totalPages,
     });
   } catch (error) {
     console.error("Error loading orders: ", error.message);
@@ -2616,6 +2784,16 @@ const cancelOrder = async (req, res) => {
             },
           }
         );
+      }else if(order.paymentDetails.status === "Pending"){
+          await OrderColl.updateOne(
+            { _id: orderId },
+            {
+              $set: {
+                'paymentDetails.status':'Cancelled'
+              },
+            }
+          );
+        }else if(order.paymentDetails.status === "Refunded"){
       }
     }
 
@@ -2629,6 +2807,56 @@ const cancelOrder = async (req, res) => {
       .json({ success: false, message: "Failed to cancel order session." });
   }
 };
+
+// RETURN ORDER
+const returnOrder = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    const user_id = req.session.user_id;
+    const user = await User.findById(user_id);
+    if (!user) {
+      return res.status(401).json({success:false, message:"User not found"});
+    }
+    const order = await OrderColl.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+    if (order.orderStatus === "Returned" || order.orderStatus === "Return Request") {
+      return res.status(400).json({ success: false, message: "Order is already returned" });
+    }
+    if (order.paymentDetails.status === "Cancelled") {
+      return res.status(400).json({ success: false, message: "Order is cancelled" });
+    }
+
+    const updateResult= await OrderColl.updateOne(
+      {_id: order._id},
+      {$set:{'orderStatus' : 'Return Request'}}
+    )
+    if (updateResult.modifiedCount === 0) {
+      console.log("Failed to return order");
+      return res.status(500).json({ success: false, message: "Failed to return order" });
+    }
+    for(let product of order.products){
+      const updateProductResult = await ProductColl.updateOne(
+        { _id: product.productId },
+        { $inc: { Stock: product.quantity } }
+      );
+      console.log("Product quantity update result:", updateProductResult);
+    }
+    return res.status(200).json({ success: true, message: "Order returned successfully" });
+
+
+  } catch (error) {
+    console.error("Error in order Return Request:", error);
+    
+    if (error.name === 'CastError') {
+        return res.status(400).json({ success: false, message: 'Invalid Order or Item ID.' });
+    }
+
+    return res.status(500).json({ success: false, message: 'An internal server error occurred while Return Request the order.' });
+  }
+  
+}
 
 // ONLINE PAYMENT
 const onlinePayment = async function (req, res) {
@@ -2813,7 +3041,7 @@ const restoreProductQuantities = async function (req, res) {
   }
 };
 
-// WALLET GET
+// WALLET SESSION
 const walletget = async function (req, res) {
   try {
     const user_id = req.session.user_id;
@@ -2885,6 +3113,7 @@ module.exports = {
   orderConfirmed,
   LoadOrderPage,
   cancelOrder,
+  returnOrder,
   onlinePayment,
   restoreProductQuantities,
   wishListget,

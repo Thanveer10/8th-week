@@ -81,6 +81,7 @@ user_route.post('/checkout/:cartId',userAuth,user_ctrl.confirmOrder);
 user_route.get('/orderconfirm/:cartId',userAuth,user_ctrl.orderConfirmed);
 user_route.get('/viewOrder',userAuth,user_ctrl.LoadOrderPage);
 user_route.post('/cancelOrder/:orderId',userAuth,user_ctrl.cancelOrder)
+user_route.post('/returnRequest/:orderId',userAuth,user_ctrl.returnOrder)
 
 // online Payment
 user_route.get('/payment/success',userAuth,user_ctrl.onlinePayment)

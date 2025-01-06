@@ -146,6 +146,7 @@
   <!-- end hero area -->
 
   <!-- product details-->
+  <div class="main-content">
     <div class="container mt-5 mb-5">
         <div class="row d-flex justify-content-center">
             <div class="col-md-10">
@@ -156,12 +157,11 @@
                           <div class="text-center product-image image-div">
                             <img id="main-image" src="/productsimg/<%= product.Productimage[0]%>"  class="img-fluid  zoom-img product-image" />
                           </div>
-                          <div class="thumbnail text-center">
+                          <div class="thumbnail text-center"  >
                                     <% product.Productimage.forEach((prod) =>{ %>
-                                    <img onclick="change_image(this)" src="/productsimg/<%= prod %>" width="70">
-                                    <!-- <img onclick="change_image(this)" src="/productsimg/<%= product.Productimage[2] %>" width="70">
-                                    <img onclick="change_image(this)" src="/productsimg/<%= product.Productimage[0] %>" width="70">
-                                    <img onclick="change_image(this)" src="/productsimg/<%= product.Productimage[3] %>" width="70">   -->
+                                      <!-- <div style="display: flex; align-items: center;justify-content: center; background-color: gray;"> -->
+                                        <img style="border-style: solid;border-color: rgb(75, 71, 71); border-width: 2px; height: 80px; "  onclick="change_image(this)" src="/productsimg/<%= prod %>" width="70" class="img-fluid" >                                              
+                                      <!-- </div> -->
                                     <% }) %>
                                 </div>
                               </div>
@@ -202,17 +202,22 @@
                                     <button class="btn btn-danger text-uppercase mr-2 px-4" disabled>Out of Stock</button>
                                   <% }else{ %>
                                  <% if(isCartItem){ %>
-                                    <button class="btn btn-danger text-uppercase mr-2 px-4" onclick="location.href='/adduserCart'" >View Cart</button>
+                                    <button class="btn btn-danger text-uppercase mr-2 px-4 mb-3" onclick="location.href='/adduserCart'" >View Cart</button>
                                  <% }else{ %>
                                     <form action="/addtocart/<%= product._id %>" method="GET">
-                                        <button class="btn btn-danger text-uppercase mr-2 px-4" type="submit">Add to cart</button>
+                                        <button class="btn btn-danger text-uppercase mr-2 px-4  mb-3" type="submit">Add to cart</button>
                                     </form>
                                   <% } %>
-                                    <div> .</div>
-
-                                    <a href="/wishlist/<%= product._id %>">
-                                      <i class="fa fa-heart text-muted" style="font-size:larger;"> <span style="padding-left: 10px; font-size: medium;">Add To Whsilist</span></i>
+                                    
+                                   <%  if(iswishItem){ %>
+                                    <a href="/wishlist" >
+                                      <i class="fa fa-heart text-muted" style="font-size:larger;"> <span style="padding-left: 10px; font-size: medium;">View Wishlist</span></i>
                                     </a>
+                                 <% }else{ %>
+                                    <a href="/wishlist/<%= product._id %>">
+                                      <i class="fa fa-heart text-muted" style="font-size:larger;"> <span style="padding-left: 10px; font-size: medium;">Add To Wishlist</span></i>
+                                    </a>
+                                <% }%>
                                 <% } %>
                                     <!-- <i class="fa fa-share-alt text-muted"></i> -->
                                 </div>
@@ -372,6 +377,8 @@
     <!-- footer section -->
 
   </section>
+</div>
+
   
 
   <!-- end info section -->

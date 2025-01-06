@@ -354,10 +354,10 @@
               >
                 <i class="fas fa-plus"></i>
               </button>
-
+<!-- 
               <p class="ms-4 mb-0" id="totalPrice-<%= cartProduct.item %>">
                 <%= cartProduct.totalPrice.toFixed(2) %>
-              </p>
+              </p> -->
               <a
                 style="text-decoration: none; color: #686363; font-size: small"
               >
@@ -447,6 +447,9 @@
         Oops!
         <h6>Your Cart Is Look Empty.</h6>
       </h2>
+      <div class="mt-5">
+        <button class=" btn btn-danger " onclick="goaback()">go back</button>
+      </div>
      </div>
        <% } %>
     </div>
@@ -555,6 +558,10 @@
             event.preventDefault();
           }
         });
+
+        function goaback(){
+          window.history.back();
+         }
     </script>
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/bootstrap.js"></script>

@@ -301,10 +301,10 @@
               </a>
                 
               
-              <form class="form-inline mx-auto" id="shopSearchForm" action="/product/products" method="GET">
+              <form class="form-inline mx-auto" id="shopSearchForm" action="/category/<%= categoryName._id %>" method="GET">
                 <input class="form-control mr-sm-2" type="search" name="query" 
-                      
-                       placeholder="Search Products" aria-label="Search">
+                value="<%= typeof searchTerm !== 'undefined' ? searchTerm : '' %>" 
+                       placeholder="Search Products" aria-label="Search" id="searchInput">
                        <button type="submit" class="btn search_btn" data-mdb-ripple-init>search</button>
                </form>
               <!-- <form class="form-inline ">
@@ -322,12 +322,18 @@
 
     <section class="shop_section layout_padding">
       <div class="container">
+        <% if(products && products.length > 0) { %>
         <div class="heading_container heading_center">
           <h2>
-         <%= categoryName.Category %>
+            <%  if(typeof newArrivals!="undefined"){ %>
+              <h2><%= newArrivals %></h2>
+           <% }else{ %>
+            <%= categoryName.Category %>
+           <% }%>
           </h2>
         </div>
-        
+
+        <div style="display: flex; justify-content: space-between;">  
           <div class="menu">
             <div class="item">
               <a href="#" class="link">
@@ -353,14 +359,50 @@
             </div>
           </div>
           </div>
-        <!-- <div class="dropdown1">
-          <button class="dropdown-btn1">Categories</button>
-          <div class="dropdown-content1">
-            <a href="/category/men">Gifts for Men</a>
-            <a href="/category/women">Gifts for Women</a>
-            <a href="/category/toys">Toys</a>
+          <div class="menu">
+            <div class="item">
+              <a href="#" class="link">
+                <span> Sort By </span>
+                <svg viewBox="0 0 360 360" xml:space="preserve">
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      id="XMLID_225_"
+                      d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"
+                    ></path>
+                  </g>
+                </svg>
+              </a>
+              <div class="submenu">
+                  <!-- Sorting Options -->
+                <div class="submenu-item">
+                  <!-- <a href="/product/products?sort=popularity" class="submenu-link"> Popularity </a> -->
+                </div>
+                <div class="submenu-item">
+                  <a href="/category/<%= categoryName._id %>?sort=priceLowToHigh&categoryId=<%= categoryName._id %>" class="submenu-link"> Price: Low to High </a>
+                </div>
+                <div class="submenu-item">
+                  <a href="/category/<%= categoryName._id %>?sort=priceHighToLow&categoryId=<%= categoryName._id %>" class="submenu-link"> Price: High to Low </a>
+                </div>
+                <div class="submenu-item">
+                  <!-- <a href="/product/products?sort=ratings" class="submenu-link"> Average Ratings </a> -->
+                </div>
+                <div class="submenu-item">
+                  <a href="/category/<%= categoryName._id %>?sort=newArrivals&categoryId=<%= categoryName._id %>" class="submenu-link"> New Arrivals </a>
+                </div>
+                <div class="submenu-item"> 
+                  <a href="/category/<%= categoryName._id %>?sort=aToZ&categoryId=<%= categoryName._id %>" class="submenu-link"> A-Z </a>
+                </div>
+                <div class="submenu-item">
+                  <a href="/category/<%= categoryName._id %>?sort=zToA&categoryId=<%= categoryName.id %>" class="submenu-link"> Z-A </a>
+                </div>
+                <!-- <div class="submenu-item">
+                  <a href="/products?sort=inventory" class="submenu-link"> Inventory </a>
+                </div> -->
+              </div>
+            </div>
           </div>
-        </div> -->
+        </div>
+     
         <div class="row">
           <% products.forEach(product=>{ %>
             <div class="col-sm-6 col-md-6 col-lg-4">
@@ -371,11 +413,19 @@
                     <!-- <img src="images/p1.png" alt=""> -->
                   </div>
                   <div class="detail-box">
-                    <h6>
-                      <%= product.Productname %>
-                    </h6>
-                    <h6>
-                     <% if(product.SalePrice > 0 && product.SalePrice){ %>
+                    <div style="margin-bottom: 10px;" class="product-name">
+                      <h6><%= product.Productname %></h6>
+                    </div>
+                    <div>
+                      <% if(product.Stock < 1){ %>
+                      <span style="color: red;"  class="out-of-stock ">Not Available</span>
+                      <% } %>
+                    </div>
+
+                    <div class="product-price">
+                     <h6>
+                     <% if(product.Stock >= 1){ %>
+                      <% if(product.SalePrice > 0 && product.SalePrice){ %>
                         <span style="text-decoration: line-through;">
                           <i class="fa-solid fa-indian-rupee-sign"></i>
                           <%= product.RegularPrice %>
@@ -384,13 +434,15 @@
                           <i class="fa-solid fa-indian-rupee-sign"></i>
                           <%= product.SalePrice %>
                         </span>
-                     <% }else{ %>
+                      <% }else{ %>
                       <span>
                         <i class="fa-solid fa-indian-rupee-sign"></i>
                         <%= product.RegularPrice %>
                       </span>
                      <% } %>
-                    </h6>
+                    <%}%>
+                     </h6>
+                    </div>
                   </div>
                   <!-- <div class="new">
                     <span>
@@ -403,6 +455,35 @@
         <% }) %>
          
         </div>
+       <% } else{ %>
+        
+        <div class="heading_container heading_center">
+          <h2 style="text-transform: none; color: rgb(209, 53, 53);"> 
+            Oops!
+            <h6>No Products fonund in this category</h6>
+          </h2>
+          <div class="mt-5">
+            <button class=" btn btn-primary " onclick="goaback()">go back</button>
+          </div>
+         </div>
+        
+      <% } %>
+      </div>
+
+      <div class="pagination-container">
+        <% if (currentPage > 1) { %>
+        <a href="?page=<%= currentPage - 1 %>&query=<%= searchTerm %>&sort=<%= sort %>">&laquo; Previous</a>
+        <% } %> 
+        <% for (let i = 1; i <= totalPages; i++) { %>
+           <% if (i ===currentPage) { %>
+          <span class="current-page"><%= i %></span>
+          <% } else { %>
+          <a   href="?page=<%= i %>&query=<%= searchTerm %>&sort=<%= sort %>"><%= i %></a>
+          <% } %>
+         <% } %> 
+        <% if (currentPage < totalPages) { %>
+        <a href="?page=<%= Number(currentPage) + 1 %>&query=<%= searchTerm %>&sort=<%= sort %> ">Next &raquo;</a>
+        <% } %>
       </div>
       </section>
 
@@ -503,6 +584,28 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
         </script>
         <script src="/js/custom.js"></script>
+        <script>
+         function goaback(){
+          window.history.back();
+         }
+
+         const searchInput = document.getElementById('searchInput');
+         const searchForm = document.getElementById('shopSearchForm');
+
+        // Add an event listener for the 'input' event
+        searchInput.addEventListener('input', function () {
+          // Check if the search input is cleared
+          if (this.value.trim() === '') {
+            // Automatically submit the form to show all products
+            searchForm.submit();
+          }
+        });
+
+
+
+        // Get the current year for the copyright
+        document.getElementById('displayYear').innerHTML = new Date().getFullYear();
+        </script>
       
   </body>
 </html>

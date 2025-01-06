@@ -15,9 +15,9 @@
             value="<%= editCategoryData.Discription %>">
           <label for="floatingInput">Discriiption</label>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 ">
           <label for="status">Status</label>
-          <select class="form-select" id="status" name="status" required>
+          <select class="form-select form-control" id="status" name="status" required>
               <option value="Listed" <%= editCategoryData.Status === 'Listed' ? 'selected' : '' %>>Listed</option>
               <option value="Unlisted" <%= editCategoryData.Status === 'Unlisted' ? 'selected' : '' %>>Unlisted</option>
           </select>

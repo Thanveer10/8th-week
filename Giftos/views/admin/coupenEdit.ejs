@@ -48,7 +48,7 @@
                                 <div class="col-md-6 form-group  mb-3">
                                     <label>Expiry Date</label>
                                     <!-- <p class="text-primary">javadda</p>    -->
-                                    <input class="form-control" type="date" name="ExpireDate" placeholder="Expiry date"
+                                    <input class="form-control" type="date" name="ExpireDate" value="<%= Coupen.ExpireDate %>" placeholder="Expiry date"
                                        id="expireDate" required>
 
                                 </div>
@@ -61,11 +61,28 @@
                                         placeholder="Discount type" value="<%= Coupen.DiscountType %>" id="discountType">
                                 </div>
 
+                                <div class="col-md-6 form-group">
+                                    <label>Status</label>
+                                    <select class="form-control" name="coupenStatus" id="coupenStatus">
+                                        <option value="true" <%= Coupen.Status=== true ? 'selected' : '' %>>Active</option>
+                                        <option value="false" <%= Coupen.Status === false ? 'selected' : '' %>>Diactive</option>
+                                    </select>
+                                    <!-- <input class="form-control" type="text" name="DiscountType"
+                                        placeholder="Discount type" value="<%= Coupen.Status %>" id="discountType"> -->
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <!-- <label>Status</label>
+                                    <input class="form-control" type="text" name="DiscountType"
+                                        placeholder="Discount type" value="<%= Coupen.Status %>" id="discountType"> -->
+                                </div>
+
+
 
 
                                 <div class="col-md-6 form-group  mb-3">
                                     <button type="submit" class="btn btn-primary">Update Coupen</button>
                                 </div>
+                                
 
                             </div>
 
@@ -113,7 +130,8 @@
             createDate: document.getElementById('createDate').value,
             minimumPrice: document.getElementById('minimumPrice').value,
             expireDate: document.getElementById('expireDate').value,
-            discountType: document.getElementById('discountType').value
+            discountType: document.getElementById('discountType').value,
+            coupenStatus: document.getElementById('coupenStatus').value,
            },
            success:function(response){
             Swal.fire({

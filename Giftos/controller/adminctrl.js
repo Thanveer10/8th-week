@@ -245,17 +245,23 @@ const deleteOne = async function (req, res) {
 //order list
 const orderListget = async function (req, res) {
   try {
+    const currentPage = req.query.page || 1;
+    const limit = 5;
+    const skip = (currentPage - 1) * limit;
     const sessionName = req.session.admin_id;
     if (!sessionName) {
       return res.redirect("/admin/");
     }
     let message;
-    let allOrders = await OrderColl.find({}).populate("orderedUser").sort({date:-1});
+    let allOrders = await OrderColl.find({}).populate("orderedUser").sort({date:-1}).skip(skip).limit(limit);
     if (allOrders && allOrders.length < 1) {
       message = "NO orders";
     }
+    const totalOrders = await OrderColl.countDocuments();
+    const totalPages = Math.ceil(totalOrders / limit);
+
     if (sessionName) {
-      res.render("admin/orderList", { sessionName, allOrders, message });
+      res.render("admin/orderList", { sessionName, allOrders, message,totalPages,currentPage });
     } else {
       return res.redirect("/admin/");
     }
@@ -358,7 +364,7 @@ const updateCoupen= async function (req,res)
     const coupenId=new mongoose.Types.ObjectId(req.body.coupenId) 
     const selectedCoupen = await CoupenColl.findOne({_id:coupenId})
     console.log(selectedCoupen)
-    console.log(req.body)
+    console.log(req.body, req.body.coupenStatus)
     if(selectedCoupen){
       const updatedCoupen = await CoupenColl.updateOne(
         {_id: coupenId},
@@ -369,7 +375,8 @@ const updateCoupen= async function (req,res)
           CreateDate: req.body.createDate,
           MinimumPrice: req.body.minimumPrice,
           ExpireDate: req.body.expireDate,
-          DiscountType: req.body.discountType
+          DiscountType: req.body.discountType,
+          Status: req.body.coupenStatus
         }
       }
       
@@ -424,12 +431,18 @@ const ordeviewget = async function (req, res) {
 // OFFER SESSIONS
 const offerListget= async function (req, res) {
   try {
+    const currentPage = req.query.page || 1 
+    const limit = 10;
+    const skip = (currentPage - 1) * limit;
+
     const sessionName = req.session.admin_id;
-  const offers = await OfferColl.find({}) .populate({ path: 'product', select: 'Productname ' }).populate({ path: 'category', select: 'Category' });;
+  const offers = await OfferColl.find({}) .populate({ path: 'product', select: 'Productname ' }).populate({ path: 'category', select: 'Category' }).skip(skip).limit(limit)
   const categories = await CategoryColl.find({Status:'Listed'})
   const products= await Products.find({Status:'Available'})
+  const totalOffer = await OfferColl.countDocuments()
+  const totalPages = Math.ceil(totalOffer / limit);
   if (sessionName) {
-    res.render("admin/offerList", { sessionName, offers,categories,products});
+    res.render("admin/offerList", { sessionName, offers,categories,products,totalPages,currentPage});
   } else {
     return res.redirect("/admin/");
   }

@@ -30,6 +30,10 @@
                                 <h6 class="fw-bold"> <span><%= index+1 %> - </span><%= product.name %></h6> <!-- Fix to correctly access productName -->
                                 <p style="padding: 0;">Quantity: <strong><%= product.quantity %></strong></p>
                                 <h6> Price: <%= product.price %></h6> 
+                                <h6> fianl Price: <%= product.total %></h6> 
+
+
+
                           <% }) %>
                           <h4 class="text-center">Order Details</h4>
                             <p>Order Reference ID: <strong><%= order.orderId %></strong></p>
@@ -37,7 +41,7 @@
                             <p>Payment Method: <strong><%= order.paymentDetails.paymentMethod %></strong></p> <!-- Display Payment Method -->
                            <% if(order.paymentDetails.status=='Pending'){ %>
                                 <p>Payment Status: <span class="badge badge-warning"><%= order.paymentDetails.status %></span></p>
-                           <% }else if(order.paymentDetails.status=='Failed'){ %>
+                           <% }else if(order.paymentDetails.status=='Cancelled'){ %>
                                 <p>Payment Status: <span class="badge badge-danger"><%= order.paymentDetails.status %></span></p>
                            <% }else{ %>
                                 <p>Payment Status: <span class="badge badge-success"><%= order.paymentDetails.status %></span></p>
@@ -81,14 +85,31 @@
                             
                         </div>
                     </div>
+                  </div>  
+
                 </div>
-            </div>
 
             <% }); %> 
             <% } else { %>
                 <div class="alert alert-info">No Order found. <a href="/shop" class="btn btn-primary btn-sm">Shop Now</a></div>
             <% } %> 
+                             <!-- pagination -->
+                             <div class="pagination-container   text-center">
+                              <% if(currentPage>1){ %>  
+                              <a  href="?page=<%= currentPage-1 %>">&laquo;Previous</a>
+                              <% } %>
+                              <% for(let i=1;i<=totalPages;i++){ %>
+                                <% if(i==currentPage){ %>
+                                  <span style="background-color: rgb(51, 121, 212);" class="current-page"><%= i %></span>
+                                  <% }else{ %>
+                                  <a href="?page=<%= i %>" ><%= i %></a>
+                                  <% } %>
+                              <% } %>
+                              <% if( currentPage < totalPages){ %>
+                                <a href="?page=<%= currentPage+1 %>"   >Next &raquo;</a>
         
+                              <% } %>                  
+                            </div>
         </div>
         <!-- Pagination -->
     </div>

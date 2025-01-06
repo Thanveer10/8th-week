@@ -51,7 +51,7 @@ function confirmReturnRequest(orderId){
     }).then((result) => {
         if (result.isConfirmed) {
             // Perform AJAX request to remove item
-            fetch(`/returnRequestlOrder/${orderId}`, {
+            fetch(`/returnRequest/${orderId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
