@@ -2432,15 +2432,15 @@ const confirmOrder = async (req, res) => {
     }
     console.log("payment method===" + paymentMethod);
 
-    let totalCartPrice = cart.finalTotalCartPrice;
-    // for (let item of cart.Product) {
-    //   const product = await ProductColl.findById(item.item);
-    //   console.log('produuct id==',item.item)
-    //   if (!product || product.Stock < item.quantity) continue;
+    let totalCartPrice =0;
+    for (let item of cart.Product) {
+      const product = await ProductColl.findById(item.item);
+      console.log('produuct id==',item.item)
+      if (!product || product.Stock < item.quantity) continue;
 
-    //   totalCartPrice +=
-    //     (product.SalePrice || product.RegularPrice) * item.quantity;
-    // }
+      totalCartPrice +=
+        (product.SalePrice || product.RegularPrice) * item.quantity;
+    }
     console.log("totalCartPrice=" + totalCartPrice);
     // if (cart.finalTotalCartPrice !== totalCartPrice) {
     //   cart.totalCartPrice = cart.Product.reduce((sum, item) => sum + item.totalPrice, 0);
@@ -2547,13 +2547,15 @@ const confirmOrder = async (req, res) => {
 
       // return res.status(200).json({ success: true, TotalPrice: totalCartPrice - cart.discountPrice });
     } else if (paymentMethod === "Online") {
+      const totalAmount=totalCartPrice-discountAmount
       const razorpayOrder = await razorpayInstance.orders.create({
         // amount: totalCartPrice  * 100,
-        amount: (totalCartPrice - cart.discountPrice) * 100,
+        amount: totalAmount * 100,
 
         currency: "INR",
-      });
+      }); 
       console.log("raozorpay order" + razorpayOrder);
+
       if (!razorpayOrder) {
         return res.render("user/error", {
           res,
@@ -2568,7 +2570,7 @@ const confirmOrder = async (req, res) => {
       return res.status(200).json({
         OnlinePayment: true,
         razorpayOrderId: razorpayOrder.id,
-        amount: totalCartPrice - cart.discountPrice,
+        amount: totalCartPrice-discountAmount ,
         // amount: totalCartPrice ,
         razor_key_id: process.env.RAZORPAY_KEY_ID,
         addressId,
@@ -2919,6 +2921,17 @@ const onlinePayment = async function (req, res) {
       });
     }
 
+    let totalCartPrice =0;
+    for (let item of cart.Product) {
+      const product = await ProductColl.findById(item.item);
+      console.log('produuct id==',item.item)
+      if (!product || product.Stock < item.quantity) continue;
+
+      totalCartPrice +=
+        (product.SalePrice || product.RegularPrice) * item.quantity;
+    }
+    console.log("totalCartPrice=" + totalCartPrice);
+
     let discountAmount = 0;
     let couponCode;
     if (couponId) {
@@ -2937,13 +2950,13 @@ const onlinePayment = async function (req, res) {
           message: "Coupon has expired",
         });
       }
-      if (coupon.MinimumPrice < cart.totalCartPrice) {
+      if (coupon.MinimumPrice < totalCartPrice) {
         if (coupon.DiscountType == "Amount") {
           discountAmount = coupon.DiscountPrice;
           couponCode = coupon.CoupenCode;
         }
       } else {
-        console.log(coupon.MinimumPrice, cart.totalCartPrice);
+        console.log(coupon.MinimumPrice, totalCartPrice);
         console.log("Coupon can't be applied on this amount in confirmOrder");
         return res.status(400).json({
           success: false,
@@ -2971,13 +2984,15 @@ const onlinePayment = async function (req, res) {
       });
     }
 
+
+    
     const order = new OrderColl({
       orderedUser: user_id,
       orderStatus: "Confirmed", // Set default order status
       products: productsArray, // Attach the built products array
       date: new Date(),
       coupenDiscount: discountAmount?discountAmount : 0, // Total discount applied
-      grandTotal: cart.totalCartPrice - discountAmount, // Calculate grand total
+      grandTotal: totalCartPrice - discountAmount, // Calculate grand total
       shippingAddress: userAddress[0], // Shipping address
       paymentDetails: {
         paymentMethod: "Online Payment",
@@ -2987,7 +3002,7 @@ const onlinePayment = async function (req, res) {
       deliveryDate: new Date(new Date().setDate(new Date().getDate() + 7)), // Example: 7-day delivery
     });
     await order.save();
-    const TotalPrice = cart.totalCartPrice - discountAmount;
+    const TotalPrice = totalCartPrice - discountAmount;
     await cartColl.findByIdAndDelete(cartId);
     user.UsedCoupons.push(couponCode);
     await user.save();
@@ -3009,10 +3024,10 @@ const onlinePayment = async function (req, res) {
 // restoreProductQuantities
 const restoreProductQuantities = async function (req, res) {
   try {
-    const { cartId } = req.query;
+    const { cartId } = req.params;
     const cart = await cartColl.findById(cartId);
     if (!cart) {
-      console.log("cart not found");
+      console.log("cart not found==", cartId);
       return res.status(404).json({
         success: false,
         message: "cart not found",
@@ -3025,7 +3040,7 @@ const restoreProductQuantities = async function (req, res) {
       }
       await product.save();
     }
-
+    console.log('restoreProductQuantities')
     res.json({
       success: true,
       message: "Product quantities restored successfully",

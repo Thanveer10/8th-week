@@ -1,4 +1,7 @@
 // Function to show Add/Edit Address form
+// import Swal from 'sweetalert2';
+// const Swal = require('swal');
+
 function addNewAddress() {
   document.getElementById("UserSavedAddressCard").classList.add("d-none");
   document.getElementById("addAddressForm").classList.remove("d-none");
@@ -368,7 +371,62 @@ document
 // Custom function to handle payment failure
 
 // Custom function to handle payment failure or cancellation
+// function handlePaymentFailure(cartId, reason, error = {}) {
+//   console.log(`${reason}:`, error);
+
+//   Swal.fire({
+//     title: `${reason}!`,
+//     text: `Unfortunately, your payment could not be completed. ${
+//       reason === "Payment Cancelled"
+//         ? "You cancelled the payment process."
+//         : "Restoring your cart items..."
+//     }`,
+//     icon: "error",
+//   }).then(() => {
+//     // Call backend API to restore quantities
+//     fetch(`/online-payment-failed/restore-cart-items/${cartId}`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     })
+//       .then((response) => response.json())
+//       .then((data) => {
+//         if (data.success) {
+//           console.log('Successfully rrestored cart items')
+//           alert(' cart restored, Redirecting...')
+//           Swal.fire(
+//             "Cart Restored",
+//             "Your cart has been restored successfully.",
+//             "success"
+
+//           ).then(() => {
+//             window.location.href = '/adduserCart';
+//           });
+//         } else {
+//           Swal.fire(
+//             "Error!",
+//             "Failed to restore cart items. Please contact support.",
+//             "error"
+//           );
+//         }
+//       })
+//       .catch((error) => {
+//         console.error("Error restoring cart items:", error);
+//         Swal.fire(
+//           "Error!",
+//           "Something went wrong while restoring your cart.",
+//           "error"
+//         );
+//       });
+//   });
+// }
+let isRestoring = false;
+
 function handlePaymentFailure(cartId, reason, error = {}) {
+  if (isRestoring) return; // Prevent duplicate calls
+  isRestoring = true;
+
   console.log(`${reason}:`, error);
 
   Swal.fire({
@@ -380,7 +438,6 @@ function handlePaymentFailure(cartId, reason, error = {}) {
     }`,
     icon: "error",
   }).then(() => {
-    // Call backend API to restore quantities
     fetch(`/online-payment-failed/restore-cart-items/${cartId}`, {
       method: "POST",
       headers: {
@@ -390,12 +447,13 @@ function handlePaymentFailure(cartId, reason, error = {}) {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
+          console.log("Successfully restored cart items");
           Swal.fire(
             "Cart Restored",
             "Your cart has been restored successfully.",
             "success"
           ).then(() => {
-            window.location.href = `/cartView`;
+            window.location.href = "/adduserCart";
           });
         } else {
           Swal.fire(
@@ -412,9 +470,13 @@ function handlePaymentFailure(cartId, reason, error = {}) {
           "Something went wrong while restoring your cart.",
           "error"
         );
+      })
+      .finally(() => {
+        isRestoring = false; // Reset the flag
       });
   });
 }
+
 
 //  jQuery for dynamic form updates
 
