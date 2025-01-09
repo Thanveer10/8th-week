@@ -248,16 +248,7 @@
                             <td><%= product.Category ? product.Category.Category : 'Unknown' %></td>
                             <td><%= product.Stock %></td>
                             <td >
-                              <a href="/product/editproduct/<%= product._id %>">
-                                <button type="button" class="btn btn-primary">ADD OFFER</button>
-                            </a>
-
-                            <a href="#">
-                                <button type="button" class="btn btn-danger" 
-                                onclick="deleteProduct('<%= product._id %>','<%= product.productname %>?')">
-                                   REMOVE 
-                                </button>
-                            </a>
+                               <%= product.SalePrice ?  product.RegularPrice - product.SalePrice : 0 %>
                             </td>
                             <td>
                                 <a href="/product/editproduct/<%= product._id %>">

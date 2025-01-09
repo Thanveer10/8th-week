@@ -13,6 +13,7 @@ const { render } = require("ejs");
 const mongoose = require("mongoose");
 const PDFDocument = require('pdfkit')
 const ExcelJS= require('exceljs');
+const { format } = require("morgan");
 
 
 let coupenAdded;
@@ -131,14 +132,20 @@ const dashBoard = async function (req, res) {
     let sessionName = req.session.admin_id;
     if (sessionName) {
       // const users=await Users.find({})
+      let orderCount= await OrderColl.countDocuments();
+      let totalRevenue = await OrderColl.aggregate([{$unwind:"$products"},
+        { $group: { _id: null, totalRevenue: { $sum: "$TotalPrice" } } },
+      ]);
       let latesOrders = await OrderColl.find({}).sort({ date: -1 }).limit(5);
       let latestMembers = await Users.find({}).sort({ CreatedAt: -1 }).limit(5);
       console.log(latesOrders);
       console.log("latest mambers ========= " + latestMembers);
+      console.log("orderCount =", orderCount);
       res.render("admin/adminHome", {
         sessionName,
         latestMembers,
         latesOrders,
+        orderCount
       });
     } else {
       res.redirect("/admin");
@@ -154,6 +161,133 @@ const dashBoard = async function (req, res) {
     });
   }
 };
+
+// geting sale data for admin dashboard cart
+const salesDataget= async (req, res, next) => {
+  try{
+  const filter = req.query.filter 
+  console.log('sales fileter', filter)
+  let startDate = new Date()
+  let endDate = new Date()
+  let format ;
+  switch (filter) {
+    case "yearly":
+     startDate = new Date(startDate.getFullYear(),0,1);
+     format="%Y"
+     break;
+    case "monthly":
+     startDate = new Date(startDate.getFullYear(),startDate.getMonth(),1);
+     format="%Y-%m"
+     break;
+    case "weekly": 
+      dayofweek = startDate.getDay()
+      startDate.setDate(startDate.getDate()- dayofweek);
+      startDate.setHours(0,0,0,0)
+      format = "%Y-%U";
+      break;
+    default:
+      startDate = new Date(startDate.getFullYear(),0,1);
+      format="%Y"
+  }
+  endDate.setHours(23,59,59,999)
+  console.log('start date===', startDate, '==end date===', endDate)
+
+  let salesData= await OrderColl.aggregate([
+    {$match:
+      {deliveryDate: { $gte: new Date(startDate), $lt: new Date(endDate) }
+      }
+    },
+    {$unwind:'$products'},
+    {$group:{
+      _id: { $dateToString: { format: format, date:'$deliveryDate' } },
+      totalSales:{$sum:'$grandTotal'},
+      totalDicount:{$sum:'$products.discountAmount'},
+      orderCount: {$sum: 1}, 
+      }
+    },
+ ])
+ console.log('saledata======',salesData)
+
+ res.json(salesData)
+}catch(e) {
+  console.error(e);
+  res.status(500).json({message: `error fetching sales data ${e.message}`});
+}
+}
+
+const topProducts = async (req, res) => {
+  try {
+      const topProducts = await OrderColl.aggregate([
+          { $unwind: "$products" },
+          {
+              $group: {
+                  _id: "$products.productId",
+                  totalSales: { $sum: "$products.quantity" }
+              }
+          },
+          {
+            $lookup: {
+              from: "productdatas", // Join with the products collection
+              localField: "_id",
+              foreignField: "_id",
+              as: "productDetails"
+            }
+          },
+          { $unwind: "$productDetails" },
+          { $sort: { totalSales: -1 } },
+          { $limit: 10 }
+      ]);
+      console.log('topProducts===', topProducts);
+      console.log(topProducts[0].productDetails)
+      res.json(topProducts);
+          } catch (error) {
+              console.error('error getting top products:',error);
+              res.status(500).json({ message: "Error fetching top products", error });
+  }
+};
+
+const categoryChartget = async (req, res) => {
+  try {
+    const topCategories = await OrderColl.aggregate([
+      { $unwind: "$products" },
+      {
+        $lookup: {
+          from: "productdatas", // Join with the products collection
+          localField: "products.productId",
+          foreignField: "_id",
+          as: "productDetails"
+        }
+      },
+      { $unwind: "$productDetails" },
+
+      {
+        $lookup: {
+          from: "categories", // Join with the categories collection
+          localField: "productDetails.Category", // Match the category ID
+          foreignField: "_id", // ID in the categories collection
+          as: "categoryDetails"
+        }
+      },
+      { $unwind: "$categoryDetails" },
+      {
+        $group: {
+          _id: "$categoryDetails.Category", // Group by category
+          totalSales: { $sum: "$products.quantity" },
+          // totalRevenue: { $sum: { $multiply: ["$products.quantity", "$products.price"] } }
+        }
+      },
+      { $sort: { totalSales: -1 } },
+      { $limit: 10 }
+    ]);
+  console.log('topCategories', topCategories)
+
+    res.json(topCategories);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching top categories" });
+  }
+}
+
 
 //admin  get product list
 const productList = async function (req, res) {
@@ -1006,6 +1140,9 @@ module.exports = {
   adminLogin,
   adminLoginValidation,
   dashBoard,
+  salesDataget,
+  topProducts,
+  categoryChartget,
   adminLogout,
   productList,
   deleteProduct,

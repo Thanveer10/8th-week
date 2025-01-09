@@ -175,21 +175,12 @@
 
 
     <script>
-            // document.getElementById('logout-form').addEventListener('submit',(event)=>{
-            // if(!confirm('Are you sure, You  really want to  log out? ')){
-            //     event.preventDefault()
-            // }
-            // })
 
-            // const urlParams = new URLSearchParams(window.location.search);
-            // if (urlParams.has('success') && urlParams.get('success') === 'true') {
-            //     Swal.fire({
-            //     icon: 'success',
-            //     title: 'Success!',
-            //     text: 'You have successfully changed your password.',
-                
-            //     });
-            // }
+            document.addEventListener("DOMContentLoaded", function(event) {
+                document.getElementById("list-tab").style.display = "none";
+                const currentYear = new Date().getFullYear();
+                document.getElementById('displayYear').textContent = currentYear;
+            });
 
             
             document.getElementById('addressForm').addEventListener('submit', function(event) {
