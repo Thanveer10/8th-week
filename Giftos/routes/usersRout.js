@@ -79,7 +79,9 @@ user_route.post('/checkout/editAddress/:addressId',userAuth,user_ctrl.editAddres
 // ORDRER
 user_route.post('/checkout/:cartId',userAuth,user_ctrl.confirmOrder);
 user_route.get('/orderconfirm/:cartId',userAuth,user_ctrl.orderConfirmed);
+user_route.get('/orders/download-invoice/:orderId',userAuth,user_ctrl.downloadInvoice)
 user_route.get('/viewOrder',userAuth,user_ctrl.LoadOrderPage);
+user_route.get('/orderDetail/:orderId',userAuth,user_ctrl.LoadOrderDetail)
 user_route.post('/cancelOrder/:orderId',userAuth,user_ctrl.cancelOrder)
 user_route.post('/returnRequest/:orderId',userAuth,user_ctrl.returnOrder)
 

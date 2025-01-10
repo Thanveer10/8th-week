@@ -15,6 +15,7 @@ const mongoose = require("mongoose");
 const env = require("dotenv").config();
 const razorpayInstance = require("../config/razopayConfig");
 const { errorMonitor } = require("nodemailer/lib/xoauth2");
+const PDFDocument = require('pdfkit');
 
 let sessionName;
 let coupenerr;
@@ -1263,46 +1264,12 @@ const userCart = async function (req, res, next) {
       0
     );
 
-    // ==========copuen session================================
-    let coupen = req.session.coupen;
-    if (coupen) {
-      console.log("dlskdlfkslfdsf  " + coupen);
-      console.log("coupen session is not empty " + coupen);
-      const value = await CoupenColl.findOne({ CoupenCode: coupen });
-      console.log("value: " + value);
-      if (grand_total < value.MinimumPrice) {
-        console.log("minimum prise not reached");
-        coupenerr =
-          "minimum prise not reached plesae purchase upto " +
-          value.MinimumPrice;
-      } else {
-        discPrice = value.DiscountPrice;
-        grand_total -= value.DiscountPrice;
-        console.log("discount applied");
-        var success = "Discount applied" + value.DiscountPrice;
-        const cart = await cartColl.findOne({ UserId: user }).lean();
-        if (cart) {
-          const result = await cartColl.updateOne(
-            { UserId: user },
-            { $set: { discountPrice: value.DiscountPrice } }
-          );
-          // cart.discountPrice= value.DiscountPrice
-          console.log("discount price added to cart" + cart.discountPrice);
-          console.log(result);
-        }
-        await User.updateOne(
-          { _id: user },
-          { $addToSet: { UsedCoupen: coupen } }
-        );
-      }
-    }
     res.render("user/cart", {
       productCart,
       grand_total,
       totalQuantity,
       sessionName,
       coupenerr,
-      success,
       discPrice,
       sub_total,
       discountValue
@@ -2627,6 +2594,70 @@ const orderConfirmed = async (req, res) => {
   }
 };
 
+// GET INVOICE
+const downloadInvoice = async(req, res) => {
+  try {
+    const orderId = req.params.orderId
+    const order= await OrderColl.findById(orderId).populate('products.productId')
+    if(!order){
+      return res.render('user/error',{res,errorCode:404,errorMessage:'Order Not Found',errorDescription:'The order you are trying to access does not exist.',link:'/viewOrder'}) 
+    }
+  
+    let totalOfferdiscount=0;
+  
+    order.products.forEach(product => {
+      totalOfferdiscount+=product.discountAmount*product.quantity
+    })
+    const pdfDoc = new PDFDocument();
+  
+    // pdfDoc.registerFont('NotoSans', './fonts/NotoSans-Regular.ttf');
+    // pdfDoc.font('NotoSans'); 
+  
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=invoice_${order.orderId}.pdf`);
+  
+    pdfDoc.pipe(res);
+    pdfDoc.fontSize(20).text('Invoice', { align: 'center' });
+    pdfDoc.moveDown();
+    pdfDoc.fontSize(12).text(`Order ID: ${order.orderId}`);
+    pdfDoc.text(`Date: ${new Date(order.date).toDateString()}`);
+    pdfDoc.text(`Payment Method: ${order.paymentDetails.paymentMethod}`);
+    
+    pdfDoc.moveDown();
+    pdfDoc.fontSize(15).text('Shipping Address:', { underline: true });
+    pdfDoc.fontSize(12).text(`${order.shippingAddress.name}`);
+    pdfDoc.text(`${order.shippingAddress.phone}`);
+    pdfDoc.text(`${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.pincode}`);
+    
+    pdfDoc.moveDown();
+    pdfDoc.fontSize(15).text('Items Ordered:', { underline: true });
+    order.products.forEach(item => {
+        pdfDoc.fontSize(12).text(`${item.name} -OriginalPrice: ${item.price} -OfferPrice: ${item.price - item.discountAmount}-Quantity: ${item.quantity} - TotalPrice: ${item.total}`);
+    });
+  
+    pdfDoc.moveDown();
+    pdfDoc.fontSize(15).text('Order Summary:', { underline: true });
+    // pdfDoc.fontSize(12).text(`Total Original Price: ₹${totalOriginalPrice.toFixed(2)}`);
+    pdfDoc.text(`Total Discount from Offers: -₹${totalOfferdiscount.toFixed(2)}`);
+    pdfDoc.text(`Coupon Discount: ₹${order.coupenDiscount.toFixed(2)}`);
+    // pdfDoc.text(`Delivery Charge: ₹${deliveryCharge.toFixed(2)}`); 
+    pdfDoc.text(`Total Price: ₹${order.grandTotal.toFixed(2)}`);
+  
+    pdfDoc.end();
+  } catch (error) {
+    console.error('Error generating invoice:', error);
+    return res.render('user/error', {
+      errorCode: 500,
+      errorMessage: 'Internal Server Error',
+      errorDescription: 'Something went wrong while generationg order pdf. Please try again later.',
+      link: ''})
+    
+  }
+
+
+}
+
+
 // LOAD ORDER PAGE
 const LoadOrderPage = async (req, res) => {
   try {
@@ -2655,7 +2686,7 @@ const LoadOrderPage = async (req, res) => {
 
     // ]);
 
-    const userOrders = await OrderColl.find({ orderedUser: user }).sort({
+    const userOrders = await OrderColl.find({ orderedUser: user }).populate('products.productId').sort({
       date: -1,
     }).skip(skip).limit(limit);
 
@@ -2707,6 +2738,45 @@ const LoadOrderPage = async (req, res) => {
     });
   }
 };
+
+// LOAD ORDER DETAIL
+const LoadOrderDetail = async (req, res) => {
+  try {
+    
+    const orderId = req.params.orderId
+    const user = await User.findById(req.session.user_id);
+    const sessionName = user;
+    if (!user) {
+      // return renderErrorPage(res, 404, 'User Not Found', 'The user associated with the session was not found.', '/back-to-home');
+      return res.render('user/error',{res,errorCode:401,errorMessageessage:'unAuthorized Access',errorDescription:'sorry you are not loged in, please login first',link:'/'})
+    }
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.render('user/error', {
+        errorCode: 400,
+        errorMessage: 'Invalid Order ID',
+        errorDescription: 'The provided order ID is not valid.',
+        link: '/viewOrder'
+      });
+    }
+    const order = await OrderColl.findById(orderId).populate('products.productId');
+    if(!order){
+      return res.render('user/error',{res,errorCode:404,errorMessage:'Order Not Found',errorDescription:'The order you are trying to access does not exist.',link:'/viewOrder'})
+    }
+
+    res.render('user/orderDetail', {sessionName,order})
+
+  } catch (error) {
+     console.log('errror occurred in load order detail', error)
+     return res.render('user/error', {
+      errorCode: 500,
+      errorMessage: 'Internal Server Error',
+      errorDescription: 'Something went wrong while loading the order details. Please try again later.',
+      link: '/'})
+  }
+
+}
+
+
 
 // CANCEL OREDER SESSION
 const cancelOrder = async (req, res) => {
@@ -3147,4 +3217,6 @@ module.exports = {
   editAddresspost,
   coupenApply,
   walletget,
+  LoadOrderDetail,
+  downloadInvoice
 };

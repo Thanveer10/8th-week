@@ -1,7 +1,7 @@
 <%- include('../partial/user/userProfilePartial.ejs') %>
 
 
-        <div class="container mt-5">
+        <div class="container mt-5" style="width: 70%;">
             
             <% if (orders && orders.length > 0) { %>
             <h2 class="text-center mb-4">Your Orders</h2>
@@ -20,25 +20,42 @@
 
             <!-- Order 1 -->
             <div class="card order-card mb-4" style=" box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.3);">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
+                <div class="card-body">                 
+                  <div class="row">
+                    <div class="col-md-12 text-end">
+                          
+                      <button class="btn btn-primary mb-2" onclick="location.href='/orderDetail/<%= order._id %>'">View Order</button>
+                      <% if (order.orderStatus  !== "Cancelled" && order.orderStatus !== "Delivered" && order.orderStatus !== "Returned" && order.orderStatus !== "Return Request" && order.orderStatus !== "Refunded") { %>
+                          
+                          <button type="button" class="btn  custom-remove-btn" onclick="confirmRemove('<%= order._id %>')">
+                              <i class="bi bi-trash-fill"></i> Cancel Order
+                          </button>
+                      
+                      <% } %>
+                      <% if (order.orderStatus === "Delivered") { %>
+                          <button class="btn btn-danger mb-2" onclick="confirmReturnRequest('<%= order._id %>')">Return Order</button>
+                      <% } %>
+                      
+                  </div>
+                    <% order.products.forEach((product,index) => { %>
+                        <div class="col-md-3" >
+                            <!-- Order Image -->
+                            <img style="height: 100px;" src="productsimg/<%= product.productId.Productimage[0] %>" class="img-fluid" alt="Product Image" >      
                         </div>
-                        <div class="col-md-6">
-                            <h4 class="text-center">Products Deatils</h4>
-                            <% order.products.forEach((product ,index)=> { %>
+                    
+                        <div class="col-md-9">
+                            <!-- <h4 class="text-center">Products Deatils</h4> -->
+                            
                                 <h6 class="fw-bold"> <span><%= index+1 %> - </span><%= product.name %></h6> <!-- Fix to correctly access productName -->
                                 <p style="padding: 0;">Quantity: <strong><%= product.quantity %></strong></p>
                                 <h6> Price: <%= product.price %></h6> 
                                 <h6> fianl Price: <%= product.total %></h6> 
-
-
-
-                          <% }) %>
-                          <h4 class="text-center">Order Details</h4>
+                        </div>
+                        <% }) %>
+                          <!-- <h4 class="text-center">Order Details</h4>
                             <p>Order Reference ID: <strong><%= order.orderId %></strong></p>
-                            <p>Order Date: <strong><%= new Date(order.date).toLocaleDateString() %></strong></p> <!-- Display Date -->
-                            <p>Payment Method: <strong><%= order.paymentDetails.paymentMethod %></strong></p> <!-- Display Payment Method -->
+                            <p>Order Date: <strong><%= new Date(order.date).toLocaleDateString() %></strong></p>
+                            <p>Payment Method: <strong><%= order.paymentDetails.paymentMethod %></strong></p> 
                            <% if(order.paymentDetails.status=='Pending'){ %>
                                 <p>Payment Status: <span class="badge badge-warning"><%= order.paymentDetails.status %></span></p>
                            <% }else if(order.paymentDetails.status=='Cancelled'){ %>
@@ -67,23 +84,9 @@
                                 <p>Coupon Discount: <strong>₹<%= order.couponDiscount %></strong></p>
                             <% } %>
 
-                            <p>Shipping Address: <strong><%= order.shippingAddress.name %>, <%= order.shippingAddress.houseName %>, <%= order.shippingAddress.street %>, <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %>, <%= order.shippingAddress.pincode %></strong></p>
-                        </div>
-                        <div class="col-md-3 text-center">
-                            
-                            <button class="btn btn-primary mb-2" onclick="location.href='/orderView/<%= order._id %>'">Track Order</button>
-                            <% if (order.orderStatus  !== "Cancelled" && order.orderStatus !== "Delivered" && order.orderStatus !== "Returned" && order.orderStatus !== "Return Request" && order.orderStatus !== "Refunded") { %>
-                                
-                                <button type="button" class="btn  custom-remove-btn" onclick="confirmRemove('<%= order._id %>')">
-                                    <i class="bi bi-trash-fill"></i> Cancel Order
-                                </button>
-                            
-                            <% } %>
-                            <% if (order.orderStatus === "Delivered") { %>
-                                <button class="btn btn-danger mb-2" onclick="confirmReturnRequest('<%= order._id %>')">Return Order</button>
-                            <% } %>
-                            
-                        </div>
+                            <p>Shipping Address: <strong><%= order.shippingAddress.name %>, <%= order.shippingAddress.houseName %>, <%= order.shippingAddress.street %>, <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %>, <%= order.shippingAddress.pincode %></strong></p> -->
+                        
+
                     </div>
                   </div>  
 
