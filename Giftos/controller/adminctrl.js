@@ -14,6 +14,7 @@ const mongoose = require("mongoose");
 const PDFDocument = require('pdfkit')
 const ExcelJS= require('exceljs');
 const { format } = require("morgan");
+const fs= require("fs");
 
 
 let coupenAdded;
@@ -206,7 +207,6 @@ const salesDataget= async (req, res, next) => {
       }
     },
  ])
- console.log('saledata======',salesData)
 
  res.json(salesData)
 }catch(e) {
@@ -237,7 +237,6 @@ const topProducts = async (req, res) => {
           { $sort: { totalSales: -1 } },
           { $limit: 10 }
       ]);
-      console.log('topProducts===', topProducts);
       console.log(topProducts[0].productDetails)
       res.json(topProducts);
           } catch (error) {
@@ -289,7 +288,8 @@ const categoryChartget = async (req, res) => {
 }
 
 
-//admin  get product list
+// admin  get product list
+
 const productList = async function (req, res) {
   sessionName = req.session.admin_id;
   const currentPage = parseInt(req.query.page) || 1;
@@ -314,6 +314,114 @@ const productList = async function (req, res) {
     res.redirect("/admin/");
   }
 };
+
+// generate ledger
+const generateLedger = async (req, res) => {
+    try {
+        // Fetch ledger data from the database
+        const ledgerData = await OrderColl.find({})
+            .populate('orderedUser')
+            .populate('products.productId');
+
+        const doc = new PDFDocument({ margin: 20 });
+        const filePath = 'ledger.pdf';
+        const writeStream = fs.createWriteStream(filePath);
+
+        doc.pipe(writeStream);
+
+        // Title of the ledger
+        doc.fontSize(20).text("Ledger Book", { align: 'center' }).moveDown();
+
+        // Table configuration
+        const tableTop = 100;
+        const rowHeight = 35;
+        const cellPadding = 5;
+        const columnWidths = [120, 120, 70, 70, 80, 80, 100];
+
+        // Table headers
+        const headers = ["Order ID", "User", "Payment\nMethod", "Total\nPrice", "Offer\nDiscount", "Coupon\nDiscount", "Delivery\nCharge"];
+        doc.fontSize(12).font('Helvetica-Bold');
+
+        let leftMargin = 10;
+        headers.forEach((header, i) => {
+            doc.rect(leftMargin, tableTop, columnWidths[i], rowHeight).stroke();
+            doc.text(header, leftMargin + cellPadding, tableTop + cellPadding, {
+                width: columnWidths[i] - cellPadding * 2,
+                align: 'center'
+            });
+            leftMargin += columnWidths[i];
+        });
+
+        let rowPosition = tableTop + rowHeight;
+        doc.fontSize(10).font('Helvetica');
+
+        // Add rows to the table
+        ledgerData.forEach(order => {
+            let totalProductDiscount = 0;
+            order.products.forEach(item => {
+                totalProductDiscount += item.discountAmount * item.quantity;
+            });
+
+            const deliveryCharge = order.deliveryCharge || 0; // Replace with actual delivery charge calculation if needed
+
+            const rowData = [
+                order.orderId || 'N/A',
+                order.orderedUser?.Username || 'N/A',
+                order.paymentDetails?.paymentMethod || 'N/A',
+                parseFloat(order.grandTotal?.toFixed(2) || 0),
+                parseFloat(totalProductDiscount.toFixed(2)),
+                parseFloat((order.coupenDiscount || 0).toFixed(2)),
+                parseFloat(deliveryCharge.toFixed(2))
+            ];
+
+            leftMargin = 10;
+            let maxHeight = rowHeight;
+
+            rowData.forEach((data, i) => {
+                const cellWidth = columnWidths[i];
+                const options = { width: cellWidth - cellPadding * 2, ellipsis: true };
+                const textHeight = doc.heightOfString(data.toString(), options);
+
+                maxHeight = Math.max(maxHeight, textHeight + cellPadding * 2);
+
+                doc.rect(leftMargin, rowPosition, cellWidth, maxHeight).stroke();
+                doc.text(data.toString(), leftMargin + cellPadding, rowPosition + cellPadding, options);
+                leftMargin += columnWidths[i];
+            });
+
+            // Check for page overflow
+            if (rowPosition + maxHeight > doc.page.height - 50) {
+                doc.addPage();
+                rowPosition = 50; // Reset row position for the new page
+            } else {
+                rowPosition += maxHeight; // Move to the next row
+            }
+        });
+
+        doc.end();
+
+        // Handle file writing and response
+        writeStream.on('finish', () => {
+            res.download(filePath, 'ledger.pdf', (err) => {
+                if (err) {
+                    console.error("Error downloading ledger:", err);
+                    res.status(500).json({ message: "Error downloading ledger" });
+                }
+                fs.unlinkSync(filePath); // Delete the file after download
+            });
+        });
+
+        writeStream.on('error', (err) => {
+            console.error("Error writing PDF document to file:", err);
+            res.status(500).json({ message: "Error generating PDF document" });
+        });
+
+    } catch (error) {
+        console.error("Error generating ledger:", error);
+        res.status(500).json({ message: "Error generating ledger", error });
+    }
+};
+
 
 //delete product
 const deleteProduct = async function (req, res) {
@@ -1143,6 +1251,7 @@ module.exports = {
   salesDataget,
   topProducts,
   categoryChartget,
+  generateLedger,
   adminLogout,
   productList,
   deleteProduct,

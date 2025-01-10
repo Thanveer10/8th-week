@@ -20,6 +20,9 @@ admin_router.get('/adminHome',adminAuth,admin_ctrl.dashBoard)
 admin_router.get('/sales-data',adminAuth,admin_ctrl.salesDataget)
 admin_router.get('/top-products',adminAuth,admin_ctrl.topProducts)
 admin_router.get("/categoryChart",adminAuth,admin_ctrl.categoryChartget)
+admin_router.get("/generate-ledger-pdf",adminAuth,admin_ctrl.generateLedger)
+
+
 
 admin_router.get('/productList',adminAuth,admin_ctrl.productList)
 admin_router.get('/addProduct',adminAuth,admin_ctrl.productList)

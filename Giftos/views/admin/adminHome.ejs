@@ -101,6 +101,14 @@
               </div>
             </div>
 
+            <div >
+              <div class="card-body">
+                  <h2 >Download Ledger Book</h2>
+                  <button id="download-ledger" class="btn btn-success" >
+                      Download Ledger PDF
+                  </button>
+              </div>
+          </div>
             
              <!-- <select id="filter" onchange="updateChart()">
               <option value="yearly">Yearly</option>
@@ -181,81 +189,79 @@
       <script src="js/custom.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       <script>
-async function fetchSaleReport() {
-    let myChart;
+      async function fetchSaleReport() {
+            let myChart;
 
-    // Function to fetch and render chart data
-    async function renderChart(filter = null) {
-        const query = filter ? `?filter=${filter}` : '';
-        const response = await fetch(`/admin/sales-data${query}`);
-        const salesData = await response.json();
+            // Function to fetch and render chart data
+            async function renderChart(filter = null) {
+                const query = filter ? `?filter=${filter}` : '';
+                const response = await fetch(`/admin/sales-data${query}`);
+                const salesData = await response.json();
 
-        // Prepare data for the chart
-        const labels = salesData.map(item => item._id); // The x-axis labels (e.g., months, weeks)
-        const dataPoints = salesData.map(item => item.totalSales); // The y-axis data
-        const totalDiscount = salesData.map(item => item.totalDicount);
-        const totalOrders = salesData.map(item => item.orderCount);
+                // Prepare data for the chart
+                const labels = salesData.map(item => item._id); // The x-axis labels (e.g., months, weeks)
+                const dataPoints = salesData.map(item => item.totalSales); // The y-axis data
+                const totalDiscount = salesData.map(item => item.totalDicount);
+                const totalOrders = salesData.map(item => item.orderCount);
 
-        console.log('Filter:', filter || 'Initial Load');
-        console.log('Total Orders:', totalOrders);
-        console.log('Data Points:', dataPoints);
+                console.log('Filter:', filter || 'Initial Load');
+                console.log('Total Orders:', totalOrders);
+                console.log('Data Points:', dataPoints);
 
-        // Destroy the existing chart if it exists
-        if (myChart) {
-            console.log('Chart is already loaded, destroying it.');
-            myChart.destroy();
+                // Destroy the existing chart if it exists
+                if (myChart) {
+                    console.log('Chart is already loaded, destroying it.');
+                    myChart.destroy();
+                }
+
+                // Render the chart
+                const ctx = document.getElementById('salesChart').getContext('2d');
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Total Sales',
+                                data: dataPoints,
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1,
+                                barPercentage: 0.4, // Adjust bar width
+                            },
+                            {
+                                label: 'Total Discount',
+                                data: totalDiscount,
+                                backgroundColor: 'rgba(255, 99, 132, 0.8)', // Red
+                                borderWidth: 1,
+                                barPercentage: 0.4, // Adjust bar width
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                            },
+                        },
+                    },
+                });
+            }
+
+            // Render the initial chart data when the page loads
+            await renderChart();
+
+            // Attach the event listener for filter selection
+            document.getElementById('filterSelect').addEventListener('change', async function () {
+                const filter = this.value;
+                await renderChart(filter);
+            });
         }
 
-        // Render the chart
-        const ctx = document.getElementById('salesChart').getContext('2d');
-        myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Total Sales',
-                        data: dataPoints,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1,
-                        barPercentage: 0.4, // Adjust bar width
-                    },
-                    {
-                        label: 'Total Discount',
-                        data: totalDiscount,
-                        backgroundColor: 'rgba(255, 99, 132, 0.8)', // Red
-                        borderWidth: 1,
-                        barPercentage: 0.4, // Adjust bar width
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                    },
-                },
-            },
-        });
-    }
+      fetchSaleReport();
 
-    // Render the initial chart data when the page loads
-    await renderChart();
-
-    // Attach the event listener for filter selection
-    document.getElementById('filterSelect').addEventListener('change', async function () {
-        const filter = this.value;
-        await renderChart(filter);
-    });
-}
-
-fetchSaleReport();
-
-      
-
-      async function fetchTopProductsChart() {
+       async function fetchTopProductsChart() {
           try {
               const response = await fetch('/admin/top-products'); // Ensure this matches your backend route
               const data = await response.json();
@@ -376,6 +382,23 @@ fetchSaleReport();
         .catch(err => console.error('Error fetching sales data:', err));
 
       
+        // add ivent listner for ledger pdf
+        document.getElementById('download-ledger').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/admin/generate-ledger-pdf');
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'ledger.pdf';
+                a.click();
+
+                window.URL.revokeObjectURL(url); // Clean up
+
+            } catch (error) {
+                console.error('Error generating ledger PDF:', error);
+            }
+        });
       
       </script>
 
