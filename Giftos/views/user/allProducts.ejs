@@ -5,7 +5,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
       <title>
-      Giftos
+       Giftos
       </title>
 
       <!-- bootstrap core css -->
@@ -84,6 +84,7 @@
             width: fit-content;
             display: flex;
             list-style: none;
+            
           }
 
           .menu a {
@@ -104,6 +105,7 @@
             border-radius: 16px;
             overflow: hidden;
             transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+            
           }
 
           .menu .link::after {
@@ -113,11 +115,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #0a3cff;
+            /* background-color: #0a3cff; */
+            background-color: #fa92a3;
             z-index: -1;
             transform: scaleX(0);
             transform-origin: left;
             transition: transform 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+   
           }
 
           .menu .link svg {
@@ -125,10 +129,12 @@
             height: 14px;
             fill: #000000;
             transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+            
           }
 
           .menu .item {
             position: relative;
+        
           }
 
           .menu .item .submenu {
@@ -149,6 +155,7 @@
             z-index: 1;
             pointer-events: none;
             list-style: none;
+            background-color: white;
           }
 
           .menu .item:hover .submenu {
@@ -157,7 +164,8 @@
             transform: translateY(0);
             pointer-events: auto;
             border-top: transparent;
-            border-color: #0a3cff;
+            /* border-color: #0a3cff; */
+            border-color: #fa92a3;
           }
 
           .menu .item:hover .link {
@@ -201,7 +209,8 @@
             transform: scaleX(0);
             width: 100%;
             height: 100%;
-            background-color: #0a3cff;
+            /* background-color: #0a3cff; */
+            background-color: #fa92a3;
             z-index: -1;
             transform-origin: left;
             transition: transform 0.48s cubic-bezier(0.23, 1, 0.32, 1);
@@ -226,7 +235,7 @@
           <p  class="header_giftos" >
             <a class="navbar-brand" href="/">
               <span>
-                Giftos
+                <span style="color: #f89cab;">G</span>iftos
               </span>
             </a>
           </p>
@@ -464,7 +473,7 @@
                               <i class="fa-solid fa-indian-rupee-sign"></i>
                               <%= product.RegularPrice %>
                             </span>
-                              <span style="padding-left: 5px;"> <i class="fa-solid fa-indian-rupee-sign"></i> <%= product.SalePrice %></span>
+                              <span style="padding-left: 5px;" > <i class="fa-solid fa-indian-rupee-sign"></i> <%= product.SalePrice %></span>
                           <% }else{ %>
                             <span>
                               <i class="fa-solid fa-indian-rupee-sign"></i>

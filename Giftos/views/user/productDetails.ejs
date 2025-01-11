@@ -157,10 +157,10 @@
                           <div class="text-center product-image image-div">
                             <img id="main-image" src="/productsimg/<%= product.Productimage[0]%>"  class="img-fluid  zoom-img product-image" />
                           </div>
-                          <div class="thumbnail text-center"  >
+                          <div class="thumbnail text-center mt-2"  >
                                     <% product.Productimage.forEach((prod) =>{ %>
                                       <!-- <div style="display: flex; align-items: center;justify-content: center; background-color: gray;"> -->
-                                        <img style="border-style: solid;border-color: rgb(75, 71, 71); border-width: 2px; height: 80px; "  onclick="change_image(this)" src="/productsimg/<%= prod %>" width="70" class="img-fluid" >                                              
+                                        <img style="border-style: solid;border-color: rgb(170, 163, 163); border-width: 2px; height: 80px; width: 80px;"  onclick="change_image(this)" src="/productsimg/<%= prod %>" width="70" class="img-fluid" >                                              
                                       <!-- </div> -->
                                     <% }) %>
                                 </div>

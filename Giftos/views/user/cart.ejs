@@ -358,14 +358,15 @@
               <p class="ms-4 mb-0" id="totalPrice-<%= cartProduct.item %>">
                 <%= cartProduct.totalPrice.toFixed(2) %>
               </p> -->
-              <a
+              <a  onclick="confirmDelete('<%= cartProduct.item %>')"
+
                 style="text-decoration: none; color: #686363; font-size: small"
               >
                 <i
                   class="fas fa-trash-alt btn-delete ms-4"
-                  onclick="confirmDelete('<%= cartProduct.item %>')"
-                ></i>
-                DELETE</a
+                  ></i>
+                  
+                REMOVE</a
               >
             </div>
           </div>
@@ -783,7 +784,7 @@
           text: `You want to remove this form cart?`,
           icon: "warning",
           showCancelButton: true,
-          confirmButtonText: "Yes, delete it!",
+          confirmButtonText: "Yes, Remove it!",
           cancelButtonText: "Cancel",
         }).then((result) => {
           if (result.isConfirmed) {
