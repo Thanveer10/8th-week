@@ -568,6 +568,8 @@ const coupenListget = async function (req, res) {
   if (sessionName) {
     console.log(coupenAdded, coupenAdded,successMessage);
     res.render("admin/coupenList", { sessionName, allCoupens,success:successMessage,error:errorMessage });
+    coupenAdded=null;
+    coupenAdded=null;
   } else {
     return res.redirect("/admin/");
   }
@@ -577,10 +579,28 @@ const coupenListpost = async function (req, res) {
   try{
   let coupen = req.body;
   console.log(coupen + "========================" + req.body);
+      console.log(coupen.CoupenCode);
+      if(coupen.CoupenCode.trim()==="" || coupen.DiscountPrice.trim() ==="" || coupen.MinimumPrice.trim()==="" || coupen.ExpireDate.trim()==="" || coupen.DiscountType.trim()==="")
+        {
+        coupenAddedError="Every field must be required";
+       return res.redirect('/admin/coupenadmin')
+      }
+      else if (isNaN(coupen.DiscountPrice) || isNaN(coupen.MinimumPrice)) {
+        coupenAddedError = "Price fields must be numeric";
+        return res.redirect('/admin/coupenadmin');
+        }
+      else{
+        let checkCoupen = await CoupenColl.findOne({CoupenCode:coupen.CoupenCode})
+        if(checkCoupen==null){
+          coupen.Status = true; 
+          await CoupenColl.insertMany([coupen]);
+          coupenAdded='Coupen added successfully'
+        }else{
+          coupenAddedError="This coupon code already exist"
+         return res.redirect('/admin/coupenadmin')
+        }
+      }
 
-  coupen.Status = true; 
-  await CoupenColl.insertMany([coupen]);
-  coupenAdded='Coupen added successfully'
   res.redirect("/admin/coupenadmin");
   } catch(error) {
     console.log("error in admin side coupenListpost", error.message);

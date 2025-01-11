@@ -4,7 +4,7 @@ mongoose.connect("mongodb://localhost:27017/userDB")
 const categorySchema=new mongoose.Schema({
     Category:{
         type:String,
-        require:true
+        require:true,
     },
     Discription:{
         type:String,

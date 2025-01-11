@@ -98,7 +98,7 @@
                     <h1 class="text-center">No Offers found.</h1>
                     <% } %>
         </div>
-        <div class="pagination-container">
+        <div class="pagination-container" id="pagination">
             <% if (currentPage > 1) { %>
             <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
             <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
@@ -205,6 +205,7 @@
             const offerPageTittle = document.getElementById("offerPageTittle");
             const offerTable = document.getElementById("offerTable");
             const addOfferForm = document.getElementById("addOfferForm");
+            const pegination =document.getElementById('pagination');
 
             document
                 .getElementById("createOffer")
@@ -212,6 +213,7 @@
                     offerTable.style.display = "none";
                     offerPageTittle.textContent = "Add New Offer";
                     addOfferForm.style.display = "block";
+                    pegination.style.display='none';
                 });
             // document.getElementById('user-icon').src = '/images/admin.img/user.jpg';
 
