@@ -87,6 +87,7 @@ const orderSchema = new mongoose.Schema({
       },
     },
   },
+  shippingCharge :{type: Number, required:false},
   products: [
     {
       productId: {

@@ -112,7 +112,8 @@
                             <strong><%= item.productId.Productname %></strong>
                             <p>Price per unit: ₹<%= item.price.toFixed(2) %></p>
                             <p>Quantity: <%= item.quantity %></p>
-                            <p>Original Price: ₹<%= item.price.toFixed(2) %></p>
+                            <p>Discount:<%= item.discountAmount * item.quantity %></p>
+                            <!-- <p>Original Price: ₹<%= item.price.toFixed(2) %></p> -->
                             <p>Final Price: ₹<%= item.total.toFixed(2) %></p>
                         </div>
                         <% if (item.orderStatus=== 'Ordered') { %>
@@ -134,7 +135,8 @@
             <ul>
    
                 <li><strong>Coupon Discount:</strong> -₹<%= order.coupenDiscount.toFixed(2) %></li>
-          
+                <li><strong>Offer Discount:</strong> -₹<%= totalDiscount.toFixed(2) %></li>
+                <li><strong>Shipping Fee:</strong> -₹<%= order.shippingCharge?order.shippingCharge.toFixed(2) : 0 %></li>
                 <li><strong>Total Price:</strong> ₹<%= order.grandTotal.toFixed(2) %></li>
             </ul>
         </div>

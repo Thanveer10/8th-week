@@ -16,6 +16,8 @@ const env = require("dotenv").config();
 const razorpayInstance = require("../config/razopayConfig");
 const { errorMonitor } = require("nodemailer/lib/xoauth2");
 const PDFDocument = require('pdfkit');
+const {calculateDeliveryCharge} = require('../config/deliveryCharge')
+
 
 let sessionName;
 let coupenerr;
@@ -1712,6 +1714,7 @@ const checkoutget = async function (req, res, next) {
       console.log("rendering checkout");
       return res.render("user/checkOut", {
         addresses,
+        deliveryCharges :0,
         sessionName,
         totalCartPrice,
         user,
@@ -2368,7 +2371,51 @@ const editAddresspost = async function (req, res) {
     });
   }
 };
+const findDeliveryCharge = async function (req, res) {
+  try{
+    const { addressId } = req.params;
+    const user = await User.findById(req.session.user_id);
+    if (!user) {
+      console.log("User not found in confirmOrder");
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
 
+    const userAddress = await AddressColl.aggregate([
+      { $match: { UserId: user._id } },
+      { $unwind: "$Address" },
+      { $match: { "Address._id": new mongoose.Types.ObjectId(addressId) } },
+      { $replaceRoot: { newRoot: "$Address" } },
+    ]);
+    console.log("User Addres in confirmOrder==" + userAddress[0]);
+
+    if (!userAddress.length) {
+      console.log("Address not found in confirmOrder");
+      return res.status(400).json({
+        success: false,
+        message: "Address not found.",
+      });
+    }
+
+    const deliveryCharges = calculateDeliveryCharge(userAddress[0].pincode); // Implement this logic
+    
+    if (deliveryCharges !== null) {
+        res.json({ success: true, deliveryCharges });
+    } else {
+        res.json({ success: false });
+    }
+  }catch (err) {
+    console.error("Error in find delivery charge: " + err);
+    res.render("user/error", {
+      res,
+      errorCode: 500,
+      errorMessage: "Server Error",
+      errorDescription: "An unexpected error occurred.",
+      link: req.headers.referer || "/checkout",
+    });
+  }
+}
 // ORDER SESSION
 const confirmOrder = async (req, res) => {
   try {
@@ -2431,6 +2478,8 @@ const confirmOrder = async (req, res) => {
         message: "Address not found.",
       });
     }
+
+    const deliveryCharges = calculateDeliveryCharge(userAddress[0].pincode); // Implement this logic
     let discountAmount = 0;
     let couponCode;
     if (couponId) {
@@ -2491,8 +2540,9 @@ const confirmOrder = async (req, res) => {
         products: productsArray, // Attach the built products array
         date: new Date(),
         coupenDiscount: discountAmount, 
-        grandTotal: totalCartPrice-discountAmount , // Calculate grand total
+        grandTotal: (totalCartPrice+deliveryCharges)-discountAmount , // Calculate grand total
         shippingAddress: userAddress[0], // Shipping address
+        shippingCharge:deliveryCharges,
         paymentDetails: {
           paymentMethod: paymentMethod,
         },
@@ -2501,7 +2551,7 @@ const confirmOrder = async (req, res) => {
       });
       await order.save();
 
-      const TotalPrice = totalCartPrice - discountAmount;
+      const TotalPrice =  (totalCartPrice+deliveryCharges) - discountAmount;
       // Add the coupon to the user's used list
       user.UsedCoupons.push(couponCode);
       await user.save();
@@ -2514,7 +2564,7 @@ const confirmOrder = async (req, res) => {
 
       // return res.status(200).json({ success: true, TotalPrice: totalCartPrice - cart.discountPrice });
     } else if (paymentMethod === "Online") {
-      const totalAmount=totalCartPrice-discountAmount
+      const totalAmount= (totalCartPrice+deliveryCharges)-discountAmount
       const razorpayOrder = await razorpayInstance.orders.create({
         // amount: totalCartPrice  * 100,
         amount: totalAmount * 100,
@@ -2640,8 +2690,12 @@ const downloadInvoice = async(req, res) => {
     // pdfDoc.fontSize(12).text(`Total Original Price: ₹${totalOriginalPrice.toFixed(2)}`);
     pdfDoc.text(`Total Discount from Offers: -₹${totalOfferdiscount.toFixed(2)}`);
     pdfDoc.text(`Coupon Discount: ₹${order.coupenDiscount.toFixed(2)}`);
-    // pdfDoc.text(`Delivery Charge: ₹${deliveryCharge.toFixed(2)}`); 
-    pdfDoc.text(`Total Price: ₹${order.grandTotal.toFixed(2)}`);
+    if (order.shippingCharge !== undefined && order.shippingCharge !== null) {
+      pdfDoc.text(`Delivery Charge: ₹${order.shippingCharge.toFixed(2)}`);
+     } else {
+      pdfDoc.text("Delivery Charge: Not Applicable");
+    }
+      pdfDoc.text(`Total Price: ₹${order.grandTotal.toFixed(2)}`);
   
     pdfDoc.end();
   } catch (error) {
@@ -2762,8 +2816,13 @@ const LoadOrderDetail = async (req, res) => {
     if(!order){
       return res.render('user/error',{res,errorCode:404,errorMessage:'Order Not Found',errorDescription:'The order you are trying to access does not exist.',link:'/viewOrder'})
     }
+    // const deliveryCharge =calculateDeliveryCharge(order.shippingAddress.pincode) 
+    let totalDiscount=0;
+    order.products.forEach(product =>{
+      totalDiscount += (product.quantity * product.discountAmount);
+    })
 
-    res.render('user/orderDetail', {sessionName,order})
+    res.render('user/orderDetail', {sessionName,order,totalDiscount})
 
   } catch (error) {
      console.log('errror occurred in load order detail', error)
@@ -2990,6 +3049,7 @@ const onlinePayment = async function (req, res) {
         link: "/",
       });
     }
+    const deliveryCharges = calculateDeliveryCharge(userAddress[0].pincode); // Implement this logic
 
     let totalCartPrice =0;
     for (let item of cart.Product) {
@@ -3062,8 +3122,9 @@ const onlinePayment = async function (req, res) {
       products: productsArray, // Attach the built products array
       date: new Date(),
       coupenDiscount: discountAmount?discountAmount : 0, // Total discount applied
-      grandTotal: totalCartPrice - discountAmount, // Calculate grand total
+      grandTotal: (totalCartPrice+deliveryCharges) - discountAmount, // Calculate grand total
       shippingAddress: userAddress[0], // Shipping address
+      shippingCharge:deliveryCharges,
       paymentDetails: {
         paymentMethod: "Online Payment",
         status: "Paid",
@@ -3072,7 +3133,7 @@ const onlinePayment = async function (req, res) {
       deliveryDate: new Date(new Date().setDate(new Date().getDate() + 7)), // Example: 7-day delivery
     });
     await order.save();
-    const TotalPrice = totalCartPrice - discountAmount;
+    const TotalPrice = (totalCartPrice+deliveryCharges)- discountAmount;
     await cartColl.findByIdAndDelete(cartId);
     user.UsedCoupons.push(couponCode);
     await user.save();
@@ -3194,6 +3255,7 @@ module.exports = {
   updateCart,
   deleteCart,
   checkoutget,
+  findDeliveryCharge,
   confirmOrder,
   orderConfirmed,
   LoadOrderPage,

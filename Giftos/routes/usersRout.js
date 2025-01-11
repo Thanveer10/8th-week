@@ -74,6 +74,7 @@ user_route.post('/coupenapply',userAuth,user_ctrl.coupenApply)
 user_route.get('/checkout',userAuth,user_ctrl.checkoutget)
 user_route.post('/checkout/addAddress',userAuth,user_ctrl.addAddresspost)
 user_route.post('/checkout/editAddress/:addressId',userAuth,user_ctrl.editAddresspost);
+user_route.get('/calculate-delivery-charges/:addressId',userAuth,user_ctrl.findDeliveryCharge)
 
 
 // ORDRER
