@@ -49,6 +49,12 @@
     max-width: 100%;
     object-fit: contain; 
   }
+  #addToWhishList:hover{
+    color: black;
+    opacity: 0.7;
+    cursor: pointer;
+  }
+
 
    </style>
 </head>
@@ -215,7 +221,7 @@
                                     </a>
                                  <% }else{ %>
                                     <a href="/wishlist/<%= product._id %>">
-                                      <i class="fa fa-heart text-muted" style="font-size:larger;"> <span style="padding-left: 10px; font-size: medium;">Add To Wishlist</span></i>
+                                      <i class="fa fa-heart text-muted"  id="addToWhishList" style="font-size:larger;"> <span style="padding-left: 0px; font-size: medium;">Add To Wishlist</span></i>
                                     </a>
                                 <% }%>
                                 <% } %>

@@ -2667,7 +2667,7 @@ const downloadInvoice = async(req, res) => {
     let totalOfferdiscount=0;
   
     order.products.forEach(product => {
-      totalOfferdiscount+=product.discountAmount*product.quantity
+      totalOfferdiscount+=product.discountAmount
     })
     const pdfDoc = new PDFDocument();
   
@@ -2693,7 +2693,7 @@ const downloadInvoice = async(req, res) => {
     pdfDoc.moveDown();
     pdfDoc.fontSize(15).text('Items Ordered:', { underline: true });
     order.products.forEach(item => {
-        pdfDoc.fontSize(12).text(`${item.name} -OriginalPrice: ${item.price} -OfferPrice: ${item.price - item.discountAmount}-Quantity: ${item.quantity} - TotalPrice: ${item.total}`);
+        pdfDoc.fontSize(12).text(`${item.name} -OriginalPrice: ${item.price} -OfferPrice: ${item.price - (item.discountAmount/item.quantity)}-Quantity: ${item.quantity} - TotalPrice: ${item.total}`);
     });
   
     pdfDoc.moveDown();
@@ -2829,11 +2829,13 @@ const LoadOrderDetail = async (req, res) => {
     }
     // const deliveryCharge =calculateDeliveryCharge(order.shippingAddress.pincode) 
     let totalDiscount=0;
+    let cartSubtotal=0;
     order.products.forEach(product =>{
-      totalDiscount += (product.quantity * product.discountAmount);
+      totalDiscount +=  product.discountAmount;
+      cartSubtotal += product.price * product.quantity;
     })
 
-    res.render('user/orderDetail', {sessionName,order,totalDiscount})
+    res.render('user/orderDetail', {sessionName,order,totalDiscount,cartSubtotal,user})
 
   } catch (error) {
      console.log('errror occurred in load order detail', error)

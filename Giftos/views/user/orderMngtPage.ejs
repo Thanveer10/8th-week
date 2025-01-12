@@ -1,7 +1,7 @@
 <%- include('../partial/user/userProfilePartial.ejs') %>
 
 
-        <div class="container mt-5" style="width: 70%;">
+        <div class="container mt-3" style="width: 70%;">
             
             <% if (orders && orders.length > 0) { %>
             <h2 class="text-center mb-4">Your Orders</h2>
@@ -21,7 +21,7 @@
             <!-- Order 1 -->
             <div class="card order-card mb-4" style=" box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.3);">
                 <div class="card-body">                 
-                  <div class="row">
+                  <div class="row" >
                     <div class="col-md-12 text-end">
                           
                       <button class="btn btn-primary mb-2" onclick="location.href='/orderDetail/<%= order._id %>'">View Order</button>
@@ -36,14 +36,15 @@
                           <button class="btn btn-danger mb-2" onclick="confirmReturnRequest('<%= order._id %>')">Return Order</button>
                       <% } %>
                       
-                  </div>
+                     </div>
+                
                     <% order.products.forEach((product,index) => { %>
-                        <div class="col-md-3" >
+                       <div class="col-md-4" style='padding-left: 50px;' >
                             <!-- Order Image -->
-                            <img style="height: 100px;" src="productsimg/<%= product.productId.Productimage[0] %>" class="img-fluid" alt="Product Image" >      
+                            <img style="height: 100px; border-radius: 10px;border: 1px solid #ddd;;" src="productsimg/<%= product.productId.Productimage[0] %>" class="img-fluid" alt="Product Image" >      
                         </div>
                     
-                        <div class="col-md-9">
+                        <div class="col-md-8">
                             <!-- <h4 class="text-center">Products Deatils</h4> -->
                             
                                 <h6 class="fw-bold"> <span><%= index+1 %> - </span><%= product.name %></h6> <!-- Fix to correctly access productName -->
@@ -86,7 +87,6 @@
 
                             <p>Shipping Address: <strong><%= order.shippingAddress.name %>, <%= order.shippingAddress.houseName %>, <%= order.shippingAddress.street %>, <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %>, <%= order.shippingAddress.pincode %></strong></p> -->
                         
-
                     </div>
                   </div>  
 

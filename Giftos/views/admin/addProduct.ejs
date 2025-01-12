@@ -59,6 +59,18 @@
       .thumbnail {
         margin-right: 10px;
       }
+      .thumbnails-container img {
+        max-width: 100%; /* Ensures the image doesn't exceed the container's width */
+        max-height: 100%; /* Ensures the image doesn't exceed the container's height */
+        object-fit: contain; /* Ensures the image maintains its aspect ratio */
+      }
+
+      .image-cropper img {
+        width: 100%; /* Shrink the image to fit the cropper's width */
+        height: 100%; /* Shrink the image to fit the cropper's height */
+        object-fit: cover; /* Maintain aspect ratio and fill the cropper */
+      }
+
     </style>
   </head>
 
@@ -396,6 +408,7 @@
                               width: 250px;
                               height: 200px;
                               margin-bottom: 20px;
+                              overflow: hidden;
                             "
                           >
                             <img src="" id="croppedImg1" alt="" />
@@ -492,7 +505,8 @@
                       </button>
                     </div>
                   </div>
-                </div>
+                                
+               </div>
               </form>
             </div>
           </div>
@@ -547,52 +561,124 @@
         );
       }
 
-      function viewImage(event, index) {
-        let input = event.target;
-        console.log("reached viewImage fucntion", event.target, input);
-        let reader = new FileReader();
-        reader.onload = () => {
-          let dataURL = reader.result;
-          let image = document.getElementById(`imgView${index}`);
-          image.src = dataURL;
-          let cropper = new Cropper(image, {
-            aspectRatio: 1,
-            viewMode: 1,
-            guides: true,
-            background: false,
-            autoCropArea: 1,
-            zoomable: true,
-          });
-          console.log("cropper " + cropper);
-          let corpperContainer = document.querySelector(
-            "#croppedImg" + index
-          ).parentNode;
-          corpperContainer.style.display = "block";
+      // function viewImage(event, index) {
+      //   let input = event.target;
+      //   console.log("reached viewImage fucntion", event.target, input);
+      //   let reader = new FileReader();
+      //   reader.onload = () => {
+      //     let dataURL = reader.result;
+      //     let image = document.getElementById(`imgView${index}`);
+      //     image.src = dataURL;
+      //     image.style.maxWidth = "100%", 
+      //       image.style.maxHeight = "300px", 
+      //       image.style.objectFit = "contain" 
+      //     let cropper = new Cropper(image, {
+      //       aspectRatio: 1,
+      //       viewMode: 1,
+      //       guides: true,
+      //       background: false,
+      //       autoCropArea: 1,
+      //       zoomable: true,
+      //     });
+      //     console.log("cropper " + cropper);
+      //     let corpperContainer = document.querySelector(
+      //       "#croppedImg" + index
+      //     ).parentNode;
+      //     corpperContainer.style.display = "block";
 
-          let saveButton = document.querySelector("#saveButton" + index);
-          saveButton.addEventListener("click", async function () {
-            let croppedCanvas = cropper.getCroppedCanvas();
-            let croppedImage = document.getElementById("croppedImg" + index);
-            croppedImage.src = croppedCanvas.toDataURL("image/jpeg", 1.0);
+      //     let saveButton = document.querySelector("#saveButton" + index);
+      //     saveButton.addEventListener("click", async function () {
+      //       let croppedCanvas = cropper.getCroppedCanvas();
+      //       let croppedImage = document.getElementById("croppedImg" + index);
+      //       croppedImage.src = croppedCanvas.toDataURL("image/jpeg", 1.0);
 
-            let timestamp = new Date().getTime();
-            let fileName = `cropped-img-${timestamp}-${index}.png`;
+      //       let timestamp = new Date().getTime();
+      //       let fileName = `cropped-img-${timestamp}-${index}.png`;
 
-            await croppedCanvas.toBlob((blob) => {
-              let input = document.getElementById("input" + index);
-              let imgFile = new File([blob], fileName, blob);
-              const fileList = new DataTransfer();
-              fileList.items.add(imgFile);
-              input.files = fileList.files;
+      //       await croppedCanvas.toBlob((blob) => {
+      //         let input = document.getElementById("input" + index);
+      //         let imgFile = new File([blob], fileName, blob);
+      //         const fileList = new DataTransfer();
+      //         fileList.items.add(imgFile);
+      //         input.files = fileList.files;
+      //       });
+
+      //       corpperContainer.style.display = "none";
+      //       cropper.destroy();
+      //     });
+      //   };
+
+      //   reader.readAsDataURL(input.files[0]);
+      // }
+
+    function viewImage(event, index) {
+      const input = event.target;
+      const image = document.getElementById(`imgView${index}`);
+      const cropperContainer = document.querySelector(`#croppedImg${index}`).parentNode;
+      const saveButton = document.querySelector(`#saveButton${index}`);
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        image.src = reader.result;
+        image.style.display = "block"; // Make image visible
+        image.style.maxWidth = "100%";
+        image.style.maxHeight = "300px";
+        image.style.objectFit = "contain";
+
+        cropperContainer.style.display = "flex";
+
+        const cropper = new Cropper(image, {
+          aspectRatio: 1, // 1:1 aspect ratio for a square crop
+          viewMode: 2, // Ensure the entire image is visible in the container
+          guides: true,
+          background: false,
+          autoCropArea: 1, // Set to 1 to cover the entire image initially
+          zoomable: true,
+          scalable: true,
+          cropBoxResizable: true, // Allow resizing of the crop box
+          cropBoxMovable: true,   // Allow moving of the crop box
+          responsive: true,
+          ready() {
+            // Ensure the crop box starts by covering the entire image
+            const containerData = cropper.getContainerData();
+            const cropBoxData = cropper.getCropBoxData();
+            cropper.setCropBoxData({
+              left: 0,
+              top: 0,
+              width: containerData.width,
+              height: containerData.height,
             });
+          },
+        });
 
-            corpperContainer.style.display = "none";
-            cropper.destroy();
+        saveButton.addEventListener("click", async () => {
+          const croppedCanvas = cropper.getCroppedCanvas({
+            width: 250,
+            height: 250,
           });
-        };
 
-        reader.readAsDataURL(input.files[0]);
-      }
+          const croppedImage = document.getElementById(`croppedImg${index}`);
+          croppedImage.src = croppedCanvas.toDataURL("image/jpeg", 1.0);
+
+          const timestamp = new Date().getTime();
+          const fileName = `cropped-img-${timestamp}-${index}.png`;
+
+          await croppedCanvas.toBlob((blob) => {
+            const input = document.getElementById(`input${index}`);
+            const imgFile = new File([blob], fileName, { type: blob.type });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(imgFile);
+            input.files = dataTransfer.files;
+          });
+
+          cropperContainer.style.display = "none";
+          cropper.destroy();
+        });
+      };
+
+      reader.readAsDataURL(input.files[0]);
+    }
+
 
       function validateForm() {
         clearErrorMessages();
