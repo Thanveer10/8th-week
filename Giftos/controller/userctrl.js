@@ -27,6 +27,16 @@ let grand_total;
 let totalQuantity;
 let addresses;
 
+const validateStock = async (cartProducts) => {
+  for (let item of cartProducts) {
+    const product = await ProductColl.findById(item.item);
+    if (!product || product.Stock < item.quantity) {
+      throw new Error(`Insufficient stock for product ${item.item}`);
+    }
+  }
+};
+
+
 const homepage = async function (req, res) {
   try {
     const userId = req.session.user_id;
@@ -2447,6 +2457,7 @@ const confirmOrder = async (req, res) => {
     console.log("payment method===" + paymentMethod);
 
     let totalCartPrice =0;
+    await validateStock(cart.Product);
     for (let item of cart.Product) {
       const product = await ProductColl.findById(item.item);
       console.log('produuct id==',item.item)
