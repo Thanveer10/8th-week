@@ -216,6 +216,10 @@
                 <p><strong>Payment Method:</strong> <%= order.paymentDetails.paymentMethod %></p>
                 <p><strong>Payment Status:</strong> <%= order.paymentDetails.status %></p>
                 <p><strong>Order Status:</strong> <%= order.orderStatus %></p>
+                <% if(order.paymentDetails.refundStatus && order.paymentDetails.paymentMethod === 'Online Payment' && order.orderStatus === 'Cancelled' && order.paymentDetails.status === 'Paid'){ %>
+                  <p>Refund Status: <span class="badge badge-success"><%= order.paymentDetails.refundStatus %></span></p>
+                  <p>Refund Amount: <strong><%= order.paymentDetails.refundAmount.toFixed(2) %></strong></p>                              
+                <% }%>
                 <p><strong>Order Date:</strong> <%= new Date(order.date).toLocaleDateString() %></p>
                 <p><strong>Total Price:</strong> ₹<%= order.grandTotal.toFixed(2) %></p>
             </div>

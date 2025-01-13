@@ -76,7 +76,14 @@
           <div class="user_option">
             <% if (locals.sessionName) { %>
               
+              
               <ul class="navbar-navuser" >
+                <a href="/adduserCart">
+                  <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                </a>
+                <a href="/wishlist">
+                  <i class="fa fa-heart" aria-hidden="false"></i>
+                </a>
               <li class="navuser-item user-dropdown">
                 <!-- <i class="fa fa-user" id="user-icon"></i> -->
                 <span style="font-weight:bold;" id="user-name"> <%= userdata.Username %> </span>
@@ -98,6 +105,12 @@
             <% } else { %>
               
               <ul class="navbar-navuser" style="margin-right: 0;">
+                <a href="/adduserCart">
+                  <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                </a>
+                <a href="/wishlist">
+                  <i class="fa fa-heart" aria-hidden="false"></i>
+                </a>
                 <li class="navuser-item user-dropdown">
                   <span>
                     <a href="/login">
@@ -113,12 +126,12 @@
                 </li>
               </ul>
             <% } %>
-            <a href="/adduserCart">
+            <!-- <a href="/adduserCart">
               <i class="fa fa-shopping-bag" aria-hidden="true"></i>
             </a>
             <a href="/wishlist">
               <i class="fa fa-heart" aria-hidden="false"></i>
-            </a>
+            </a> -->
             <!-- <form class="form-inline ">
               <button class="btn nav_search-btn" type="submit">
                 <i class="fa fa-search" aria-hidden="true"></i>

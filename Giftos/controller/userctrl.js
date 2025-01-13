@@ -177,6 +177,8 @@ const whyus = async function (req, res) {
 //get catogery items
 const categoryget = async function (req, res) {
   let newArrivals;
+  let sessionName = req.session.user_id
+  let userdata = await User.findById(req.session.user_id)
   try {
     const catId = req.params.id;
     const searchTerm = req.query.query || '';
@@ -300,17 +302,7 @@ const categoryget = async function (req, res) {
          console.log('totalproducts',totalProducts)
          let totalPages=Math.ceil(totalProducts/limit)
          console.log('totoal pages ==',totalPages)
-    // let products = await ProductColl.find({ Category: catId }).populate('Category').sort(sortCriteria);
-    // console.log('sort method ===', req?.session?.sort)
-    // if(req.session.sort === 'newArrivals'|| sort === 'newArrivals'){
-    //   let sortCriteria = { CreatedAt: -1 }
-    //   newArrivals='New Arrivals'
-    //          products=await ProductColl.find({ Category: catId}).sort(sortCriteria).populate({
-    //             path: 'Category', // Assuming 'category' is a reference field in the Product model
-    //             match: { Status: 'Listed' } // Fetch products with 'Listed' categories only
-    //         });
-    //  }
-    // products= products.filter((product) => product.Category && product.Category.Status ==='Listed')
+
     const categoryName = await CategoryColl.findById(catId).select("Categoryname");
     const allcategory = await CategoryColl.find({});
     // console.log('new products===', products)
@@ -322,7 +314,9 @@ const categoryget = async function (req, res) {
       searchTerm,
       totalPages,
       currentPage,
-      sort
+      sort,
+      sessionName,
+      userdata
     });
   } catch (error) {
     console.log("erron in categoryget" + error.message);
@@ -2987,7 +2981,7 @@ const returnOrder = async (req, res) => {
       );
       console.log("Product quantity update result:", updateProductResult);
     }
-    return res.status(200).json({ success: true, message: "Order returned successfully" });
+    return res.status(200).json({ success: true, message: "Order return request successed" });
 
 
   } catch (error) {
@@ -3217,6 +3211,9 @@ const walletget = async function (req, res) {
       });
     }
     const wallet = await WalletColl.findOne({ userId: user_id });
+    if(wallet && wallet.transactions){
+      wallet.transactions.sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt))
+    }
     res.render("user/wallet", { wallet: wallet, sessionName });
   } catch (error) {
     console.log("error in getting wallet");
