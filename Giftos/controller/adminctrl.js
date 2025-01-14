@@ -195,7 +195,7 @@ const salesDataget= async (req, res, next) => {
 
   let salesData= await OrderColl.aggregate([
     {$match:
-      {deliveryDate: { $gte: new Date(startDate), $lt: new Date(endDate) }
+      {orderStatus:'Delivered',deliveryDate: { $gte: new Date(startDate), $lt: new Date(endDate) }
       }
     },
     {$unwind:'$products'},
@@ -1020,13 +1020,14 @@ const deleteOffer = async (req, res) => {
 
 //sales report
 const salesReportget = async function (req, res) {
-  try{
-    const sessionName= req.session.admin_id
-    const { startDate, endDate, reportType = 'custom', page = 1 ,format} = req.query;
-    const currentPage = parseInt(req.query.page) || 1;
+  try {
+    const sessionName = req.session.admin_id;
+    const { startDate, endDate, reportType = 'custom', page = 1, format } = req.query;
+    const currentPage = parseInt(page) || 1;
     const pageSize = 5;
 
-    let start = null, end = null;
+    let start = null,
+      end = null;
     switch (reportType) {
       case 'daily':
         start = moment().startOf('day').toDate();
@@ -1044,66 +1045,81 @@ const salesReportget = async function (req, res) {
         if (startDate && endDate) {
           start = new Date(startDate);
           end = new Date(endDate);
-          if (startDate === endDate || startDate && endDate) end.setHours(23, 59, 59, 999);
+          if (startDate === endDate) end.setHours(23, 59, 59, 999);
         }
         break;
     }
-    console.log(start,'  ====', end);
-    const query = start && end ? { date: { $gte: start, $lte: end } } : {};
-    const orders= await OrderColl.find(query)
+
+    console.log(start, "  ====", end);
+
+    // Create the query object for filtering
+    const query = {
+      orderStatus: "Delivered",
+      ...(start && end && { date: { $gte: start, $lte: end } }), // Add date filter only if start and end are defined
+    };
+
+    // Fetch paginated orders
+    const orders = await OrderColl.find(query)
       .skip((currentPage - 1) * pageSize)
       .limit(pageSize)
-      .populate('products.productId')
-      .sort({date:-1});
+      .populate("products.productId")
+      .sort({ date: -1 });
 
-      const totalOrdersCount = await OrderColl.countDocuments(query);
-      console.log(totalOrdersCount)
-      const totalPages = Math.ceil(totalOrdersCount / pageSize);
-   
-    const saleData= await OrderColl.aggregate([
-      {$match:query},
-      {$unwind: "$products" },
-      {$group:{
-        _id: null,
-        totalSales: {$sum:"$grandTotal"},
-        totalDiscount: {$sum:"$products.discountAmount"},
-        // totalOrders: {$sum:1},
-        totalCouponDeduction: {$sum:"$coupenDiscount"}
-      }}
-    ])
+    // Count total delivered orders matching the query
+    const totalOrdersCount = await OrderColl.countDocuments(query);
+    console.log(totalOrdersCount);
+    const totalPages = Math.ceil(totalOrdersCount / pageSize);
 
-    const reportData =saleData.length > 0 ? saleData[0] : {
+    // Aggregate sales data
+    const saleData = await OrderColl.aggregate([
+      { $match: query }, // Use the same query object
+      { $unwind: "$products" },
+      {
+        $group: {
+          _id: null,
+          totalSales: { $sum: "$grandTotal" },
+          totalDiscount: { $sum: "$products.discountAmount" },
+          totalCouponDeduction: { $sum: "$coupenDiscount" },
+        },
+      },
+    ]);
+
+    // Fallback if no sales data is found
+    const reportData = saleData.length > 0 ? saleData[0] : {
       totalSales: 0,
-      totalDicount: 0,
+      totalDiscount: 0,
       totalOrders: 0,
-      totalCouponDeduction: 0
-    }
+      totalCouponDeduction: 0,
+    };
     reportData.totalOrders = totalOrdersCount;
 
+    // Handle AJAX requests
     if (req.xhr) {
-      return res.json({ orders, totalPages, currentPage: page });
+      return res.json({ orders, totalPages, currentPage });
     }
-    res.render('admin/salesReport', {
+
+    // Render sales report page
+    res.render("admin/salesReport", {
       sessionName,
       orders,
       reportData,
       totalPages,
-      currentPage: parseInt(currentPage),
-      startDate: start ? moment(start).format('YYYY-MM-DD') : '',
-      endDate: end ? moment(end).format('YYYY-MM-DD') : '',
-      reportType
-    })
-  }catch(err) {
-    console.log('error in salesReportget'+ err.message)
+      currentPage,
+      startDate: start ? moment(start).format("YYYY-MM-DD") : "",
+      endDate: end ? moment(end).format("YYYY-MM-DD") : "",
+      reportType,
+    });
+  } catch (err) {
+    console.log("error in salesReportget: " + err.message);
     res.render("admin/error", {
-      res,
       errorCode: 500,
       errorMessage: "Server Error",
-      errorDescription: "An unexpected error occurred while loading sales report",
+      errorDescription: "An unexpected error occurred while loading the sales report.",
       link: req.headers.referer || "/admin",
-    });  
+    });
   }
 };
+
 
 
 const downloadSaleReport = async (req, res) => {
