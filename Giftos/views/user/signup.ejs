@@ -13,32 +13,45 @@
   <title>User Signup</title>
   <link rel="stylesheet" href="/css/signup.css">
   <style>
-     html,body{
+    html, body {
         height: 100%;
+        width: 100%;
         margin: 0;
         padding: 0;
-        background-image: url('images/userlog3.jpg');
-        background-size: cover;
-        background-position: center center;
-        background-attachment: fixed;
-      
+        display: flex;
       }
-      .btn{
-        color : white;
-        background-color:rgb(224, 148, 174);
+      .left-side {
+        background-color: rgb(224, 148, 174);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+      .right-side {
+        background-color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: rgb(80, 80, 80);
+        font-family: 'Playfair Display', serif;
+      }
+      .btn {
+        color: white;
+        background-color: rgb(224, 148, 174);
       }
       .btn:hover {
-      
-        background-color:white;
-         outline: 2px solid rgb(224, 148, 174); /* Blue outline */
-          border-radius: 5px; /* Optional: Add rounded corners for better visuals */
+        background-color: white;
+        outline: 2px solid rgb(224, 148, 174);
+        border-radius: 5px;
       }
-       /* .btn:hover {
-          outline-color: #0056b3; 
-      }  */
-  
-      span{
-        font-family: 'Playfair Display', serif;
+      .forgot-password-link {
+        color: rgb(67, 96, 240);
+        text-decoration: none;
+      }
+      .forgot-password-link:hover {
+        color: rgb(14, 7, 114);
       }
     .error {
       color: red;
@@ -47,113 +60,109 @@
   </style>
 </head>
 
-<body class="d-flex flex-column min-vh-100">
-  <h1><span>GIFTOS</span> </h1>
-  <section class="h-100 gradient-form" style=" box-shadow: inset; ">
-    <div class="container py-5 h-80">
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-xl-6">
-          <div  class="card rounded-5 text-black"  style="box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25) ">
-            <div class="row g-0">
-              <div class="col-lg-12">
-                <div class="card-body  p-md-4 mx-md-3" >
+<body >
+  <div class="row w-100 h-100">
 
-                  <div class="text-center">
-                    <img src="https://png.pngtree.com/png-vector/20191125/ourmid/pngtree-beautiful-admin-roles-line-vector-icon-png-image_2035379.jpg"
-                      style="width: 120px;" alt="logo">
-                    <h4 class="mt-1 mb-4 pb-1"></h4>
-                    <h3 class="mt-1 mb-3 pb-1" style="font-family: 'Playfair Display', serif; font-weight: bold;letter-spacing: 1.5px;">Sign Up</h3>
-                  </div>
+    <!-- Right Side -->
+    <div class="col-md-5 right-side">
+      <h1>Welcome to Giftos!</h1>
+      <p>Discover amazing gifts and manage your account effortlessly.</p>
+    </div>
+        <!-- Left Side -->
+    <div class="col-md-7 left-side">
+      <div class="card rounded-3 text-black" style="width: 90%; max-width: 650px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);">
+        <div class="card-body">
+          <div class="text-center">
+            <img src="https://png.pngtree.com/png-vector/20191125/ourmid/pngtree-beautiful-admin-roles-line-vector-icon-png-image_2035379.jpg" style="width: 110px;" alt="logo">
+            <h3 class="mt-1 mb-4 pb-2" style="font-family: 'Playfair Display', serif; font-weight: bold; letter-spacing: 1.5px;">Sign in</h3>
+            <% if (typeof message !== 'undefined' || typeof signupErr !== 'undefined') { %>
+              <p style="color: green; text-align: center;"><%= message %></p>
+              <p style="color: rgb(151, 39, 5); text-align: center;"><%= signupErr %></p>
 
-                  <!-- Success message -->
-                  <% if (typeof message !== 'undefined' || typeof signupErr !== 'undefined') { %>
-                  <p style="color: green; text-align: center;"><%= message %></p>
-                  <p style="color: rgb(151, 39, 5); text-align: center;"><%= signupErr %></p>
-
-                  <% } %>
-
-                  <form id="signupForm" action="/signup" method="post">
-                    <p>Alredy have an account? <span><a href="/login" style="text-decoration: none; font-family: 'Playfair Display', serif; color: blue;margin-left: 4px;">Sign in</a></span></p>
-                     
-                    <div class="d-flex justify-content-between mb-3">
-                      <div class="form-outline me-2" style="flex: 1;">
-                        <input id="form2Example11" class="form-control" type="text" name="name" required placeholder="Name" />
-                        <p id="nameError" class="error"></p>
-                      </div>
-                      <div class="form-outline" style="flex: 1;">
-                        <input id="form2Example22" class="form-control" type="text" name="lastname" required placeholder="Last Name" />
-                        <p id="lastnameError" class="error"></p>
-                      </div>
-                    </div>
-
-                    <div class="d-flex justify-content-between mb-3">
-                      <div class="form-outline me-2" style="flex: 1;">
-                        <input id="email" class="form-control" type="email" name="email" required placeholder="Email" />
-                        <p id="emailError" class="error"></p>
-
-                      </div>
-                    
-                      <div class="form-outline" style="flex: 1;">
-                        <input id="mob" class="form-control" type="text" name="phonenumber" required placeholder="Phone Number"  />
-                        <p id="mobError" class="error"></p>
-                      </div>
-                    </div>
-
-                    
-                    <div class="d-flex justify-content-between mb-3">
-                      <div class="form-outline me-2" style="flex: 1;">
-                        <input id="password" class="form-control" type="password" name="password" required placeholder="Passwrord" />
-                        <p id="passwordError" class="error"></p>
-                        <input type="checkbox" class="passwordToggle"><label  style=" font-family: 'Playfair Display', serif; margin-left: 5px;">Show password</label>
-
-                      </div>
-                    
-                      <div class="form-outline" style="flex: 1;">
-                        <input id="confirmpassword" class="form-control" type="password" name="conformpassword" required placeholder="Confirm Password"  />
-                        <p id="confirmpasswordErr" class="error"></p>
-                        <input type="checkbox" class="passwordToggle"> <label  style=" font-family: 'Playfair Display', serif; margin-left: 5px;">  Show password</label>
-                      </div>
-                    </div>
-
-                    <div class="d-flex justify-content-between mb-3">
-                      <div >
-
-                      </div>
-                      <div class="form-outline" style="flex: 1;">
-                        <!-- <label for="referral">Referral Code (Optional):</label> -->
-                        <input type="text text-danger" id="referral" name="referralCode" placeholder="Referral Code (Optional)" class="form-control">
-                      </div>
-                    </div>
-
-                   
-                    <div class="text-center pt-1 mb-2 ">
-                      <div class="d-flex justify-content-center">
-                        <button style="background-color: rgb(224, 148, 174); color: white;  padding: 7px 35px" class="btn  me-2" type="submit" value="Register"><span>Sign up</span> </button>
-                      </div>
-                    </div>
-
-                    <h5 class="text-center mt-0"><span>Or</span></h5>
-                    <div class="d-flex justify-content-between" >
-                      <a   href="/auth/google" class="btn  btn-block flex-fill mx-1" >
-                        <i class="bi bi-google"></i> <span>Sign Up with Google</span> 
-                    </a>
-                    <!-- <a href="/auth/otp" class="btn btn-outline-primary btn-block flex-fill mx-1" >
-                      <i></i>  <span>Sign Up with OTP</span> 
-                  </a> -->
-                    </div>
-                  
-                      
-                  </form>
-
-                </div>
+              <% } %>
+          </div>
+            
+          <form id="signupForm" action="/signup" method="post">
+            <p style="color: rgb(63, 61, 61);">Alredy have an account? <span><a href="/login" style="text-decoration: none; font-family: 'Playfair Display', serif; color: blue;margin-left: 4px;">Sign in</a></span></p>
+             
+            <div class="d-flex justify-content-between mb-3">
+              <div class="form-outline me-2" style="flex: 1;">
+                <input id="form2Example11" class="form-control" type="text" name="name" required placeholder="Name" />
+                <p id="nameError" class="error"></p>
+              </div>
+              <div class="form-outline" style="flex: 1;">
+                <input id="form2Example22" class="form-control" type="text" name="lastname" required placeholder="Last Name" />
+                <p id="lastnameError" class="error"></p>
               </div>
             </div>
-          </div>
+
+            <div class="d-flex justify-content-between mb-3">
+              <div class="form-outline me-2" style="flex: 1;">
+                <input id="email" class="form-control" type="email" name="email" required placeholder="Email" />
+                <p id="emailError" class="error"></p>
+
+              </div>
+            
+              <div class="form-outline" style="flex: 1;">
+                <input id="mob" class="form-control" type="text" name="phonenumber" required placeholder="Phone Number"  />
+                <p id="mobError" class="error"></p>
+              </div>
+            </div>
+
+            
+            <div class="d-flex justify-content-between mb-3">
+              <div class="form-outline me-2" style="flex: 1;">
+                <input id="password" class="form-control" type="password" name="password" required placeholder="Passwrord" />
+                <p id="passwordError" class="error"></p>
+                <input type="checkbox" class="passwordToggle"><label  style="  margin-left: 5px; color: rgb(65, 62, 62);">Show password</label>
+
+              </div>
+            
+              <div class="form-outline" style="flex: 1;">
+                <input id="confirmpassword" class="form-control" type="password" name="conformpassword" required placeholder="Confirm Password"  />
+                <p id="confirmpasswordErr" class="error"></p>
+                <input type="checkbox" class="passwordToggle"> <label  style="  margin-left: 5px; color: rgb(65, 62, 62);">  Show password</label>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between mb-3">
+              <div >
+
+              </div>
+              <div class="form-outline" style="flex: 1;">
+                <!-- <label for="referral">Referral Code (Optional):</label> -->
+                <input type="text text-danger" id="referral" name="referralCode" placeholder="Referral Code (Optional)" class="form-control">
+              </div>
+            </div>
+
+           
+            <div class="text-center pt-1 mb-2 ">
+              <div class="d-flex justify-content-center">
+                <button style="background-color: rgb(224, 148, 174); color: white;  padding: 7px 35px" class="btn  me-2" type="submit" value="Register"><span>Sign up</span> </button>
+              </div>
+            </div>
+
+            <h5 class="text-center mt-0"><span>Or</span></h5>
+            <div class="d-flex justify-content-between" >
+              <a   href="/auth/google" class="btn  btn-block flex-fill mx-1" >
+                <i class="bi bi-google"></i> <span>Sign Up with Google</span> 
+            </a>
+            <!-- <a href="/auth/otp" class="btn btn-outline-primary btn-block flex-fill mx-1" >
+              <i></i>  <span>Sign Up with OTP</span> 
+          </a> -->
+            </div>
+          
+              
+          </form>
+     
         </div>
       </div>
     </div>
-  </section>
+  
 
+
+
+  </div>
 
      <!-- Bootstrap Icons -->
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.css">
