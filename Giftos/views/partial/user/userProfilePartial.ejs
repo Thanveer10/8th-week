@@ -115,77 +115,52 @@
                     </li>
                 </ul>
                 <div class="user_option">
-                    <% if (sessionName) { %>
-                    <ul class="navbar-navuser">
+                    <% if (locals.sessionName) { %>
+                      <ul class="navbar-navuser d-flex">
+                        <a href="/adduserCart">
+                          <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                        </a>
+                        <a href="/wishlist">
+                          <i class="fa fa-heart" aria-hidden="false"></i>
+                        </a>
                         <li class="navuser-item user-dropdown">
-                        <i class="fa fa-user" id="user-icon"></i>
-                        <ul class="dropdown-menu" id="dropdown-menu">
-                            <li><a href="/user-profile">User Profile</a></li>
-                            <li><a href="/address-book">Address Book</a></li>
-                            <li><a href="/order-details">Order Details</a></li>
-                            <li><a href="/setting">Setting</a></li>
-                            <form id="logout-form" method="post" action="/logout" style="display: inline;">
-                            <button type="submit" class="logout-btn">Logout</button>
-                            </form>
-                        </ul>
+                          <!-- <i class="fa fa-user" id="user-icon"></i> -->
+                          <span style="font-weight:bold;" id="user-name"> <%= user.Username %> </span>
+                          <ul class="dropdown-menu" id="dropdown-menu">
+                            <li><a href="/user-profile"><img alt="Profile" src="https://cdn.igp.com/raw/upload/assets/svg-icons/profile-person-circle-fill.svg">User Profile</a></li>
+                            <li><a href="/user-address"><img alt="ABook" src="https://cdn.igp.com/raw/upload/assets/svg-icons/drpdwn-addressbook.svg">Address Book</a></li>
+                            <li><a href="/viewOrder"><img alt="History" src="https://cdn.igp.com/raw/upload/assets/svg-icons/drpdwn-order-history.svg">Order Details</a></li>
+                            <li><a href="/wallet"><img alt="Wallet" src="https://cdn.igp.com/raw/upload/assets/svg-icons/drpdwn-wallet.svg">My Wallet</a></li>
+                            <!-- <li><a href="/setting">Setting</a></li> -->
+                              <button type="button" onclick=" return logOut()"  class="logout-btn"><img src="https://cdn.igp.com/raw/upload/assets/svg-icons/Icon-Logout.svg" alt="logout">Logout</button>
+                          </ul>
                         </li>
-                    </ul>
-                    <% } else { %>
-                    
-                    <ul class="navbar-navuser">
-                        <li class="navuser-item user-dropdown">
-                        <i class="fa fa-user" id="user-icon"></i>
-                        <!-- <ul class="dropdown-menu" id="dropdown-menu">
-                            <li><a href="/user-profile">User Profile</a></li>
-                            <li><a href="/address-book">Address Book</a></li>
-                            <li><a href="/logout">Logout</a></li>
-                        </ul> -->
-                        </li>
-                    </ul>
-
-                    <a href="/login">
-                        <span>
-                        LogIn
-                        </span>
-                    </a>
+                      </ul>
+                    <% } else { %>          
+                      <ul class="navbar-navuser d-flex" style="margin-right: 0;">
+                        <a href="/adduserCart">
+                          <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                        </a>
+                        <a href="/wishlist">
+                          <i class="fa fa-heart" aria-hidden="false"></i>
+                        </a>
+                        <a href="/login">
+                          <!-- <i class="fa fa-user" id="user-icon"></i> -->
+                          Login
+                        </a>            
+                      </ul>
                     <% } %>
-
-                    <a href="/adduserCart">
-                    <i class="fa fa-shopping-bag" aria-hidden="true"></i>
-                    </a>
-
-                    <a href="/wishlist">
-                    <i class="fa fa-heart" aria-hidden="false"></i>
-                    </a>
-                </div>
+                  </div>
                 </div>
             </nav>
             </header>
             <!-- end header section -->
-
         </div>
        <!-- end hero area -->
 
        <!-- contend start session-->
        <section style="padding-bottom: 100px;" >
-        <div class="container-fluid py-5">
-          <!-- <div class="row">
-            <div class="col">
-              <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
-                <ol class="breadcrumb mb-0">
-      
-                  <li class="breadcrumb-item active text-dark" aria-current="page">USER PROFILE</li>
-      
-                </ol>
-                <a href="/"><button type="button" class="btn btn-danger">HOME PAGE ?</button></a>
-                   <a href="/userSideOrder"><button type="button" class="btn btn-danger">ORDERS</button></a>
-                    <a href="/wishList"><button type="button" class="btn btn-danger">WISHLIST</button></a>
-      
-      
-              </nav>
-            </div>
-          </div> -->
-      
+        <div class="container-fluid py-5">     
           <div class="row " >
             <div class="col-lg-3 position-fixed"style="width:20%;">
                 <div class="list-group" id="list-tab" role="tablist">

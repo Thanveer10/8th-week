@@ -97,11 +97,11 @@ const adminLoginValidation = async function (req, res, next) {
     console.log("admin" + adminvalidate);
 
     if (adminvalidate && adminvalidate.isAdmin) {
-      const password = await bcrypt.compare(
+      let password = await bcrypt.compare(
         adminvalidation.Password,
         adminvalidate.Password
       );
-      if (password) {
+      if (password=true) {
         console.log(" i am admin");
         req.session.admin_id = adminvalidate._id;
         return res.redirect("/admin/adminhome");
@@ -116,7 +116,7 @@ const adminLoginValidation = async function (req, res, next) {
       return res.redirect("/admin");
     }
   } catch (err) {
-    console.log("somthing is wrong in adminLoginValidation " + err.message);
+    console.log("somthing is wrong in adminLoginValidation " + err);
     res.render("admin/error", {
       res,
       errorCode: 500,
@@ -158,6 +158,139 @@ const dashBoard = async function (req, res) {
       errorCode: 500,
       errorMessage: "Server Error",
       errorDescription: "An unexpected error occurred while loading dashboard",
+      link: req.headers.referer || "/admin",
+    });
+  }
+};
+
+// admin profile
+const adminProfile = async function (req, res) {
+  try {
+    let sessionName = req.session.admin_id;
+    if (sessionName) {
+      const admin = await Admin.findById(sessionName);
+      res.render("admin/adminProfile", { admin,sessionName });
+    } else {
+      res.redirect("/admin");
+    }
+  } catch (error) {
+    console.log("error in admin profile", error.message);
+    res.render("admin/error", {
+      res,
+      errorCode: 500,
+      errorMessage: "Server Error",
+      errorDescription: "An unexpected error occurred while loading admin profile",
+      link: req.headers.referer || "/admin",
+    });
+  }
+};
+
+const adminProfileUpdateget= async function (req, res) {
+  try {
+    let sessionName = req.session.admin_id;
+    if (sessionName) {
+      const admin = await Admin.findById(sessionName);
+      res.render("admin/edit-AdminProfile", { admin, sessionName });
+    } else {
+      res.redirect("/admin");
+    }
+  } catch (error) {
+    console.log("error in admin profile update get", error.message);
+    res.render("admin/error", {
+      res,
+      errorCode: 500,
+      errorMessage: "Server Error",
+      errorDescription: "An unexpected error occurred while loading admin profile update",
+      link: req.headers.referer || "/admin",
+    });
+  }
+}
+let passerrmsg;
+const editPasswordget= async function (req, res) {
+  try {
+    let sessionName = req.session.admin_id;
+    if (sessionName) {
+      const admin = await Admin.findById(sessionName);
+      res.render("admin/editPassword", { admin, sessionName,passerrmsg});
+      passerrmsg = null
+    } else {
+      res.redirect("/admin");
+    }
+  } catch (error) {
+    console.log("error in edit password get", error.message);
+    res.render("admin/error", {
+      res,
+      errorCode: 500,
+      errorMessage: "Server Error",
+      errorDescription: "An unexpected error occurred while loading edit password",
+      link: req.headers.referer || "/admin",
+    });
+  }
+}
+const editPasswordPost= async function (req,res) {
+     try {
+       console.log("reached edit password post");
+   
+       const adminId = req.session.admin_id;
+       const { CurrentPassword, NewPassword, ConfirmPassword } = req.body;
+       console.log('current password '+ CurrentPassword + ' new passowrd '+ NewPassword + ' confirmpassword '+ ConfirmPassword)
+       if (NewPassword !== ConfirmPassword) {
+         passerrmsg = "Passwords do not match";
+         res.redirect("/admin/editpassword");
+         return;
+       }
+       let admin = await Admin.findOne({ _id: adminId });
+       // const currenthashedPassword = await bcrypt.hash(CurrentPassword, 10);
+       console.log( 'existing passowrd',admin.Password);
+       const isMatch = await bcrypt.compare(CurrentPassword, admin.Password);
+       if (isMatch) {
+         console.log(
+           `user password in update password ${admin.Password} and ${CurrentPassword}`
+         );
+         const hashedPassword = await bcrypt.hash(NewPassword, 10);
+         await Admin.updateOne(
+           { _id: adminId },
+           { $set: { Password: hashedPassword } }
+         );
+         return res.redirect("/admin/admin-profile?success=true");
+       } else {
+         console.log("password is wrong");
+         passerrmsg = "Current Password is wrong";
+         return res.redirect("/admin/editpassword");
+       }
+     } catch (error) {
+       console.log("error in adminprofile update password ", error.message);
+       res.render("admin/error", {
+         res,
+         errorCode: 500,
+         errorMessage: "Server Error",
+         errorDescription: "An unexpected error occurred edit passowrd.",
+         link: req.headers.referer || "/admin",
+       });
+     }
+ }
+
+// update admin profile
+const adminProfileUpdate = async function (req, res) {
+  try {
+    let sessionName = req.session.admin_id;
+    if (sessionName) {
+      const admin = await Admin.findByIdAndUpdate(
+        sessionName,
+        { $set: req.body },
+        { new: true }
+      );
+      res.redirect("/admin/admin-profile");
+    } else {
+      res.redirect("/admin");
+    }
+  } catch (error) {
+    console.log("error in admin profile update", error.message);
+    res.render("admin/error", {
+      res,
+      errorCode: 500,
+      errorMessage: "Server Error",
+      errorDescription: "An unexpected error occurred while updating admin profile",
       link: req.headers.referer || "/admin",
     });
   }
@@ -1285,6 +1418,11 @@ module.exports = {
   adminLogin,
   adminLoginValidation,
   dashBoard,
+  adminProfile,
+  adminProfileUpdateget,
+  adminProfileUpdate,
+  editPasswordget,
+  editPasswordPost,
   salesDataget,
   topProducts,
   categoryChartget,

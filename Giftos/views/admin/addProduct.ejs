@@ -103,24 +103,6 @@
                   >Home <span class="sr-only">(current)</span></a
                 >
               </li>
-              <!-- <li class="nav-item">
-               <a class="nav-link" href="/shop">
-                 Shop
-               </a>
-             </li> -->
-              <!-- <li class="nav-item">
-               <a class="nav-link" href="/whyUs">
-                 Why Us
-               </a>
-             </li> -->
-              <!-- <li class="nav-item">
-               <a class="nav-link" href="/testimonial">
-                 Testimonial
-               </a>
-             </li> -->
-              <!-- <li class="nav-item">
-               <a class="nav-link" href="/contact">Contact Us</a>
-             </li> -->
             </ul>
             <div class="user_option">
               <% if (sessionName) { %>
@@ -132,9 +114,9 @@
                     style="font-size: larger"
                   ></i>
                   <ul class="dropdown-menu" id="dropdown-menu">
-                    <li><a href="/admin-profile">Profile</a></li>
+                    <!-- <li><a href="/admin-profile">Profile</a></li> -->
                     <li>
-                      <a href="/admin/adminlogout">Logout</a>
+                      <a href="#" id="logout">Logout</a>
                     </li>
                   </ul>
                 </li>
@@ -531,6 +513,8 @@
     <script src="javascript/addProductDetails.js"></script>
     <script src="js/custom.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/admin/confirmLogout.js" defer></script>
 
     <script>
       function validateAndSubmit() {

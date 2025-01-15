@@ -101,47 +101,41 @@
           </ul>
           <div class="user_option">
             <% if (sessionName) { %>
-              <ul class="navbar-navuser">
+              <ul class="navbar-navuser d-flex">
+                <a href="/adduserCart">
+                  <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                </a>
+                <a href="/wishlist">
+                  <i class="fa fa-heart" aria-hidden="false"></i>
+                </a>
                 <li class="navuser-item user-dropdown">
-                  <i class="fa fa-user" id="user-icon"></i>
+                  <!-- <i class="fa fa-user" id="user-icon"></i> -->
+                  <span style="font-weight:bold;" id="user-name"> <%= userData.Username %> </span>
                   <ul class="dropdown-menu" id="dropdown-menu">
-                    <li><a href="/user-profile">User Profile</a></li>
-                    <li><a href="/address-book">Address Book</a></li>
-                    <li><a href="/order-details">Order Details</a></li>
-                    <li><a href="/setting">Setting</a></li>
-                    <form id="logout-form" method="post" action="/logout" style="display: inline;">
-                      <button type="submit" class="logout-btn">Logout</button>
-                    </form>
+                    <li><a href="/user-profile"><img alt="Profile" src="https://cdn.igp.com/raw/upload/assets/svg-icons/profile-person-circle-fill.svg">User Profile</a></li>
+                    <li><a href="/user-address"><img alt="ABook" src="https://cdn.igp.com/raw/upload/assets/svg-icons/drpdwn-addressbook.svg">Address Book</a></li>
+                    <li><a href="/viewOrder"><img alt="History" src="https://cdn.igp.com/raw/upload/assets/svg-icons/drpdwn-order-history.svg">Order Details</a></li>
+                    <li><a href="/wallet"><img alt="Wallet" src="https://cdn.igp.com/raw/upload/assets/svg-icons/drpdwn-wallet.svg">My Wallet</a></li>
+                    <!-- <li><a href="/setting">Setting</a></li> -->
+                      <button type="button" onclick=" return logOut()"  class="logout-btn"><img src="https://cdn.igp.com/raw/upload/assets/svg-icons/Icon-Logout.svg" alt="logout">Logout</button>
                   </ul>
                 </li>
               </ul>
             <% } else { %>
                
-              <ul class="navbar-navuser">
-                <li class="navuser-item user-dropdown">
-                  <i class="fa fa-user" id="user-icon"></i>
-                  <!-- <ul class="dropdown-menu" id="dropdown-menu">
-                    <li><a href="/user-profile">User Profile</a></li>
-                    <li><a href="/address-book">Address Book</a></li>
-                    <li><a href="/logout">Logout</a></li>
-                  </ul> -->
-                </li>
+              <ul class="navbar-navuser d-flex" style="margin-right: 0;">
+                <a href="/adduserCart">
+                  <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                </a>
+                <a href="/wishlist">
+                  <i class="fa fa-heart" aria-hidden="false"></i>
+                </a>
+                <a href="/login">
+                  <!-- <i class="fa fa-user" id="user-icon"></i> -->
+                  Login
+                </a>            
               </ul>
-
-              <a href="/login">
-                <span>
-                  LogIn
-                </span>
-              </a>
             <% } %>
-
-            <a href="/adduserCart">
-              <i class="fa fa-shopping-bag" aria-hidden="true"></i>
-            </a>
-
-            <a href="/wishlist">
-              <i class="fa fa-heart" aria-hidden="false"></i>
-            </a>
           </div>
         </div>
       </nav>
@@ -217,7 +211,7 @@
                                     
                                    <%  if(iswishItem){ %>
                                     <a href="/wishlist" >
-                                      <i class="fa fa-heart text-muted" style="font-size:larger;"> <span style="padding-left: 10px; font-size: medium;">View Wishlist</span></i>
+                                      <i class="fa fa-heart text-muted" id="addToWhishList" style="font-size:larger;"> <span style="padding-left: 2px; font-size: medium;">View Wishlist</span></i>
                                     </a>
                                  <% }else{ %>
                                     <a href="/wishlist/<%= product._id %>">
@@ -388,22 +382,31 @@
   
 
   <!-- end info section -->
-  <script>
-    document.getElementById('logout-form').addEventListener('submit',(event)=>{
-      if(!confirm('Are you sure, You  really want to  log out? ')){
-        event.preventDefault()
-      }
-    })
- </script>
 
   <script src="/js/jquery-3.4.1.min.js"></script>
   <script src="/js/bootstrap.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
-  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
   <script src="/js/custom.js"></script>
-  <script src="/js/productView.js">
-
-</script>
+  <script src="/js/productView.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+      function logOut(){
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You Really want to log out!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, log out!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = '/logout';
+          }
+        })
+        return false
+      }
+  </script>
 
 </body>
 

@@ -268,65 +268,49 @@
               </li>
             </ul>
             <div class="user_option">
-              <% if (locals.sessionName) { %>
-                <ul class="navbar-navuser">
-                  <li class="navuser-item user-dropdown">
-                    <!-- <i class="fa fa-user" id="user-icon"></i> -->
-                    <span id="user-name"> <%= userdata.Username %> </span>
-                    <ul class="dropdown-menu" id="dropdown-menu">
-                      <li><a href="/user-profile">User Profile</a></li>
-                      <li><a href="/address-book">Address Book</a></li>
-                      <li><a href="/order-details">Order Details</a></li>
-                      <li><a href="/setting">Setting</a></li>
-                      <!-- <form id="logout-form" method="post" action="/logout" style="display: inline;"> -->
-                        <button type="button" onclick=" return logOut()"  class="logout-btn">Logout</button>
-                      <!-- </form> -->
-                    </ul>
-                  </li>
-                </ul>
-              <% } else { %>
-                
-                <ul class="navbar-navuser">
-                  <li class="navuser-item user-dropdown">
-                    <i class="fa fa-user" id="user-icon"></i>
-                    <!-- <ul class="dropdown-menu" id="dropdown-menu">
-                      <li><a href="/user-profile">User Profile</a></li>
-                      <li><a href="/address-book">Address Book</a></li>
-                      <li><a href="/logout">Logout</a></li>
-                    </ul> -->
-                  </li>
-                </ul>
-
-                <a href="/login">
-                  <span>
-                    LogIn
-                  </span>
-                </a>
-              <% } %>
-              <a href="/adduserCart">
-                <i class="fa fa-shopping-bag" aria-hidden="true"></i>
-              </a>
-              <a href="/wishlist">
-                <i class="fa fa-heart" aria-hidden="false"></i>
-              </a>
-                
-              
-              <!-- <div class="input-group">
-                <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-                <button type="button" class="btn search_btn" data-mdb-ripple-init>search</button>
-              </div> -->
               <form class="form-inline mx-auto" id="shopSearchForm" action="/product/products" method="GET">
                 <input class="form-control mr-sm-2"  type="search" name="query" 
                 value="<%= typeof searchTerm !== 'undefined' ? searchTerm : '' %>" 
                        placeholder="Search Products" aria-label="Search" id="searchInput">
                        <button type="submit" class="btn search_btn" data-mdb-ripple-init>search</button>
                </form>
-              <!-- <form class="form-inline ">
-                <button class="btn nav_search-btn" type="submit">
-                  <i class="fa fa-search" aria-hidden="true"></i>
-                </button>
-              </form> -->
 
+              <% if (locals.sessionName) { %>
+                <ul class="navbar-navuser d-flex">
+                  <a href="/adduserCart">
+                    <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                  </a>
+                  <a href="/wishlist">
+                    <i class="fa fa-heart" aria-hidden="false"></i>
+                  </a>
+                  <li class="navuser-item user-dropdown">
+                    <!-- <i class="fa fa-user" id="user-icon"></i> -->
+                    <span style="font-weight:bold;" id="user-name"> <%= userdata.Username %> </span>
+                    <ul class="dropdown-menu" id="dropdown-menu">
+                      <li><a href="/user-profile"><img alt="Profile" src="https://cdn.igp.com/raw/upload/assets/svg-icons/profile-person-circle-fill.svg">User Profile</a></li>
+                      <li><a href="/user-address"><img alt="ABook" src="https://cdn.igp.com/raw/upload/assets/svg-icons/drpdwn-addressbook.svg">Address Book</a></li>
+                      <li><a href="/viewOrder"><img alt="History" src="https://cdn.igp.com/raw/upload/assets/svg-icons/drpdwn-order-history.svg">Order Details</a></li>
+                      <li><a href="/wallet"><img alt="Wallet" src="https://cdn.igp.com/raw/upload/assets/svg-icons/drpdwn-wallet.svg">My Wallet</a></li>
+                      <!-- <li><a href="/setting">Setting</a></li> -->
+                        <button type="button" onclick=" return logOut()"  class="logout-btn"><img src="https://cdn.igp.com/raw/upload/assets/svg-icons/Icon-Logout.svg" alt="logout">Logout</button>
+                    </ul>
+                  </li>
+                </ul>
+              <% } else { %>
+                
+                <ul class="navbar-navuser d-flex" style="margin-right: 0;">
+                  <a href="/adduserCart">
+                    <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                  </a>
+                  <a href="/wishlist">
+                    <i class="fa fa-heart" aria-hidden="false"></i>
+                  </a>
+                  <a href="/login">
+                    <!-- <i class="fa fa-user" id="user-icon"></i> -->
+                    Login
+                  </a>            
+                </ul>
+              <% } %>
             </div>
           </div>
         </nav>
@@ -614,6 +598,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
         </script>
         <script src="/js/custom.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       
   </body>
 </html>

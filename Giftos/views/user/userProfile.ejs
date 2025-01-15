@@ -27,73 +27,6 @@
   }
 </style>
 
-<!-- <div class="card mb-4">
-             <form action="/userAddress" method="post" name="submission" onsubmit="return userAddress()" oninput="clearform()">
-                <div class="card-body mt-3">
-                  <div >
-                    <p>ADDRESS DETAILS</p>
-                  </div>
-      
-                  <div class="row ">
-                    <div class="col-md-6 form-group mb-3">
-                     {{!-- <label>Last Name</label> --}}             
-                      <input class="form-control" type="text" name="Firstname" placeholder="First Name">
-                    </div>
-      
-                 
-                    <div class="col-md-6 form-group">
-                      {{!-- <label>Last Name</label> --}}
-                      <input class="form-control" type="text" name="Lastname" placeholder="Last Name">
-                    </div>
-      
-        
-                    <div class="col-md-6 form-group  mb-3">
-                      {{!-- <label>E-mail</label> --}}
-                      <input class="form-control" type="text" name="Email" placeholder="E-mail">
-                     </div>
-      
-                    <div class="col-md-6 form-group">
-                      {{!-- <label>Mobile No</label> --}}
-                      <input class="form-control" type="text" name="Mobilenumber" placeholder="Mobile No">
-                    </div>
-                   
-                  
-      
-                    <div class="col-md-6 form-group  mb-3">
-                      {{!-- <label>Address Line 1</label> --}}
-                      <input class="form-control" type="text" name="Address" placeholder="Address">
-                    </div>
-                
-      
-                
-                    <div class="col-md-6 form-group">
-                      {{!-- <label>ZIP Code</label> --}}
-                      <input class="form-control" type="text" name="Postcode" placeholder="Post Code">
-                    </div>
-      
-                   <div class="col-md-6 form-group">
-                      {{!-- <label>City</label> --}}
-                      <input class="form-control" type="text" name="State" placeholder="State">
-                    </div>
-      
-                       <div class="col-md-6 form-group">
-                      {{!-- <label>City</label> --}}
-                      <input class="form-control" type="text" name="City" placeholder="City">
-                    </div>
-      
-                    <div class="col-md-6 form-group  mb-3">
-                     <button type="submit" class="btn btn-primary">UPDATE ADDRESS</button>
-                    </div>
-      
-                  </div>
-      
-                </div>
-                </div> 
-                
-
-              </form>
-           
-            </div> -->
 <div class="col-lg-8 offset-lg-3">
 <div
   class="card mb-3"
@@ -259,6 +192,22 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+      function logOut(){
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You Really want to log out!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, log out!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = '/logout';
+          }
+        })
+        return false
+      }
   function copyReferralCode() {
     const referralCode = document.getElementById("referral-code").innerText;
     navigator.clipboard.writeText(referralCode).then(() => {

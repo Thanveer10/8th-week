@@ -1025,6 +1025,7 @@ const productDetailsget = async function (req, res) {
   let iswishItem
   try {
     const user_id = req.session.user_id;
+    const user= await User.findById(user_id)
     const sessionName = user_id;
     let product_id = req.params.id;
     if (user_id) {
@@ -1073,6 +1074,7 @@ const productDetailsget = async function (req, res) {
       stockerr = "product is not available";
     }
     res.render("user/productDetails", {
+      userData:user,
       sessionName,
       product,
       related_products,
@@ -1197,6 +1199,7 @@ const addtoCart = async function (req, res, next) {
 const userCart = async function (req, res, next) {
   try {
     const user = req.session.user_id;
+    const userdata= await User.findById(user)
     const sessionName = user;
 
     const productCart = await cartColl.aggregate([
@@ -1278,7 +1281,8 @@ const userCart = async function (req, res, next) {
       coupenerr,
       discPrice,
       sub_total,
-      discountValue
+      discountValue,
+      userdata : userdata
     });
     coupen = null;
     req.session.coupen = null;
@@ -1760,6 +1764,7 @@ const checkoutget = async function (req, res, next) {
 //Wishlist
 const wishListget = async function (req, res) {
   const userId = req.session.user_id;
+  const userdata= await User.findById(userId);
   const sessionName = userId;
   // productWish = await productinfo.find()
   if (userId) {
@@ -1784,7 +1789,7 @@ const wishListget = async function (req, res) {
     ]);
     // console.log(wishProduct);
 
-    res.render("user/wishList", { sessionName, wishProduct });
+    res.render("user/wishList", { sessionName, wishProduct,userdata });
   } else {
     res.redirect("/login");
   }
@@ -2019,9 +2024,10 @@ const userAddressget = async function (req, res) {
 const addAddressget = async function (req, res) {
   try {
     const userId = req.session.user_id;
+    const user= await User.findById(userId);
     const sessionName = userId;
     if (userId) {
-      res.render("user/addAddress", { sessionName });
+      res.render("user/addAddress", { sessionName,user });
     } else {
       res.redirect("/login");
     }
@@ -2215,6 +2221,7 @@ const editAddressget = async function (req, res, next) {
   try {
     const addressId = req.query.id;
     const userId = req.session.user_id;
+    const user= await User.findById({ _id: userId });
     const sessionName = userId;
     const address = await AddressColl.findOne({ "Address._id": addressId });
     if (!address) {
@@ -2226,7 +2233,7 @@ const editAddressget = async function (req, res, next) {
     if (!editAddress) {
       return res.render("user/error", { error: "Address not found" });
     }
-    res.render("user/editUserAddress", { address: editAddress, sessionName });
+    res.render("user/editUserAddress", { address: editAddress, sessionName ,user});
   } catch (error) {
     console.log("error in edit address get " + error.message);
     res.render("user/error", {
@@ -3214,7 +3221,7 @@ const walletget = async function (req, res) {
     if(wallet && wallet.transactions){
       wallet.transactions.sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt))
     }
-    res.render("user/wallet", { wallet: wallet, sessionName });
+    res.render("user/wallet", { wallet: wallet, sessionName,user });
   } catch (error) {
     console.log("error in getting wallet");
     const backLink = req.headers.referer || "/";

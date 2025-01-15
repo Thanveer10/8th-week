@@ -135,7 +135,7 @@ body {
   list-style: none;
   margin: 0px;
   margin: 25px;
-  display: flex;
+  /* display: flex; */
 }
 .navuser-item {
   position: relative;
