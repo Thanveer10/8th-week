@@ -110,7 +110,7 @@ const orderSchema = new mongoose.Schema({
   },
   deliveryDate: {
     type: Date, // Use Date type instead of String
-    required: true,
+    // required: true,
   },
 
   paymentDetails: {
@@ -120,7 +120,7 @@ const orderSchema = new mongoose.Schema({
       required: true,
     },
     gateway: { type: String, required: false },
-    status: { type: String, enum: ["Pending", "Paid","Cancelled"], default: "Pending" },
+    status: { type: String, enum: ["Pending", "Paid","Cancelled","Failed"], default: "Pending" },
     date: { type: Date, default: Date.now },
     beforePymentRefId: {
       type: String,

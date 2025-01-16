@@ -2548,7 +2548,7 @@ const confirmOrder = async (req, res) => {
     if (paymentMethod === "Cash on Delivery") {
       const order = new OrderColl({
         orderedUser: user._id,
-        orderStatus: "Pending", // Set default order status
+        orderStatus: "Confirmed", // Set default order status
         products: productsArray, // Attach the built products array
         date: new Date(),
         coupenDiscount: discountAmount, 
@@ -3167,39 +3167,200 @@ const onlinePayment = async function (req, res) {
 };
 
 // restoreProductQuantities
-const restoreProductQuantities = async function (req, res) {
+const placeOrderPending = async function (req, res) {
   try {
+    const user_id = req.session.user_id;
+    const user = await User.findOne({ _id: user_id });
     const { cartId } = req.params;
+    const {paymentMethod,addressId,couponId}=req.body;
     const cart = await cartColl.findById(cartId);
+    console.log("cart id ===" + cartId);
+    // let cart = await cartColl.findOne({ _id: cartId });
     if (!cart) {
-      console.log("cart not found==", cartId);
-      return res.status(404).json({
-        success: false,
-        message: "cart not found",
-      });
+      console.log("cart not found");
+      return res.status(404).json({success:false, message:'cart not found'});
     }
+    if (!cart.Product.length) {
+      return res.status(404).json({success:false, message:'your cart is empty'});
+    }
+    const addressObjectId = new mongoose.Types.ObjectId(addressId);
+    console.log("user id " + user._id);
+    const userAddress = await AddressColl.aggregate([
+      { $match: { UserId: user._id } },
+      { $unwind: "$Address" },
+      { $match: { "Address._id": new mongoose.Types.ObjectId(addressId) } },
+      { $replaceRoot: { newRoot: "$Address" } },
+    ]);
+
+    if (!userAddress.length) {
+      console.log("shipping address not found" + addressObjectId);
+      return res.status(404).json({success:false, message:'shipping address not found'});
+    }
+    const deliveryCharges = calculateDeliveryCharge(userAddress[0].pincode); // Implement this logic
+
+    let totalCartPrice =0;
     for (let item of cart.Product) {
       const product = await ProductColl.findById(item.item);
-      if (product) {
-        product.Stock += item.quantity;
-      }
-      await product.save();
+      console.log('produuct id==',item.item)
+      if (!product || product.Stock < item.quantity) continue;
+
+      totalCartPrice +=
+        (product.SalePrice || product.RegularPrice) * item.quantity;
     }
-    console.log('restoreProductQuantities')
-    res.json({
-      success: true,
-      message: "Product quantities restored successfully",
+    console.log("totalCartPrice=" + totalCartPrice);
+
+    let discountAmount = 0;
+    let couponCode;
+    if (couponId) {
+      const coupon = await CoupenColl.findById(couponId);
+      if (!coupon) {
+        console.log("Coupon not found in confirmOrder");
+        return res.status(400).json({
+          success: false,
+          message: "Coupon not found.",
+        });
+      }
+      if (coupon.expiryDate < new Date()) {
+        console.log("Coupon has expired in confirmOrder");
+        return res.status(400).json({
+          success: false,
+          message: "Coupon has expired",
+        });
+      }
+      if (coupon.MinimumPrice < totalCartPrice) {
+        if (coupon.DiscountType == "Amount") {
+          discountAmount = coupon.DiscountPrice;
+          couponCode = coupon.CoupenCode;
+        }
+      } else {
+        console.log(coupon.MinimumPrice, totalCartPrice);
+        console.log("Coupon can't be applied on this amount in confirmOrder");
+        return res.status(400).json({
+          success: false,
+          message: "Coupon can't be applied on this amount.",
+        });
+      }
+
+      // discountAmount = (coupon.discountPercentage / 100) * totalCartPrice;
+    } else {
+      console.log("coupen id not found");
+    }
+
+    let productsArray = [];
+    for (let item of cart.Product) {
+      const product = await ProductColl.findById(item.item);
+
+      productsArray.push({
+        productId: product._id,
+        name: product.Productname, // Assuming `Name` is the field for product name
+        price:product.RegularPrice,
+        discountAmount:item.discountValue*item.quantity || 0,
+        // discountPrice:product.SalePrice?product.RegularPrice-item.discountValue: product.RegularPrice,
+        quantity: item.quantity,
+        total: (product.SalePrice || product.RegularPrice) * item.quantity, // Calculate total for this item
+      });
+    }
+
+    const order = new OrderColl({
+      orderedUser: user_id,
+      orderStatus: "Pending", // Set default order status
+      products: productsArray, // Attach the built products array
+      date: new Date(),
+      coupenDiscount: discountAmount?discountAmount : 0, // Total discount applied
+      grandTotal: (totalCartPrice+deliveryCharges) - discountAmount, // Calculate grand total
+      shippingAddress: userAddress[0], // Shipping address
+      shippingCharge:deliveryCharges,
+      paymentDetails: {
+        paymentMethod: "Online Payment",
+        status: "Failed",
+      },
+      cartId: cart._id,
     });
+    await order.save();
+    const TotalPrice = (totalCartPrice+deliveryCharges)- discountAmount;
+    await cartColl.findByIdAndDelete(cartId);
+    user.UsedCoupons.push(couponCode);
+    await user.save();
+    console.log("order saved successfully");
+    // for (let item of cart.Product) {
+    //   const product = await ProductColl.findById(item.item);
+    //   if (product) {
+    //     product.Stock += item.quantity;
+    //   }
+    //   await product.save();
+    // }
+    res.status(200).json({ message: 'Order saved with pending payment status', orderId: order._id });
+    console.log('restoreProductQuantities')
   } catch (error) {
-    console.log("error in restoring product quantity");
+    console.log("error in place order pending==",error);
     res
       .status(500)
       .json({
         success: false,
-        message: "Error in restoring product quantities",
+        message: "Error in place order pending",
       });
   }
 };
+
+const retryPayment = async function (req, res) {
+  try {
+    const orderId=req.params.orderId
+    const order= await OrderColl.findById(orderId)
+    if (!order) {
+      console.log("order not found");
+      return res.status(404).json({ success: false, message: 'order not found' });
+    }
+    const razorpayOrder = await razorpayInstance.orders.create({
+      amount:Math.round(order.grandTotal * 100),
+      currency: "INR",
+    }); 
+    console.log("raozorpay order" + razorpayOrder);
+    return res.status(200).json({
+      success: true,
+      razorpayOrderId: razorpayOrder.id,
+      amount:razorpayOrder.amount,
+      razor_key_id: process.env.RAZORPAY_KEY_ID,
+    });
+  } catch (error) {
+    console.log('error in retrypayment',error.message);
+    res
+    .status(500)
+    .json({
+      success: false,
+      message: "Error in retrypayment",
+    });
+  }
+}
+
+const confirmRetryPayment= async (req, res) => {
+    try {
+      const orderId = req.params.orderId;
+      const order = await OrderColl.findById(orderId);
+      
+      if (!order) {
+          return res.status(404).json({ message: 'Order not found' });
+      }
+
+      order.orderStatus = 'Confirmed';
+      order.paymentDetails.status = 'Paid';
+      order.deliveryDate= new Date(new Date().setDate(new Date().getDate() + 7)), // Example: 7-day delivery
+
+      await order.save();
+
+      // const detailedCart = order.cartItems;
+      // const totalDiscountFromOffers = order.discount;
+      // const finalTotalPrice = order.totalPrice;
+      // const discountAmount = order.couponDeduction;
+      // const deliveryCharge = calculateDeliveryCharge(order.address.pinCode);
+      // const totalOriginalPrice = finalTotalPrice + totalDiscountFromOffers + discountAmount - deliveryCharge;
+
+     res.redirect(`/orderconfirm/${order.cartId}?totalPrice=${order.grandTotal}`)
+
+      } catch (error) {
+          console.error("Error confirming payment:", error);
+          res.status(500).json({ success: false, message: 'Failed to confirm payment' });
+      }
+}
 
 // WALLET SESSION
 const walletget = async function (req, res) {
@@ -3279,7 +3440,9 @@ module.exports = {
   cancelOrder,
   returnOrder,
   onlinePayment,
-  restoreProductQuantities,
+  placeOrderPending,
+  retryPayment,
+  confirmRetryPayment,
   wishListget,
   wishListPost,
   wishDelete,

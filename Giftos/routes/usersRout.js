@@ -88,7 +88,10 @@ user_route.post('/returnRequest/:orderId',userAuth,user_ctrl.returnOrder)
 
 // online Payment
 user_route.get('/payment/success',userAuth,user_ctrl.onlinePayment)
-user_route.post("/online-payment-failed/restore-cart-items/:cartId",userAuth,user_ctrl.restoreProductQuantities);
+user_route.post("/online-payment-failed/placeOrderPending/:cartId",userAuth,user_ctrl.placeOrderPending);
+user_route.post('/order/retryPayment/:orderId',userAuth,user_ctrl.retryPayment)
+user_route.get('/order/confirmation/:orderId',userAuth,user_ctrl.confirmRetryPayment)
+
 
 
 user_route.get('/wallet',userAuth,user_ctrl.walletget)

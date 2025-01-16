@@ -286,7 +286,9 @@ document
                   handlePaymentFailure(
                     data.cartId,
                     "Payment Failed",
-                    response.error
+                    response.error,
+                    selectedAddressId,
+                    couponId
                   );
                 });
 
@@ -423,59 +425,46 @@ document
 // }
 let isRestoring = false;
 
-function handlePaymentFailure(cartId, reason, error = {}) {
+function handlePaymentFailure(cartId, reason, error = {},addressId,couponId) {
   if (isRestoring) return; // Prevent duplicate calls
   isRestoring = true;
 
   console.log(`${reason}:`, error);
 
   Swal.fire({
-    title: `${reason}!`,
-    text: `Unfortunately, your payment could not be completed. ${
-      reason === "Payment Cancelled"
-        ? "You cancelled the payment process."
-        : "Restoring your cart items..."
-    }`,
+    title: `payment failed!`,
+    text: 'Payment was not completed. Please try again from pending orders.',
     icon: "error",
-  }).then(() => {
-    fetch(`/online-payment-failed/restore-cart-items/${cartId}`, {
+    confirmButtonText: "Ok",
+  }).then((result) => {
+    if(result.isConfirmed){
+    fetch(`/online-payment-failed/placeOrderPending/${cartId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({paymentMethod:'Online Payment', addressId: addressId,  couponId: couponId || null, }),
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.success) {
-          console.log("Successfully restored cart items");
-          Swal.fire(
-            "Cart Restored",
-            "Your cart has been restored successfully.",
-            "success"
-          ).then(() => {
-            window.location.href = "/adduserCart";
-          });
-        } else {
-          Swal.fire(
-            "Error!",
-            "Failed to restore cart items. Please contact support.",
-            "error"
-          );
-        }
+       window.location.href='/viewOrder'
       })
       .catch((error) => {
-        console.error("Error restoring cart items:", error);
+        console.error("Error placing order:", error);
         Swal.fire(
           "Error!",
-          "Something went wrong while restoring your cart.",
+          "Something went wrong while plcing order.",
           "error"
         );
       })
       .finally(() => {
         isRestoring = false; // Reset the flag
       });
-  });
+  }
+ });
 }
+
+
 
 
 //  jQuery for dynamic form updates
