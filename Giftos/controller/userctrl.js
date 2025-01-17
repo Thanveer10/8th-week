@@ -31,7 +31,8 @@ const validateStock = async (cartProducts) => {
   for (let item of cartProducts) {
     const product = await ProductColl.findById(item.item);
     if (!product || product.Stock < item.quantity) {
-      throw new Error(`Insufficient stock for product ${item.item}`);
+      item.quantity=product.Stock;
+      // throw new Error(`Insufficient stock for product ${item.item}`);
     }
   }
 };
@@ -2565,8 +2566,12 @@ const confirmOrder = async (req, res) => {
 
       const TotalPrice =  (totalCartPrice+deliveryCharges) - discountAmount;
       // Add the coupon to the user's used list
-      user.UsedCoupons.push(couponCode);
-      await user.save();
+      if (couponCode) {
+        if (!user.UsedCoupons.includes(couponCode)) {
+          user.UsedCoupons.push(couponCode);
+          await user.save();
+        }
+      }      await user.save();
       console.log("order saved successfully");
       await cartColl.findByIdAndDelete(cartId);
 
@@ -3066,6 +3071,7 @@ const onlinePayment = async function (req, res) {
     const deliveryCharges = calculateDeliveryCharge(userAddress[0].pincode); // Implement this logic
 
     let totalCartPrice =0;
+    await validateStock(cart.Product)
     for (let item of cart.Product) {
       const product = await ProductColl.findById(item.item);
       console.log('produuct id==',item.item)
@@ -3149,7 +3155,12 @@ const onlinePayment = async function (req, res) {
     await order.save();
     const TotalPrice = (totalCartPrice+deliveryCharges)- discountAmount;
     await cartColl.findByIdAndDelete(cartId);
-    user.UsedCoupons.push(couponCode);
+    if (couponCode) {
+      if (!user.UsedCoupons.includes(couponCode)) {
+        user.UsedCoupons.push(couponCode);
+        await user.save();
+      }
+    }
     await user.save();
     console.log("order saved successfully");
 
@@ -3260,14 +3271,14 @@ const placeOrderPending = async function (req, res) {
         total: (product.SalePrice || product.RegularPrice) * item.quantity, // Calculate total for this item
       });
     }
-
+    const grandTotal = Math.max(0, (totalCartPrice + deliveryCharges) - discountAmount);
     const order = new OrderColl({
       orderedUser: user_id,
       orderStatus: "Pending", // Set default order status
       products: productsArray, // Attach the built products array
       date: new Date(),
       coupenDiscount: discountAmount?discountAmount : 0, // Total discount applied
-      grandTotal: (totalCartPrice+deliveryCharges) - discountAmount, // Calculate grand total
+      grandTotal: grandTotal, // Calculate grand total
       shippingAddress: userAddress[0], // Shipping address
       shippingCharge:deliveryCharges,
       paymentDetails: {
@@ -3279,16 +3290,21 @@ const placeOrderPending = async function (req, res) {
     await order.save();
     const TotalPrice = (totalCartPrice+deliveryCharges)- discountAmount;
     await cartColl.findByIdAndDelete(cartId);
-    user.UsedCoupons.push(couponCode);
-    await user.save();
+    // user.UsedCoupons.push(couponCode);
+    if (couponCode) {
+      if (!user.UsedCoupons.includes(couponCode)) {
+        user.UsedCoupons.push(couponCode);
+        await user.save();
+      }
+    }
     console.log("order saved successfully");
-    // for (let item of cart.Product) {
-    //   const product = await ProductColl.findById(item.item);
-    //   if (product) {
-    //     product.Stock += item.quantity;
-    //   }
-    //   await product.save();
-    // }
+    for (let item of cart.Product) {
+      const product = await ProductColl.findById(item.item);
+      if (product) {
+        product.Stock += item.quantity;
+      }
+      await product.save();
+    }
     res.status(200).json({ message: 'Order saved with pending payment status', orderId: order._id });
     console.log('restoreProductQuantities')
   } catch (error) {
@@ -3336,14 +3352,31 @@ const confirmRetryPayment= async (req, res) => {
     try {
       const orderId = req.params.orderId;
       const order = await OrderColl.findById(orderId);
-      
+      const cart= await cartColl.findById(order.cartId)
+      if(!cart) {
+        console.log('cart not found')
+        return res.status(404).json({message: 'Cart not found'})
+      }
+
+      if (!cart.Product.length) {
+        console.log('your cart is empty')
+        return res.status(404).json({success:false, message:'your cart is empty'});
+      }
+
       if (!order) {
           return res.status(404).json({ message: 'Order not found' });
       }
 
       order.orderStatus = 'Confirmed';
       order.paymentDetails.status = 'Paid';
-      order.deliveryDate= new Date(new Date().setDate(new Date().getDate() + 7)), // Example: 7-day delivery
+      order.deliveryDate= new Date(new Date().setDate(new Date().getDate() + 7)) // Example: 7-day delivery
+      for (let item of cart.Product) {
+        const product = await ProductColl.findById(item.item);
+        if (product) {
+          product.Stock -= item.quantity;
+        }
+        await product.save();
+      }
 
       await order.save();
 
