@@ -59,17 +59,7 @@
       .thumbnail {
         margin-right: 10px;
       }
-      .thumbnails-container img {
-        max-width: 100%; /* Ensures the image doesn't exceed the container's width */
-        max-height: 100%; /* Ensures the image doesn't exceed the container's height */
-        object-fit: contain; /* Ensures the image maintains its aspect ratio */
-      }
 
-      .image-cropper img {
-        width: 100%; /* Shrink the image to fit the cropper's width */
-        height: 100%; /* Shrink the image to fit the cropper's height */
-        object-fit: cover; /* Maintain aspect ratio and fill the cropper */
-      }
 
     </style>
   </head>
@@ -126,11 +116,6 @@
               <ul class="navbar-navuser">
                 <li class="navuser-item user-dropdown">
                   <i class="fa fa-user" id="user-icon"></i>
-                  <!-- <ul class="dropdown-menu" id="dropdown-menu">
-                    <li><a href="/user-profile">User Profile</a></li>
-                    <li><a href="/address-book">Address Book</a></li>
-                    <li><a href="/logout">Logout</a></li>
-                  </ul> -->
                 </li>
               </ul>
 
@@ -139,18 +124,6 @@
               </a>
 
               <% } %>
-              <!-- 
-             <a href="">
-               <i class="fa fa-shopping-bag" aria-hidden="true"></i>
-             </a>
-             <a href="">
-               <i class="fa fa-heart" aria-hidden="false"></i>
-             </a> -->
-              <!-- <form class="form-inline ">
-               <button class="btn nav_search-btn" type="submit">
-                 <i class="fa fa-search" aria-hidden="true"></i>
-               </button>
-             </form> -->
             </div>
           </div>
         </nav>
@@ -184,15 +157,6 @@
               class="nav-item nav-link active"
               ><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a
             >
-            <!-- {{!-- <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
-                                class="fa fa-laptop me-2"></i>PRODUCT LIST</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="button.html" class="dropdown-item">Buttons</a>
-                            <a href="typography.html" class="dropdown-item">Typography</a>
-                            <a href="element.html" class="dropdown-item">Other Elements</a>
-                        </div>
-                    </div> --}} -->
             <a href="/admin/productList" class="nav-item nav-link"
               ><i class="fa fa-th me-2"></i>PRODUCT LIST</a
             >
@@ -214,16 +178,6 @@
             <a href="/banner" class="nav-item nav-link"
               ><i class="fa fa-table me-2"></i>BANNER</a
             >
-            <!-- {{!-- <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
-                                class="far fa-file-alt me-2"></i>Pages</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="signin.html" class="dropdown-item">Sign In</a>
-                            <a href="signup.html" class="dropdown-item">Sign Up</a>
-                            <a href="404.html" class="dropdown-item">404 Error</a>
-                            <a href="blank.html" class="dropdown-item">Blank Page</a>
-                        </div>
-                    </div> --}} -->
           </div>
         </nav>
       </div>
@@ -545,123 +499,88 @@
         );
       }
 
-      // function viewImage(event, index) {
-      //   let input = event.target;
-      //   console.log("reached viewImage fucntion", event.target, input);
-      //   let reader = new FileReader();
-      //   reader.onload = () => {
-      //     let dataURL = reader.result;
-      //     let image = document.getElementById(`imgView${index}`);
-      //     image.src = dataURL;
-      //     image.style.maxWidth = "100%", 
-      //       image.style.maxHeight = "300px", 
-      //       image.style.objectFit = "contain" 
-      //     let cropper = new Cropper(image, {
-      //       aspectRatio: 1,
-      //       viewMode: 1,
-      //       guides: true,
-      //       background: false,
-      //       autoCropArea: 1,
-      //       zoomable: true,
-      //     });
-      //     console.log("cropper " + cropper);
-      //     let corpperContainer = document.querySelector(
-      //       "#croppedImg" + index
-      //     ).parentNode;
-      //     corpperContainer.style.display = "block";
+      let cropper = {};
+      function viewImage(event, index) {
+        const input = event.target;
+        const image = document.getElementById(`imgView${index}`);
+        const cropperContainer = document.querySelector(`#croppedImg${index}`).parentNode;
+        const saveButton = document.querySelector(`#saveButton${index}`);
+        const reader = new FileReader();
 
-      //     let saveButton = document.querySelector("#saveButton" + index);
-      //     saveButton.addEventListener("click", async function () {
-      //       let croppedCanvas = cropper.getCroppedCanvas();
-      //       let croppedImage = document.getElementById("croppedImg" + index);
-      //       croppedImage.src = croppedCanvas.toDataURL("image/jpeg", 1.0);
+        reader.onload = () => {
+          image.src = reader.result;
+          image.style.display = "block"; // Make image visible
+          image.style.maxWidth = "100%";
+          image.style.maxHeight = "300px";
+          image.style.objectFit = "contain";
 
-      //       let timestamp = new Date().getTime();
-      //       let fileName = `cropped-img-${timestamp}-${index}.png`;
+          cropperContainer.style.display = "flex";
+          if (cropper[index]) {
+            cropper[index].destroy();
+            cropper[index] = null;
+          }
 
-      //       await croppedCanvas.toBlob((blob) => {
-      //         let input = document.getElementById("input" + index);
-      //         let imgFile = new File([blob], fileName, blob);
-      //         const fileList = new DataTransfer();
-      //         fileList.items.add(imgFile);
-      //         input.files = fileList.files;
-      //       });
+          cropper[index] = new Cropper(image, {
+            // aspectRatio: 1, 
+            viewMode: 1, // Ensure the entire image is visible in the container
+            guides: true,
+            background: false,
+            autoCropArea: 1, // Set to 1 to cover the entire image initially
+            zoomable: true,
+            scalable: true,
+            cropBoxResizable: true, // Allow resizing of the crop box
+            cropBoxMovable: true,   // Allow moving of the crop box
+            responsive: true,
+            // ready() {
+            //   const canvasData =cropper[index] .getCanvasData(); // Get the actual canvas dimensions
+            //   cropper.setCropBoxData({
+            //     left: canvasData.left,
+            //     top: canvasData.top,
+            //     width: canvasData.width,
+            //     height: canvasData.height,
+            //   });
+            // }
+            ready() {
+              const imageData = cropper[index].getImageData(); // Get the natural dimensions of the image
+              cropper[index].setCropBoxData({
+                left: imageData.left,
+                top: imageData.top,
+                width: imageData.naturalWidth,
+                height: imageData.naturalHeight,
+              });
+            },
 
-      //       corpperContainer.style.display = "none";
-      //       cropper.destroy();
-      //     });
-      //   };
+          });
 
-      //   reader.readAsDataURL(input.files[0]);
-      // }
-
-    function viewImage(event, index) {
-      const input = event.target;
-      const image = document.getElementById(`imgView${index}`);
-      const cropperContainer = document.querySelector(`#croppedImg${index}`).parentNode;
-      const saveButton = document.querySelector(`#saveButton${index}`);
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        image.src = reader.result;
-        image.style.display = "block"; // Make image visible
-        image.style.maxWidth = "100%";
-        image.style.maxHeight = "300px";
-        image.style.objectFit = "contain";
-
-        cropperContainer.style.display = "flex";
-
-        const cropper = new Cropper(image, {
-          aspectRatio: 1, // 1:1 aspect ratio for a square crop
-          viewMode: 2, // Ensure the entire image is visible in the container
-          guides: true,
-          background: false,
-          autoCropArea: 1, // Set to 1 to cover the entire image initially
-          zoomable: true,
-          scalable: true,
-          cropBoxResizable: true, // Allow resizing of the crop box
-          cropBoxMovable: true,   // Allow moving of the crop box
-          responsive: true,
-          ready() {
-            // Ensure the crop box starts by covering the entire image
-            const containerData = cropper.getContainerData();
-            const cropBoxData = cropper.getCropBoxData();
-            cropper.setCropBoxData({
-              left: 0,
-              top: 0,
-              width: containerData.width,
-              height: containerData.height,
+          saveButton.replaceWith(saveButton.cloneNode(true));
+          const newSaveButton = document.querySelector(`#saveButton${index}`);
+          newSaveButton.addEventListener("click", async () => {
+            const croppedCanvas = cropper[index] .getCroppedCanvas({
+              width: 250,
+              height: 250,
             });
-          },
-        });
 
-        saveButton.addEventListener("click", async () => {
-          const croppedCanvas = cropper.getCroppedCanvas({
-            width: 250,
-            height: 250,
+            const croppedImage = document.getElementById(`croppedImg${index}`);
+            croppedImage.src = croppedCanvas.toDataURL("image/jpeg", 1.0);
+
+            const timestamp = new Date().getTime();
+            const fileName = `cropped-img-${timestamp}-${index}.png`;
+
+            await croppedCanvas.toBlob((blob) => {
+              const input = document.getElementById(`input${index}`);
+              const imgFile = new File([blob], fileName, { type: blob.type });
+              const dataTransfer = new DataTransfer();
+              dataTransfer.items.add(imgFile);
+              input.files = dataTransfer.files;
+            });
+
+            cropperContainer.style.display = "none";
+            cropper[index] .destroy();
           });
+        };
 
-          const croppedImage = document.getElementById(`croppedImg${index}`);
-          croppedImage.src = croppedCanvas.toDataURL("image/jpeg", 1.0);
-
-          const timestamp = new Date().getTime();
-          const fileName = `cropped-img-${timestamp}-${index}.png`;
-
-          await croppedCanvas.toBlob((blob) => {
-            const input = document.getElementById(`input${index}`);
-            const imgFile = new File([blob], fileName, { type: blob.type });
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(imgFile);
-            input.files = dataTransfer.files;
-          });
-
-          cropperContainer.style.display = "none";
-          cropper.destroy();
-        });
-      };
-
-      reader.readAsDataURL(input.files[0]);
-    }
+        reader.readAsDataURL(input.files[0]);
+      }
 
 
       function validateForm() {
@@ -681,13 +600,14 @@
             "Please enter a product name."
           );
           isValid = false;
-        } else if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
-          displayErrorMessage(
-            "productName-error",
-            "Product name should contain only alphabetic characters."
-          );
-          isValid = false;
-        }
+        } 
+        // else if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
+        //   displayErrorMessage(
+        //     "productName-error",
+        //     "Product name should contain only alphabetic characters."
+        //   );
+        //   isValid = false;
+        // }
 
         if (description.trim() === "") {
           displayErrorMessage(

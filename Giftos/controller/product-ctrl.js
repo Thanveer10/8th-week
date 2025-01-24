@@ -222,10 +222,10 @@ const addProductpost=async function(req,res){
 
       const categoryId= await categoryColl.findOne({Category:products.category})
       console.log('this is the category' + categoryId);
-      console.log(categoryId._id);
+     
       
        if(!categoryId){
-         return res.status(400).json('invalid category name')
+         return res.status(400).json({msg:'invalid category name'})
        }
 
        const proDetails={
@@ -234,7 +234,7 @@ const addProductpost=async function(req,res){
          SalePrice:products.salePrice,
          Stock:products.stock,
          MaxPerPerson:products.maxPerPerson,
-         Category:categoryId._id,
+         Category:categoryId._id?categoryId._id:null,
          Discription:products.description,
          Productimage:images,
          Status:'Available',

@@ -202,7 +202,9 @@
                                     <button class="btn btn-danger text-uppercase mr-2 px-4" disabled>Out of Stock</button>
                                   <% }else{ %>
                                  <% if(isCartItem){ %>
+                                  <div>
                                     <button class="btn btn-danger text-uppercase mr-2 px-4 mb-3" onclick="location.href='/adduserCart'" >View Cart</button>
+                                  </div>
                                  <% }else{ %>
                                     <form action="/addtocart/<%= product._id %>" method="GET">
                                         <button class="btn btn-danger text-uppercase mr-2 px-4  mb-3" type="submit">Add to cart</button>

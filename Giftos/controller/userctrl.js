@@ -1866,7 +1866,8 @@ const userProfile = async function (req, res) {
   const sessionName = userId;
   if (userId) {
     const user = await User.findById(userId);
-    res.render("user/userProfile", { user, sessionName });
+    const refferalOffer= await OfferColl.findOne({type: "Referral",isActive: true});
+    res.render("user/userProfile", { user, sessionName,refferalOffer });
   } else {
     res.redirect("/login");
   }
@@ -1986,10 +1987,10 @@ const userAddressget = async function (req, res) {
     const sessionName = userId;
     if (userId) {
       userAddress1 = await AddressColl.findOne({ UserId: userId }).lean();
+      const user = await User.findById({ _id: userId }).lean();
       if (userAddress1) {
         userAddress = userAddress1.Address.slice(skip, skip + limit);
         totalPages = userAddress1.Address.length;
-        const user = await User.findById({ _id: userId }).lean();
         res.render("user/userAddress", {
           user,
           userAddress,
@@ -2000,6 +2001,7 @@ const userAddressget = async function (req, res) {
       } else {
         console.log("user dont have address");
         res.render("user/userAddress", {
+          user,
           userAddress,
           sessionName,
           totalPages,
@@ -2877,7 +2879,7 @@ const cancelOrder = async (req, res) => {
 
     const updateOrder = await OrderColl.findByIdAndUpdate(
       { _id: new mongoose.Types.ObjectId(orderId) },
-      { $set: { orderStatus: "Cancelled", cancellationDate: new Date() } },
+      { $set: { orderStatus: "Cancelled", cancellationDate: new Date(),deliveryDate : null } },
       { new: true }
     );
 
@@ -2909,7 +2911,7 @@ const cancelOrder = async (req, res) => {
               {
                 type: "credit",
                 amount: refundAmount,
-                description: `Refund for cancelled order ${order._id}`,
+                description: `Refund for cancelled order ${order.orderId}`,
               },
             ],
           });
@@ -2919,7 +2921,7 @@ const cancelOrder = async (req, res) => {
           walletDoc.transactions.push({
             type: "credit",
             amount: refundAmount,
-            description: `Refund for cancelled order ${order._id}`,
+            description: `Refund for cancelled order ${order.orderId}`,
           });
           await walletDoc.save();
         }

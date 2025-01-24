@@ -444,10 +444,12 @@ a:focus {
 }
 
 .shop_section .box {
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */
   position: relative;
-  padding: 10px;
+  padding-bottom: 20px;
   margin-top: 25px;
+  width: 350px;
+  height: 360px;
 }
 
 .shop_section .box a {
@@ -466,6 +468,7 @@ a:focus {
           align-items: center;
   padding: 15px 30px;
   height: 245px;
+  background-color: #f7f7f7;
 }
 
 .shop_section .box .img-box img {
@@ -648,7 +651,7 @@ margin-top: 10px; /* Optional spacing adjustment */
   overflow: hidden; /* Prevents the image from exceeding the box on zoom */
 
   border: 1px solid #ddd;
-  border-radius: 8px; /* Optional: Adds rounded corners */
+  border-radius: 5px; /* Optional: Adds rounded corners */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }

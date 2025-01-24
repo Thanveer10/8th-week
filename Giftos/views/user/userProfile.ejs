@@ -92,16 +92,18 @@
   </div>
 </div>
 
-<div class="referral-section">
-  <h3>Invite Friends and Earn Rewards</h3>
-  <p>Share your referral code and earn rewards when your friends join!</p>
-
-  <div class="referral-code-box">
-    <span id="referral-code"><%= user.ReferralCode %></span>
-    <button class="btn btn-primary" onclick="copyReferralCode()">Copy</button>
-    <button class="btn btn-primary" onclick="shareReferralCode()">Share</button>
-  </div>
-</div>
+  <% if(refferalOffer){%>
+    <div class="referral-section">
+      <h3>Invite Friends and Earn Rewards</h3>
+      <p>Share your referral code and earn rewards when your friends join!</p>
+    
+      <div class="referral-code-box">
+        <span id="referral-code"><%= user.ReferralCode %></span>
+        <button class="btn btn-primary" onclick="copyReferralCode()">Copy</button>
+        <button class="btn btn-primary" onclick="shareReferralCode()">Share</button>
+      </div>
+    </div>
+ <% }%>
 </div>
 </div>
 </div>

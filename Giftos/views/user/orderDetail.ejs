@@ -206,6 +206,7 @@
         <div class="d-flex justify-content-between">
             <div class="order-info">
                 <h2>Order ID: <%= order.orderId %></h2>
+                <p><strong>Total Price:</strong> ₹<%= order.grandTotal.toFixed(2) %></p>
                 <p><strong>Payment Method:</strong> <%= order.paymentDetails.paymentMethod %></p>
                 <p><strong>Payment Status:</strong> <%= order.paymentDetails.status %></p>
                 <p><strong>Order Status:</strong> <%= order.orderStatus %></p>
@@ -214,7 +215,12 @@
                   <p>Refund Amount: <strong><%= order.paymentDetails.refundAmount.toFixed(2) %></strong></p>                              
                 <% }%>
                 <p><strong>Order Date:</strong> <%= new Date(order.date).toLocaleDateString() %></p>
-                <p><strong>Total Price:</strong> ₹<%= order.grandTotal.toFixed(2) %></p>
+               <% if(order.deliveryDate){%>
+                  <p><strong>Delivery Expect Date:</strong> <%= new Date(order.deliveryDate).toLocaleDateString() %></p>
+               <% }%>
+               <% if(order.cancellationDate){%>
+                <p><strong>Order Cancelled Date:</strong> <%= new Date(order.cancellationDate).toLocaleDateString() %></p>
+             <% }%>
             </div>
             <div class="address-info">
                 <h3>Shipping Address</h3>
