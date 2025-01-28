@@ -839,7 +839,7 @@ const usersignupval = async function (req, res, next) {
       service: "gmail",
       auth: {
         user: "giftos986.@gmail.com",
-        pass: "dqai pnig wnxh cdzr",
+        pass:  process.env.NODEMAILER_PASSWORD,
       },
     });
 
@@ -3355,15 +3355,15 @@ const confirmRetryPayment= async (req, res) => {
       const orderId = req.params.orderId;
       const order = await OrderColl.findById(orderId);
       const cart= await cartColl.findById(order.cartId)
-      if(!cart) {
-        console.log('cart not found')
-        return res.status(404).json({message: 'Cart not found'})
-      }
+      // if(!cart) {
+      //   console.log('cart not found')
+      //   return res.status(404).json({message: 'Cart not found'})
+      // }
 
-      if (!cart.Product.length) {
-        console.log('your cart is empty')
-        return res.status(404).json({success:false, message:'your cart is empty'});
-      }
+      // if (!cart.Product.length) {
+      //   console.log('your cart is empty')
+      //   return res.status(404).json({success:false, message:'your cart is empty'});
+      // }
 
       if (!order) {
           return res.status(404).json({ message: 'Order not found' });
@@ -3372,8 +3372,8 @@ const confirmRetryPayment= async (req, res) => {
       order.orderStatus = 'Confirmed';
       order.paymentDetails.status = 'Paid';
       order.deliveryDate= new Date(new Date().setDate(new Date().getDate() + 7)) // Example: 7-day delivery
-      for (let item of cart.Product) {
-        const product = await ProductColl.findById(item.item);
+      for (let item of order.products) {
+        const product = await ProductColl.findById(item.productId);
         if (product) {
           product.Stock -= item.quantity;
         }

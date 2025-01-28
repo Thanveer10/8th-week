@@ -185,7 +185,7 @@
 
       // Password validation: Minimum 8 characters, at least one number
       const password = passwordField.value;
-      const passwordRegex = /^(?=.*\d)[a-zA-Z\d]{8,}$/;
+      const passwordRegex = /^(?=.*\d)[a-zA-Z].{8,}$/;
       if (!passwordRegex.test(password)) {
         passwordError.textContent = 'Password must be at least 8 characters long and include at least one number.';
         isValid = false;
